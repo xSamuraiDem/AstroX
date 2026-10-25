@@ -8,180 +8,162 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#0c0708; --panel:#150b0d; --panel2:#1e1013; --line:#4a1a20;
-  --red:#ff2b3d; --red-d:#9b1220; --text:#f3e7e8; --muted:#a58c8f; --ok:#5de08a;
-  --head:'Archivo Black',Impact,sans-serif; --body:'IBM Plex Sans',system-ui,sans-serif;
-}
+:root{--bg:#0c0708;--panel:#150b0d;--panel2:#1e1013;--line:#4a1a20;--red:#ff2b3d;--red-d:#9b1220;--text:#f3e7e8;--muted:#a58c8f;--ok:#5de08a;
+--head:'Archivo Black',Impact,sans-serif;--body:'IBM Plex Sans',system-ui,sans-serif}
 *{box-sizing:border-box;margin:0;border-radius:0!important;-webkit-tap-highlight-color:transparent}
-html,body{min-height:100%}
-body{font:400 15px/1.5 var(--body);color:var(--text);background:var(--bg);
-  /* graph-paper grid */
-  background-image:linear-gradient(rgba(255,43,61,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,43,61,.06) 1px,transparent 1px);
-  background-size:24px 24px;
-  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+body{font:400 15px/1.5 var(--body);color:var(--text);background:var(--bg);min-height:100vh;
+background-image:radial-gradient(60% 30% at 50% 0,rgba(255,43,61,.16),transparent),linear-gradient(rgba(255,43,61,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,43,61,.05) 1px,transparent 1px);
+background-size:100% 100%,24px 24px,24px 24px;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
 body.lock{overflow:hidden}
-.screen{display:none;min-height:100vh;max-width:480px;margin:0 auto;padding:24px 18px 32px;flex-direction:column;gap:16px}
+.screen{display:none;min-height:100vh;max-width:480px;margin:0 auto;padding:22px 18px 32px;flex-direction:column;gap:14px}
 .screen.active{display:flex}
-h1{font:400 30px/1.05 var(--head);text-transform:uppercase;letter-spacing:-.01em}
-h2{font:400 18px/1.1 var(--head);text-transform:uppercase}
-.sub{color:var(--muted)}
-b{font-weight:600;color:var(--text)}
-
-/* hard-edged buttons with offset shadow */
-.btn{display:block;width:100%;border:2px solid var(--red);background:var(--red);color:#0c0708;cursor:pointer;
-  font:400 15px var(--head);text-transform:uppercase;letter-spacing:.03em;padding:14px 16px;
-  box-shadow:4px 4px 0 var(--red-d);transition:transform .08s,box-shadow .08s}
-.btn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--red-d)}
+h1{font:400 30px/1.05 var(--head);text-transform:uppercase}
+h2{font:400 17px/1.15 var(--head);text-transform:uppercase}
+.sub{color:var(--muted)} b{font-weight:600;color:var(--text)}
+.btn{display:block;width:100%;border:2px solid var(--red);background:var(--red);color:#0c0708;cursor:pointer;font:400 15px var(--head);text-transform:uppercase;padding:14px 16px;box-shadow:4px 4px 0 var(--red-d);transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translate(4px,4px);box-shadow:none}
 .btn.ghost{background:transparent;color:var(--text);border-color:var(--line);box-shadow:4px 4px 0 var(--line)}
-.btn.ghost:active{box-shadow:0 0 0 var(--line)}
+.btn.sm{width:auto;padding:9px 12px;font-size:13px}
 .btn:disabled{background:var(--panel2);border-color:var(--line);color:var(--muted);box-shadow:none;cursor:not-allowed}
 :focus-visible{outline:2px dashed var(--red);outline-offset:3px}
-
-.box{background:var(--panel);border:2px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:10px}
+.box{background:var(--panel);border:2px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:10px}
 .tag{font:600 12px var(--body);padding:3px 8px;border:2px solid var(--line);color:var(--muted);white-space:nowrap}
-.tag.ok{color:var(--ok);border-color:var(--ok)}
-
-/* screen 1 */
+.tag.ok{color:var(--ok);border-color:var(--ok)} .tag.no{color:var(--red);border-color:var(--red)}
+.kv{display:flex;justify-content:space-between;align-items:center;gap:10px}.kv>span:first-child{color:var(--muted)}
+.steps{display:flex;gap:6px}.steps i{flex:1;height:6px;background:var(--panel2);border:1px solid var(--line)}.steps i.on{background:var(--red);border-color:var(--red)}
 .hero{flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px}
 .logo{width:56px;height:56px;border:2px solid var(--red);box-shadow:6px 6px 0 var(--red-d);position:relative;background:var(--panel)}
 .logo::after{content:"";position:absolute;inset:12px;background:var(--red)}
-.lang{display:flex;border:2px solid var(--line)}
-.lang button{flex:1;border:0;background:none;color:var(--muted);font:400 14px var(--head);text-transform:uppercase;padding:12px;cursor:pointer}
-.lang button+button{border-left:2px solid var(--line)}
-.lang button.on{background:var(--red);color:#0c0708}
-
-/* screen 2 */
+.lang{display:flex;border:2px solid var(--line)}.lang button{flex:1;border:0;background:none;color:var(--muted);font:400 14px var(--head);padding:12px;cursor:pointer}
+.lang button+button{border-left:2px solid var(--line)}.lang button.on{background:var(--red);color:#0c0708}
+/* policy */
+.policy{height:48vh;overflow-y:auto;border:2px solid var(--line);background:var(--panel);padding:14px;display:flex;flex-direction:column;gap:10px;scrollbar-color:var(--red) var(--panel2)}
+.policy h2{font-size:14px;color:var(--red)} .policy p{font-size:14px;color:#d9c6c8}
+.chk{display:flex;gap:12px;align-items:flex-start;cursor:pointer}.chk input{width:22px;height:22px;accent-color:var(--red);flex:none;margin-top:1px}
+.chk.off{opacity:.45;pointer-events:none}
+/* otp */
 .otp{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
-.otp input{min-width:0;width:100%;height:58px;text-align:center;font:400 24px var(--head);color:var(--text);
-  background:var(--panel);border:2px solid var(--line);caret-color:var(--red)}
+.otp input{min-width:0;width:100%;height:58px;text-align:center;font:400 24px var(--head);color:var(--text);background:var(--panel);border:2px solid var(--line);caret-color:var(--red)}
 .otp input:focus{border-color:var(--red);outline:0;box-shadow:3px 3px 0 var(--red-d)}
-.otp.bad input{border-color:var(--red);animation:shake .3s}
-@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.otp.bad input{border-color:var(--red);animation:sh .3s}@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 .msg{min-height:22px;color:var(--red);font-weight:600}
 .hint{border:2px dashed var(--line);padding:12px;color:var(--muted)}
-
-/* screen 3 */
-.plan.free{border-color:var(--red);box-shadow:6px 6px 0 var(--red-d)}
-.plan.go{border-style:dashed;opacity:.8}
+/* connect */
+.stat{display:flex;align-items:center;gap:12px;padding:16px;border:2px solid var(--line);background:var(--panel)}
+.stat.on{border-color:var(--ok);box-shadow:5px 5px 0 rgba(93,224,138,.35)}.stat.off{border-color:var(--red);box-shadow:5px 5px 0 var(--red-d)}
+.dot{width:16px;height:16px;background:var(--red);flex:none}.stat.on .dot{background:var(--ok)}.stat.off .dot{animation:bl 1.2s steps(2) infinite}@keyframes bl{50%{opacity:.2}}
+ol.how{padding-left:22px;display:flex;flex-direction:column;gap:6px;color:#d9c6c8}ol.how li::marker{color:var(--red);font-weight:600}
+code{font:500 13px var(--body);background:var(--panel2);border:1px solid var(--line);padding:1px 6px;color:var(--red)}
+/* plans */
+.plan.free{border-color:var(--red);box-shadow:6px 6px 0 var(--red-d)}.plan.go{border-style:dashed;opacity:.8}
 .plan header{display:flex;justify-content:space-between;align-items:center;gap:10px}
-
-/* screen 4 */
+/* dashboard */
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.avatar{width:56px;height:56px;flex:none;border:2px solid var(--red);box-shadow:4px 4px 0 var(--red-d);background:var(--panel) center/cover no-repeat;
-  color:var(--red);font:400 22px var(--head);display:grid;place-items:center;cursor:pointer;padding:0}
+.avatar{width:56px;height:56px;flex:none;border:2px solid var(--red);box-shadow:4px 4px 0 var(--red-d);background:var(--panel) center/cover no-repeat;color:var(--red);font:400 22px var(--head);display:grid;place-items:center;cursor:pointer;padding:0}
 .avatar:active{transform:translate(4px,4px);box-shadow:none}
-.big{font:400 28px var(--head)}
-.meter{height:14px;border:2px solid var(--line);background:var(--bg)}
-.meter i{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,var(--red) 0 8px,var(--red-d) 8px 10px)}
-.kv{display:flex;justify-content:space-between;align-items:center}
-.kv span:first-child{color:var(--muted)}
-
+.me{display:flex;gap:14px;align-items:center}.me .avatar{width:84px;height:84px;font-size:32px;cursor:default}.me .avatar:active{transform:none;box-shadow:4px 4px 0 var(--red-d)}
+.meter{height:14px;border:2px solid var(--line);background:var(--bg)}.meter i{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,var(--red) 0 8px,var(--red-d) 8px 10px)}
+.cmd{border-left:4px solid var(--red);padding:4px 0 4px 12px}
 /* modal */
-.modal{position:fixed;inset:0;background:rgba(5,2,3,.85);display:none;align-items:flex-end;justify-content:center;z-index:10}
-.modal.open{display:flex}
-.sheet{width:100%;max-width:480px;background:var(--bg);border:2px solid var(--red);border-bottom:0;
-  padding:20px 18px calc(22px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;max-height:92vh;overflow-y:auto}
-.pic{display:flex;align-items:center;gap:16px}
-.pic .avatar{width:80px;height:80px;font-size:30px;cursor:default}
-.pic .avatar:active{transform:none;box-shadow:4px 4px 0 var(--red-d)}
-textarea{width:100%;min-height:96px;resize:vertical;font:400 15px var(--body);color:var(--text);background:var(--panel);border:2px solid var(--line);padding:10px}
-textarea:focus{border-color:var(--red);outline:0}
-.count{text-align:right;font-size:12px;color:var(--muted)}
-.row{display:flex;gap:12px}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--red);color:#0c0708;border:2px solid var(--text);
-  padding:10px 16px;font:400 13px var(--head);text-transform:uppercase;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20;max-width:90vw;text-align:center}
-.toast.show{opacity:1}
+.modal{position:fixed;inset:0;background:rgba(5,2,3,.88);display:none;align-items:flex-end;justify-content:center;z-index:10}.modal.open{display:flex}
+.sheet{width:100%;max-width:480px;background:var(--bg);border:2px solid var(--red);border-bottom:0;padding:20px 18px calc(22px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;max-height:92vh;overflow-y:auto}
+textarea{width:100%;min-height:84px;resize:vertical;font:400 15px var(--body);color:var(--text);background:var(--panel);border:2px solid var(--line);padding:10px}
+textarea:focus{border-color:var(--red);outline:0}.count{text-align:right;font-size:12px;color:var(--muted)}.row{display:flex;gap:12px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--red);color:#0c0708;border:2px solid var(--text);padding:10px 16px;font:400 13px var(--head);text-transform:uppercase;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20;max-width:90vw;text-align:center}.toast.show{opacity:1}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
-<!-- Screen 1: welcome + language -->
+<!-- 1. Welcome -->
 <section class="screen active" id="s-welcome">
-  <div class="hero">
-    <div class="logo"></div>
-    <h1 data-i="welcomeTitle"></h1>
-    <p class="sub" data-i="welcomeSub"></p>
-  </div>
-  <div class="lang" role="group" aria-label="Language">
-    <button data-lang="ru">RU</button><button data-lang="en">EN</button>
-  </div>
-  <button class="btn" id="btn-continue" data-i="continue"></button>
+  <div class="hero"><div class="logo"></div><h1 data-i="wTitle"></h1><p class="sub" data-i="wSub"></p></div>
+  <div class="lang"><button data-lang="ru">RU</button><button data-lang="en">EN</button></div>
+  <button class="btn" id="b-start" data-i="start"></button>
 </section>
 
-<!-- Screen 2: 2FA -->
+<!-- 2. Privacy policy (must be read to the end) -->
+<section class="screen" id="s-policy">
+  <div class="steps" data-step="1"></div>
+  <h1 data-i="pTitle"></h1>
+  <div class="policy" id="policy"></div>
+  <p class="sub" id="p-hint" data-i="pHint"></p>
+  <label class="chk off" id="chk"><input type="checkbox" id="agree"><span data-i="pAgree"></span></label>
+  <button class="btn" id="b-policy" disabled data-i="pAccept"></button>
+</section>
+
+<!-- 3. Registration / 2FA -->
 <section class="screen" id="s-verify">
-  <h1 data-i="verifyTitle"></h1>
-  <p class="sub" data-i="verifySub"></p>
-  <div class="hint" data-i="verifyHint"></div>
-  <div class="otp" id="otp"></div>
-  <div class="msg" id="otp-msg" role="alert"></div>
-  <button class="btn" id="btn-verify" data-i="verify"></button>
+  <div class="steps" data-step="2"></div>
+  <h1 data-i="vTitle"></h1>
+  <div class="box"><div class="me"><div class="avatar tg-av"></div><div><h2 class="tg-name"></h2><div class="sub tg-un"></div><div class="sub tg-id"></div></div></div></div>
+  <p class="sub" data-i="vSub"></p>
+  <div class="hint" data-i="vHint"></div>
+  <div class="otp" id="otp"></div><div class="msg" id="o-msg" role="alert"></div>
+  <button class="btn" id="b-verify" data-i="verify"></button>
 </section>
 
-<!-- Screen 3: plans -->
+<!-- 4. Business connection -->
+<section class="screen" id="s-connect">
+  <div class="steps" data-step="3"></div>
+  <h1 data-i="cTitle"></h1>
+  <div class="stat off" id="biz"><div class="dot"></div><div><h2 id="biz-t"></h2><div class="sub" id="biz-s"></div></div></div>
+  <div class="box"><h2 data-i="cHow"></h2><ol class="how" id="how"></ol></div>
+  <button class="btn ghost" id="b-check" data-i="check"></button>
+  <button class="btn" id="b-connected" disabled data-i="cont"></button>
+</section>
+
+<!-- 5. Plans -->
 <section class="screen" id="s-plans">
-  <h1 data-i="plansTitle"></h1>
-  <div class="box plan free">
-    <header><h2>Free</h2><span class="tag ok" data-i="available"></span></header>
-    <p class="sub" data-i="freeDesc"></p>
-    <button class="btn" id="btn-free" data-i="chooseFree"></button>
-  </div>
-  <div class="box plan go">
-    <header><h2>Plan GO</h2><span class="tag" data-i="soon"></span></header>
-    <p class="sub" data-i="goDesc"></p>
-    <button class="btn" disabled data-i="inDev"></button>
-  </div>
+  <div class="steps" data-step="4"></div>
+  <h1 data-i="plTitle"></h1>
+  <div class="box plan free"><header><h2>Free</h2><span class="tag ok" data-i="avail"></span></header><p class="sub" data-i="freeD"></p><button class="btn" id="b-free" data-i="chooseFree"></button></div>
+  <div class="box plan go"><header><h2>Plan GO</h2><span class="tag" data-i="soon"></span></header><p class="sub" data-i="goD"></p><button class="btn" disabled data-i="inDev"></button></div>
 </section>
 
-<!-- Screen 4: dashboard -->
+<!-- 6. Dashboard -->
 <section class="screen" id="s-main">
   <div class="top">
-    <div><p class="sub" data-i="hello"></p><h2 id="m-name"></h2></div>
-    <button class="avatar" id="avatar-top" aria-label="Profile"></button>
+    <button class="btn ghost sm" id="b-help" data-i="help"></button>
+    <button class="avatar tg-av" id="av-top" aria-label="Profile"></button>
   </div>
-  <div class="box">
-    <div class="kv"><span data-i="requests"></span><span class="tag">0 / 100</span></div>
-    <div class="meter"><i style="width:0%"></i></div>
-  </div>
-  <div class="box">
-    <div class="kv"><span data-i="status"></span><span class="tag ok">Free</span></div>
-  </div>
-  <div class="box">
-    <span class="sub" data-i="about"></span>
-    <p id="m-desc"></p>
-  </div>
+  <div><p class="sub" data-i="hello"></p><h1 class="tg-name" style="font-size:26px"></h1></div>
+  <div class="box"><div class="kv"><span data-i="reqs"></span><span class="tag">0 / 100</span></div><div class="meter"><i></i></div></div>
+  <div class="box"><div class="kv"><span data-i="bizLbl"></span><span class="tag" id="m-biz"></span></div><div class="kv"><span data-i="status"></span><span class="tag ok">Free</span></div></div>
+  <div class="box"><span class="sub" data-i="about"></span><p id="m-desc"></p></div>
 </section>
 
+<!-- Help modal -->
+<div class="modal" id="m-help"><div class="sheet" role="dialog" aria-modal="true">
+  <h2 data-i="help"></h2>
+  <div class="box"><div class="cmd"><b>!help</b><div class="sub" data-i="helpCmd"></div></div></div>
+  <p class="sub" data-i="helpNote"></p>
+  <button class="btn" data-close data-i="close"></button>
+</div></div>
+
 <!-- Profile modal -->
-<div class="modal" id="modal" aria-hidden="true">
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="p-title">
-    <h2 id="p-title" data-i="profile"></h2>
-    <div class="pic">
-      <div class="avatar" id="avatar-big"></div>
-      <button class="btn ghost" id="btn-photo" data-i="changePhoto"></button>
-      <input type="file" id="file" accept="image/*" hidden>
-    </div>
-    <div>
-      <label class="sub" for="desc" data-i="about"></label>
-      <textarea id="desc" maxlength="200"></textarea>
-      <div class="count"><span id="cnt">0</span>/200</div>
-    </div>
-    <div class="box" style="padding:10px 14px"><div class="kv"><span data-i="status"></span><span class="tag ok">Free</span></div></div>
-    <div class="row">
-      <button class="btn ghost" id="btn-close" data-i="close"></button>
-      <button class="btn" id="btn-save" data-i="save"></button>
-    </div>
+<div class="modal" id="m-prof"><div class="sheet" role="dialog" aria-modal="true">
+  <h2 data-i="profile"></h2>
+  <div class="me"><div class="avatar tg-av" id="av-big"></div><div><h2 class="tg-name"></h2><div class="sub tg-un"></div></div></div>
+  <button class="btn ghost" id="b-photo" data-i="photo"></button><input type="file" id="file" accept="image/*" hidden>
+  <div class="box">
+    <div class="kv"><span>ID</span><b class="tg-id2"></b></div>
+    <div class="kv"><span data-i="langLbl"></span><b id="pf-lang"></b></div>
+    <div class="kv"><span>Premium</span><b id="pf-prem"></b></div>
+    <div class="kv"><span data-i="status"></span><span class="tag ok">Free</span></div>
+    <div class="kv"><span data-i="bizLbl"></span><span class="tag" id="pf-biz"></span></div>
   </div>
-</div>
+  <div><label class="sub" for="desc" data-i="about"></label><textarea id="desc" maxlength="200"></textarea><div class="count"><span id="cnt">0</span>/200</div></div>
+  <div class="row"><button class="btn ghost" data-close data-i="close"></button><button class="btn" id="b-save" data-i="save"></button></div>
+</div></div>
 <div class="toast" id="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, get, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-/* ───────── Firebase ───────── */
+const BOT_USERNAME = "YOUR_BOT_USERNAME";   // ← username of your bot, without @
+
 const firebaseConfig = {
   apiKey: "AIzaSyBZ8Qm4BeX6U1vCMNb-_FgNBp0OQUkC-9k",
   authDomain: "tetete-d31c8.firebaseapp.com",
@@ -193,225 +175,201 @@ const firebaseConfig = {
   measurementId: "G-B9J1GPPJZF"
 };
 const db = getDatabase(initializeApp(firebaseConfig));
+const tmo = (p, ms = 8000) => Promise.race([p, new Promise((_, r) => setTimeout(() => r(new Error("timeout")), ms))]);
 
-/* Firebase calls can hang forever when offline: give them a deadline */
-const withTimeout = (p, ms = 8000) =>
-  Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), ms))]);
-
-/* ───────── Telegram ───────── */
-const tg = window.Telegram?.WebApp;
-tg?.ready(); tg?.expand();
+/* ── Telegram user: avatar, nick, id, etc. ── */
+const tg = window.Telegram?.WebApp; tg?.ready(); tg?.expand();
 try { tg?.setHeaderColor("#0c0708"); tg?.setBackgroundColor("#0c0708"); } catch {}
-const tgUser = tg?.initDataUnsafe?.user || { id: "demo", first_name: "Demo" }; // "demo" = opened in a plain browser
-const uid = String(tgUser.id);
+const U = tg?.initDataUnsafe?.user || { id: "demo", first_name: "Demo" };   // demo = plain browser
+const uid = String(U.id);
+const fullName = [U.first_name, U.last_name].filter(Boolean).join(" ");
 
-/* ───────── i18n ───────── */
+/* ── i18n ── */
 const T = {
-  ru: {
-    welcomeTitle:"Добро пожаловать", welcomeSub:"Выберите язык и продолжайте. Дальше короткое подтверждение входа.", continue:"Продолжить",
-    verifyTitle:"Подтвердите вход", verifySub:"Введите 6-значный код из чата с ботом.",
-    verifyHint:"Нет кода? Отправьте боту <b>/code</b> или нажмите <b>«Получить код»</b> в чате.", verify:"Подтвердить",
-    errFormat:"Введите все 6 цифр.", errWrong:"Неверный код.", errExpired:"Код устарел. Запросите новый.", errNone:"Код не найден. Запросите его у бота.",
-    errNet:"Нет связи с сервером. Попробуйте ещё раз.", errLock:"Слишком много попыток. Подождите",
-    plansTitle:"Выберите тариф", available:"Доступен", soon:"Скоро", inDev:"В разработке", chooseFree:"Выбрать Free",
-    freeDesc:"100 запросов в день. Ограниченный набор команд, которые используются в Go Plans.",
-    goDesc:"Больше запросов и все команды. Тариф в разработке.",
-    hello:"Вы вошли как", requests:"Запросы сегодня", status:"Статус", about:"О себе",
-    emptyDesc:"Описание не добавлено. Нажмите на аватар, чтобы заполнить профиль.",
-    profile:"Профиль", changePhoto:"Сменить фото", close:"Закрыть", save:"Сохранить", saved:"Сохранено", photoErr:"Не удалось открыть фото"
-  },
-  en: {
-    welcomeTitle:"Welcome", welcomeSub:"Pick a language and continue. A quick sign-in check comes next.", continue:"Continue",
-    verifyTitle:"Confirm sign-in", verifySub:"Enter the 6-digit code from your chat with the bot.",
-    verifyHint:"No code? Send the bot <b>/code</b> or tap <b>“Get code”</b> in the chat.", verify:"Confirm",
-    errFormat:"Enter all 6 digits.", errWrong:"Wrong code.", errExpired:"This code expired. Request a new one.", errNone:"No code found. Request one from the bot.",
-    errNet:"Can’t reach the server. Try again.", errLock:"Too many attempts. Wait",
-    plansTitle:"Choose a plan", available:"Available", soon:"Coming soon", inDev:"In development", chooseFree:"Choose Free",
-    freeDesc:"100 requests per day. Limited commands used in Go Plans.",
-    goDesc:"More requests and every command. This plan is in development.",
-    hello:"Signed in as", requests:"Requests today", status:"Status", about:"About you",
-    emptyDesc:"No description yet. Tap your avatar to fill in your profile.",
-    profile:"Profile", changePhoto:"Change photo", close:"Close", save:"Save", saved:"Saved", photoErr:"Couldn’t open the photo"
-  }
-};
-let lang = "ru";
-try { lang = localStorage.getItem("lang") || (tg?.initDataUnsafe?.user?.language_code === "en" ? "en" : "ru"); } catch {}
-let profile = { description:"", avatar:"", plan:"" };
-const $ = s => document.querySelector(s);
-const t = k => T[lang][k];
+ru:{wTitle:"Добро пожаловать",wSub:"Выберите язык. Дальше политика, регистрация и подключение бота.",start:"Начать",
+pTitle:"Политика конфиденциальности",pHint:"Прокрутите текст до конца, чтобы продолжить.",pAgree:"Я прочитал(а) политику и принимаю её условия",pAccept:"Принять и продолжить",
+vTitle:"Регистрация",vSub:"Это ваш аккаунт из Telegram. Введите 6-значный код из чата с ботом.",vHint:"Нет кода? Отправьте боту <b>/code</b> или нажмите <b>«Получить код»</b> в чате.",verify:"Подтвердить",
+eFmt:"Введите все 6 цифр.",eWrong:"Неверный код.",eExp:"Код устарел. Запросите новый.",eNone:"Код не найден. Запросите его у бота.",eNet:"Нет связи с сервером. Попробуйте ещё раз.",eLock:"Слишком много попыток. Подождите",
+cTitle:"Подключение бота",cHow:"Как подключить",check:"Проверить статус",cont:"Продолжить",on:"Подключено",off:"Не подключено",onS:"Бот работает в ваших чатах.",offS:"Без подключения войти нельзя.",
+h1:"Откройте <b>Настройки</b> Telegram",h2:"Выберите <b>Telegram Business → Чат-боты</b>",h3:"Введите <code>@BOT</code> и выдайте право отвечать на сообщения",h4:"Вернитесь сюда: статус обновится сам",
+plTitle:"Выберите тариф",avail:"Доступен",soon:"Скоро",inDev:"В разработке",chooseFree:"Выбрать Free",freeD:"100 запросов в день. Ограниченный набор команд, которые используются в Go Plans.",goD:"Больше запросов и все команды. Тариф в разработке.",
+help:"Справка",helpCmd:"Открывает справку о командах.",helpNote:"Команда срабатывает только от вас: бот отвечает в любом вашем чате, если команду написали вы. Если её отправит собеседник, бот промолчит.",
+hello:"Вы вошли как",reqs:"Запросы сегодня",status:"Статус",bizLbl:"Business",about:"О себе",emptyD:"Описание не добавлено. Нажмите на аватар, чтобы заполнить профиль.",
+profile:"Профиль",photo:"Сменить фото",langLbl:"Язык",close:"Закрыть",save:"Сохранить",saved:"Сохранено",photoErr:"Не удалось открыть фото",yes:"Да",no:"Нет",
+policy:[["1. Какие данные мы собираем","Telegram ID, имя, ник, язык, фото профиля и статус Premium из Telegram, а также описание и аватар, которые вы добавляете сами."],
+["2. Для чего они нужны","Чтобы создать аккаунт, подтвердить вход кодом, показать профиль и определить, что бот подключён к вашему аккаунту."],
+["3. Telegram Business","После подключения бот видит сообщения чатов вашего аккаунта. Он реагирует только на команды, которые пишете вы, и не хранит переписку."],
+["4. Хранение и защита","Данные хранятся в Firebase и в базе бота. Одноразовый код живёт 5 минут. Мы не продаём данные и не передаём их третьим лицам."],
+["5. Ваши права","Вы можете отключить бота в настройках Telegram в любой момент и запросить удаление данных через бота."],
+["6. Изменения","При изменении политики мы покажем её снова до продолжения работы."]]},
+en:{wTitle:"Welcome",wSub:"Pick a language. Next: policy, registration and bot connection.",start:"Get started",
+pTitle:"Privacy policy",pHint:"Scroll the text to the end to continue.",pAgree:"I have read the policy and accept its terms",pAccept:"Accept and continue",
+vTitle:"Registration",vSub:"This is your Telegram account. Enter the 6-digit code from your chat with the bot.",vHint:"No code? Send the bot <b>/code</b> or tap <b>“Get code”</b> in the chat.",verify:"Confirm",
+eFmt:"Enter all 6 digits.",eWrong:"Wrong code.",eExp:"This code expired. Request a new one.",eNone:"No code found. Request one from the bot.",eNet:"Can’t reach the server. Try again.",eLock:"Too many attempts. Wait",
+cTitle:"Connect the bot",cHow:"How to connect",check:"Check status",cont:"Continue",on:"Connected",off:"Not connected",onS:"The bot works in your chats.",offS:"You can’t sign in until it’s connected.",
+h1:"Open Telegram <b>Settings</b>",h2:"Choose <b>Telegram Business → Chatbots</b>",h3:"Enter <code>@BOT</code> and allow it to reply to messages",h4:"Come back here: the status updates itself",
+plTitle:"Choose a plan",avail:"Available",soon:"Coming soon",inDev:"In development",chooseFree:"Choose Free",freeD:"100 requests per day. Limited commands used in Go Plans.",goD:"More requests and every command. This plan is in development.",
+help:"Help",helpCmd:"Opens the command help.",helpNote:"Only you can trigger it: the bot answers in any of your chats when you type the command. If the other person sends it, the bot stays silent.",
+hello:"Signed in as",reqs:"Requests today",status:"Status",bizLbl:"Business",about:"About you",emptyD:"No description yet. Tap your avatar to fill in your profile.",
+profile:"Profile",photo:"Change photo",langLbl:"Language",close:"Close",save:"Save",saved:"Saved",photoErr:"Couldn’t open the photo",yes:"Yes",no:"No",
+policy:[["1. Data we collect","Telegram ID, name, username, language, profile photo and Premium status from Telegram, plus the description and avatar you add yourself."],
+["2. Why we need it","To create your account, confirm sign-in with a code, show your profile and detect that the bot is connected to your account."],
+["3. Telegram Business","Once connected, the bot sees messages in your account’s chats. It reacts only to commands that you type and does not store conversations."],
+["4. Storage and security","Data is stored in Firebase and the bot’s database. The one-time code lives for 5 minutes. We don’t sell data or share it with third parties."],
+["5. Your rights","You can disconnect the bot in Telegram settings at any time and request data deletion through the bot."],
+["6. Changes","If the policy changes, we will show it again before you continue."]]}};
+let lang = "ru"; try { lang = localStorage.getItem("lang") || (U.language_code === "en" ? "en" : "ru"); } catch {}
+const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s), t = k => T[lang][k];
+let rec = { description:"", avatar:"", plan:"", policyAt:0 }, bizOn = false, current = "s-welcome";
 
 function applyLang(){
   document.documentElement.lang = lang;
-  document.querySelectorAll("[data-i]").forEach(el => el.innerHTML = t(el.dataset.i));
-  document.querySelectorAll(".lang button").forEach(b => b.classList.toggle("on", b.dataset.lang === lang));
-  $("#m-desc").textContent = profile.description || t("emptyDesc");
+  $$("[data-i]").forEach(e => e.innerHTML = t(e.dataset.i));
+  $$(".lang button").forEach(b => b.classList.toggle("on", b.dataset.lang === lang));
+  $("#policy").innerHTML = t("policy").map(([h, p]) => `<h2>${h}</h2><p>${p}</p>`).join("");
+  $("#how").innerHTML = [1,2,3,4].map(n => `<li>${t("h"+n).replace("@BOT","@"+BOT_USERNAME)}</li>`).join("");
+  $$(".steps").forEach(s => s.innerHTML = [1,2,3,4].map(n => `<i class="${n <= s.dataset.step ? "on" : ""}"></i>`).join(""));
+  $("#pf-lang").textContent = lang.toUpperCase(); $("#pf-prem").textContent = U.is_premium ? t("yes") : t("no");
+  $("#m-desc").textContent = rec.description || t("emptyD"); paintBiz(); paintMe();
 }
-document.querySelectorAll(".lang button").forEach(b => b.onclick = () => {
-  lang = b.dataset.lang; try { localStorage.setItem("lang", lang); } catch {} applyLang();
-});
+$$(".lang button").forEach(b => b.onclick = () => { lang = b.dataset.lang; try { localStorage.setItem("lang", lang); } catch {} applyLang(); });
 
-/* ───────── Helpers ───────── */
-let current = "s-welcome";
+/* ── Telegram identity everywhere (avatar = custom one, else Telegram photo, else initial) ── */
+function paintMe(){
+  const src = rec.avatar || U.photo_url || "";
+  $$(".tg-av").forEach(el => { el.style.backgroundImage = src ? `url("${src}")` : ""; el.textContent = src ? "" : (U.first_name || "?")[0].toUpperCase(); });
+  $$(".tg-name").forEach(e => e.textContent = fullName);
+  $$(".tg-un").forEach(e => e.textContent = U.username ? "@" + U.username : "—");
+  $$(".tg-id").forEach(e => e.textContent = "ID " + uid); $$(".tg-id2").forEach(e => e.textContent = uid);
+}
+function paintBiz(){
+  const s = $("#biz"); s.className = "stat " + (bizOn ? "on" : "off");
+  $("#biz-t").textContent = t(bizOn ? "on" : "off"); $("#biz-s").textContent = t(bizOn ? "onS" : "offS");
+  $("#b-connected").disabled = !bizOn;
+  for (const id of ["#m-biz", "#pf-biz"]) { const e = $(id); e.textContent = t(bizOn ? "on" : "off"); e.className = "tag " + (bizOn ? "ok" : "no"); }
+}
+let toastT; function toast(m){ const e = $("#toast"); e.textContent = m; e.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => e.classList.remove("show"), 1900); }
+
+/* ── Routing: policy → registration code → business → plan → dashboard ── */
+let poll;
 function show(id){
-  current = id;
-  document.querySelectorAll(".screen").forEach(s => s.classList.toggle("active", s.id === id));
-  window.scrollTo(0, 0);
-  // Telegram's native back button works on the code screen
-  if (tg?.BackButton) id === "s-verify" ? tg.BackButton.show() : tg.BackButton.hide();
+  current = id; clearInterval(poll);
+  $$(".screen").forEach(s => s.classList.toggle("active", s.id === id)); scrollTo(0, 0);
+  if (id === "s-connect"){ checkBiz(); poll = setInterval(checkBiz, 3000); }   // live status
+  if (id === "s-policy") setTimeout(policyScroll, 50);
+  if (id === "s-verify") cells[0].focus();
 }
-tg?.BackButton?.onClick(() => { if (current === "s-verify") show("s-welcome"); });
-
-let toastTimer;
-function toast(msg){
-  const el = $("#toast"); el.textContent = msg; el.classList.add("show");
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("show"), 1900);
+const verified = () => { try { return sessionStorage.getItem("v") === uid; } catch { return false; } };
+function next(){
+  if (!rec.policyAt) return show("s-policy");
+  if (!verified()) return show("s-verify");
+  if (!bizOn) return show("s-connect");
+  if (rec.plan !== "free") return show("s-plans");
+  paintMe(); show("s-main");
 }
-function paintAvatar(el, src){
-  el.style.backgroundImage = src ? `url("${src}")` : "";
-  el.textContent = src ? "" : (tgUser.first_name || "?")[0].toUpperCase();
+async function loadRec(){
+  try { const s = await tmo(get(ref(db, `users/${uid}`))); if (s.exists()) rec = { ...rec, ...s.val() }; } catch (e) { console.error(e); }
+  try { bizOn = !!(await tmo(get(ref(db, `business/${uid}/connected`)))).val(); } catch {}
 }
-
-/* ───────── Screen 2: 6-digit input ───────── */
-const otp = $("#otp");
-const cells = [];
-for (let i = 0; i < 6; i++){
-  const inp = document.createElement("input");
-  inp.inputMode = "numeric"; inp.maxLength = 1; inp.setAttribute("aria-label", `Digit ${i + 1}`);
-  inp.autocomplete = i === 0 ? "one-time-code" : "off";
-  inp.addEventListener("input", () => {
-    inp.value = inp.value.replace(/\D/g, "");
-    if (inp.value && cells[i + 1]) cells[i + 1].focus();
-    if (cells.every(c => c.value)) verify();
-  });
-  inp.addEventListener("keydown", e => { if (e.key === "Backspace" && !inp.value && i) cells[i - 1].focus(); });
-  inp.addEventListener("focus", () => inp.select());
-  inp.addEventListener("paste", e => {
-    const d = (e.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 6);
-    if (!d) return;
-    e.preventDefault();
-    cells.forEach((c, j) => c.value = d[j] || "");
-    cells[Math.min(d.length, 5)].focus();
-    if (d.length === 6) verify();
-  });
-  cells.push(inp); otp.append(inp);
+async function checkBiz(){
+  try { bizOn = !!(await tmo(get(ref(db, `business/${uid}/connected`)), 6000)).val(); } catch {}
+  paintBiz();
 }
 
-let busy = false, attempts = 0, lockedUntil = 0;
-async function verify(){
-  if (busy) return;                                   // stops double submits (auto + button)
-  const msg = $("#otp-msg"); msg.textContent = "";
-  const fail = key => {
-    msg.textContent = t(key);
-    otp.classList.add("bad"); setTimeout(() => otp.classList.remove("bad"), 400);
-    cells.forEach(c => c.value = ""); cells[0].focus();
-  };
-  const wait = Math.ceil((lockedUntil - Date.now()) / 1000);
-  if (wait > 0) return fail("errLock"), msg.textContent += ` ${wait}s`;
-  const code = cells.map(c => c.value).join("");
-  if (code.length !== 6) return fail("errFormat");
-
-  busy = true; $("#btn-verify").disabled = true;
+/* ── 1 → 2: welcome and policy (must scroll to the bottom) ── */
+$("#b-start").onclick = async () => { $("#b-start").disabled = true; await loadRec(); $("#b-start").disabled = false; next(); };
+const pol = $("#policy"); let read = false;
+function policyScroll(){
+  if (!read && pol.scrollTop + pol.clientHeight >= pol.scrollHeight - 6){
+    read = true; $("#chk").classList.remove("off"); $("#p-hint").style.visibility = "hidden";
+  }
+}
+pol.addEventListener("scroll", policyScroll);
+$("#agree").onchange = e => $("#b-policy").disabled = !(e.target.checked && read);
+$("#b-policy").onclick = async () => {
+  const b = $("#b-policy"); b.disabled = true;
   try {
-    const snap = await withTimeout(get(ref(db, `codes/${uid}`)));
-    const data = snap.val();
-    if (!data) return fail("errNone");
-    if (Date.now() > Number(data.expires)) return fail("errExpired");
-    if (code !== String(data.code)){
-      if (++attempts >= 5){ attempts = 0; lockedUntil = Date.now() + 30000; }   // client-side brute-force brake
-      return fail("errWrong");
-    }
-    attempts = 0;
-    remove(ref(db, `codes/${uid}`)).catch(() => {});  // one-time use
-    try { sessionStorage.setItem("verified", uid); } catch {}
-    await afterVerify();
-  } catch (e){ console.error(e); fail("errNet"); }
-  finally { busy = false; $("#btn-verify").disabled = false; }
-}
-
-/* Returning users who already picked a plan go straight to the dashboard */
-async function afterVerify(){
-  try {
-    const snap = await withTimeout(get(ref(db, `users/${uid}`)));
-    if (snap.exists()) profile = { ...profile, ...snap.val() };
-  } catch (e){ console.error(e); }
-  profile.plan === "free" ? enterDashboard() : show("s-plans");
-}
-
-/* ───────── Screen 3 → 4 ───────── */
-$("#btn-free").onclick = async () => {
-  const b = $("#btn-free"); b.disabled = true;
-  try {
-    await withTimeout(update(ref(db, `users/${uid}`), {
-      plan: "free", name: tgUser.first_name || "", username: tgUser.username || "", lang, createdAt: Date.now()
-    }));
-    profile.plan = "free";
-    enterDashboard();
-  } catch (e){ console.error(e); toast(t("errNet")); }
-  finally { b.disabled = false; }
+    await tmo(update(ref(db, `users/${uid}`), { tgId: uid, name: fullName, username: U.username || "", premium: !!U.is_premium, photo: U.photo_url || "", lang, policyAt: Date.now(), registeredAt: rec.registeredAt || Date.now() }));
+    rec.policyAt = Date.now(); next();
+  } catch (e) { console.error(e); toast(t("eNet")); b.disabled = false; }
 };
-function enterDashboard(){
-  $("#m-name").textContent = tgUser.first_name || "";
-  paintAvatar($("#avatar-top"), profile.avatar);
-  $("#m-desc").textContent = profile.description || t("emptyDesc");
-  show("s-main");
-}
 
-/* ───────── Profile modal (edits are a draft until "Save") ───────── */
-const modal = $("#modal");
-let draftAvatar = "";
-const updateCount = () => $("#cnt").textContent = $("#desc").value.length;
-function openModal(){
-  draftAvatar = profile.avatar;
-  $("#desc").value = profile.description; updateCount();
-  paintAvatar($("#avatar-big"), draftAvatar);
-  modal.classList.add("open"); document.body.classList.add("lock");
+/* ── 3: 6-digit code ── */
+const otp = $("#otp"), cells = [];
+for (let i = 0; i < 6; i++){
+  const c = document.createElement("input"); c.inputMode = "numeric"; c.maxLength = 1; c.autocomplete = i ? "off" : "one-time-code";
+  c.setAttribute("aria-label", "Digit " + (i + 1));
+  c.oninput = () => { c.value = c.value.replace(/\D/g, ""); if (c.value && cells[i+1]) cells[i+1].focus(); if (cells.every(x => x.value)) verify(); };
+  c.onkeydown = e => { if (e.key === "Backspace" && !c.value && i) cells[i-1].focus(); };
+  c.onfocus = () => c.select();
+  c.onpaste = e => { const d = (e.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 6); if (!d) return; e.preventDefault(); cells.forEach((x, j) => x.value = d[j] || ""); if (d.length === 6) verify(); };
+  cells.push(c); otp.append(c);
 }
-function closeModal(){ modal.classList.remove("open"); document.body.classList.remove("lock"); }
-$("#avatar-top").onclick = openModal;
-$("#btn-close").onclick = closeModal;
-$("#desc").oninput = updateCount;
-modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
-$("#btn-photo").onclick = () => $("#file").click();
+let busy = false, tries = 0, lockUntil = 0;
+async function verify(){
+  if (busy) return; const m = $("#o-msg"); m.textContent = "";
+  const fail = k => { m.textContent = t(k); otp.classList.add("bad"); setTimeout(() => otp.classList.remove("bad"), 400); cells.forEach(x => x.value = ""); cells[0].focus(); };
+  const w = Math.ceil((lockUntil - Date.now()) / 1000);
+  if (w > 0){ fail("eLock"); m.textContent += ` ${w}s`; return; }
+  const code = cells.map(x => x.value).join(""); if (code.length < 6) return fail("eFmt");
+  busy = true; $("#b-verify").disabled = true;
+  try {
+    const d = (await tmo(get(ref(db, `codes/${uid}`)))).val();
+    if (!d) return fail("eNone");
+    if (Date.now() > Number(d.expires)) return fail("eExp");
+    if (code !== String(d.code)){ if (++tries >= 5){ tries = 0; lockUntil = Date.now() + 30000; } return fail("eWrong"); }
+    tries = 0; remove(ref(db, `codes/${uid}`)).catch(() => {});
+    try { sessionStorage.setItem("v", uid); } catch {}
+    await loadRec(); next();
+  } catch (e) { console.error(e); fail("eNet"); }
+  finally { busy = false; $("#b-verify").disabled = false; }
+}
+$("#b-verify").onclick = verify;
 
-/* Crop to a square, shrink to 256px JPEG, keep as a data URL */
+/* ── 4: Business connection gate ── */
+$("#b-check").onclick = async () => { await checkBiz(); if (!bizOn) toast(t("off")); };
+$("#b-connected").onclick = () => bizOn ? next() : toast(t("off"));
+
+/* ── 5: plan ── */
+$("#b-free").onclick = async () => {
+  const b = $("#b-free"); b.disabled = true;
+  try { await tmo(update(ref(db, `users/${uid}`), { plan: "free" })); rec.plan = "free"; next(); }
+  catch (e) { console.error(e); toast(t("eNet")); } finally { b.disabled = false; }
+};
+
+/* ── Modals: help + profile (edits are a draft until Save) ── */
+const open = id => { $(id).classList.add("open"); document.body.classList.add("lock"); };
+const closeAll = () => { $$(".modal").forEach(m => m.classList.remove("open")); document.body.classList.remove("lock"); };
+$$("[data-close]").forEach(b => b.onclick = closeAll);
+$$(".modal").forEach(m => m.addEventListener("click", e => { if (e.target === m) closeAll(); }));
+addEventListener("keydown", e => { if (e.key === "Escape") closeAll(); });
+$("#b-help").onclick = () => open("#m-help");
+let draft = "";
+const cnt = () => $("#cnt").textContent = $("#desc").value.length;
+$("#av-top").onclick = async () => { draft = rec.avatar; $("#desc").value = rec.description; cnt(); paintMe(); open("#m-prof"); await checkBiz(); };
+$("#desc").oninput = cnt;
+$("#b-photo").onclick = () => $("#file").click();
 $("#file").onchange = e => {
-  const f = e.target.files[0]; e.target.value = "";
-  if (!f) return;
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
   const url = URL.createObjectURL(f), img = new Image();
   img.onload = () => {
     const s = 256, c = document.createElement("canvas"); c.width = c.height = s;
     const k = Math.max(s / img.width, s / img.height), w = img.width * k, h = img.height * k;
     c.getContext("2d").drawImage(img, (s - w) / 2, (s - h) / 2, w, h);
-    draftAvatar = c.toDataURL("image/jpeg", .85);
-    paintAvatar($("#avatar-big"), draftAvatar);
-    URL.revokeObjectURL(url);
+    draft = c.toDataURL("image/jpeg", .85); $("#av-big").style.backgroundImage = `url("${draft}")`; $("#av-big").textContent = ""; URL.revokeObjectURL(url);
   };
-  img.onerror = () => { URL.revokeObjectURL(url); toast(t("photoErr")); };
-  img.src = url;
+  img.onerror = () => { URL.revokeObjectURL(url); toast(t("photoErr")); }; img.src = url;
 };
-$("#btn-save").onclick = async () => {
-  const b = $("#btn-save"); b.disabled = true;
-  const description = $("#desc").value.trim();
+$("#b-save").onclick = async () => {
+  const b = $("#b-save"), d = $("#desc").value.trim(); b.disabled = true;
   try {
-    await withTimeout(update(ref(db, `users/${uid}`), { description, avatar: draftAvatar || "", lang }));
-    profile.description = description; profile.avatar = draftAvatar;
-    paintAvatar($("#avatar-top"), profile.avatar);
-    $("#m-desc").textContent = description || t("emptyDesc");
-    tg?.HapticFeedback?.notificationOccurred("success");
-    toast(t("saved")); closeModal();
-  } catch (e){ console.error(e); toast(t("errNet")); }
-  finally { b.disabled = false; }
+    await tmo(update(ref(db, `users/${uid}`), { description: d, avatar: draft || "", lang }));
+    rec.description = d; rec.avatar = draft; $("#m-desc").textContent = d || t("emptyD"); paintMe();
+    tg?.HapticFeedback?.notificationOccurred("success"); toast(t("saved")); closeAll();
+  } catch (e) { console.error(e); toast(t("eNet")); } finally { b.disabled = false; }
 };
 
-/* ───────── Boot ───────── */
-$("#btn-continue").onclick = () => {
-  let ok = false; try { ok = sessionStorage.getItem("verified") === uid; } catch {}
-  if (ok) return afterVerify();
-  show("s-verify"); cells[0].focus();
-};
-$("#btn-verify").onclick = verify;
-applyLang();
+applyLang(); paintMe();
 </script>
 </body>
 </html>
