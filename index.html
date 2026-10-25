@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mini App</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0708; --panel:#150b0d; --panel2:#1e1013; --line:#4a1a20;
+  --red:#ff2b3d; --red-d:#9b1220; --text:#f3e7e8; --muted:#a58c8f; --ok:#5de08a;
+  --head:'Archivo Black',Impact,sans-serif; --body:'IBM Plex Sans',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;border-radius:0!important;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%}
+body{font:400 15px/1.5 var(--body);color:var(--text);background:var(--bg);
+  /* graph-paper grid */
+  background-image:linear-gradient(rgba(255,43,61,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,43,61,.06) 1px,transparent 1px);
+  background-size:24px 24px;
+  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+body.lock{overflow:hidden}
+.screen{display:none;min-height:100vh;max-width:480px;margin:0 auto;padding:24px 18px 32px;flex-direction:column;gap:16px}
+.screen.active{display:flex}
+h1{font:400 30px/1.05 var(--head);text-transform:uppercase;letter-spacing:-.01em}
+h2{font:400 18px/1.1 var(--head);text-transform:uppercase}
+.sub{color:var(--muted)}
+b{font-weight:600;color:var(--text)}
+
+/* hard-edged buttons with offset shadow */
+.btn{display:block;width:100%;border:2px solid var(--red);background:var(--red);color:#0c0708;cursor:pointer;
+  font:400 15px var(--head);text-transform:uppercase;letter-spacing:.03em;padding:14px 16px;
+  box-shadow:4px 4px 0 var(--red-d);transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--red-d)}
+.btn.ghost{background:transparent;color:var(--text);border-color:var(--line);box-shadow:4px 4px 0 var(--line)}
+.btn.ghost:active{box-shadow:0 0 0 var(--line)}
+.btn:disabled{background:var(--panel2);border-color:var(--line);color:var(--muted);box-shadow:none;cursor:not-allowed}
+:focus-visible{outline:2px dashed var(--red);outline-offset:3px}
+
+.box{background:var(--panel);border:2px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:10px}
+.tag{font:600 12px var(--body);padding:3px 8px;border:2px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:var(--ok)}
+
+/* screen 1 */
+.hero{flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px}
+.logo{width:56px;height:56px;border:2px solid var(--red);box-shadow:6px 6px 0 var(--red-d);position:relative;background:var(--panel)}
+.logo::after{content:"";position:absolute;inset:12px;background:var(--red)}
+.lang{display:flex;border:2px solid var(--line)}
+.lang button{flex:1;border:0;background:none;color:var(--muted);font:400 14px var(--head);text-transform:uppercase;padding:12px;cursor:pointer}
+.lang button+button{border-left:2px solid var(--line)}
+.lang button.on{background:var(--red);color:#0c0708}
+
+/* screen 2 */
+.otp{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.otp input{min-width:0;width:100%;height:58px;text-align:center;font:400 24px var(--head);color:var(--text);
+  background:var(--panel);border:2px solid var(--line);caret-color:var(--red)}
+.otp input:focus{border-color:var(--red);outline:0;box-shadow:3px 3px 0 var(--red-d)}
+.otp.bad input{border-color:var(--red);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.msg{min-height:22px;color:var(--red);font-weight:600}
+.hint{border:2px dashed var(--line);padding:12px;color:var(--muted)}
+
+/* screen 3 */
+.plan.free{border-color:var(--red);box-shadow:6px 6px 0 var(--red-d)}
+.plan.go{border-style:dashed;opacity:.8}
+.plan header{display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+/* screen 4 */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.avatar{width:56px;height:56px;flex:none;border:2px solid var(--red);box-shadow:4px 4px 0 var(--red-d);background:var(--panel) center/cover no-repeat;
+  color:var(--red);font:400 22px var(--head);display:grid;place-items:center;cursor:pointer;padding:0}
+.avatar:active{transform:translate(4px,4px);box-shadow:none}
+.big{font:400 28px var(--head)}
+.meter{height:14px;border:2px solid var(--line);background:var(--bg)}
+.meter i{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,var(--red) 0 8px,var(--red-d) 8px 10px)}
+.kv{display:flex;justify-content:space-between;align-items:center}
+.kv span:first-child{color:var(--muted)}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(5,2,3,.85);display:none;align-items:flex-end;justify-content:center;z-index:10}
+.modal.open{display:flex}
+.sheet{width:100%;max-width:480px;background:var(--bg);border:2px solid var(--red);border-bottom:0;
+  padding:20px 18px calc(22px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;max-height:92vh;overflow-y:auto}
+.pic{display:flex;align-items:center;gap:16px}
+.pic .avatar{width:80px;height:80px;font-size:30px;cursor:default}
+.pic .avatar:active{transform:none;box-shadow:4px 4px 0 var(--red-d)}
+textarea{width:100%;min-height:96px;resize:vertical;font:400 15px var(--body);color:var(--text);background:var(--panel);border:2px solid var(--line);padding:10px}
+textarea:focus{border-color:var(--red);outline:0}
+.count{text-align:right;font-size:12px;color:var(--muted)}
+.row{display:flex;gap:12px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--red);color:#0c0708;border:2px solid var(--text);
+  padding:10px 16px;font:400 13px var(--head);text-transform:uppercase;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- Screen 1: welcome + language -->
+<section class="screen active" id="s-welcome">
+  <div class="hero">
+    <div class="logo"></div>
+    <h1 data-i="welcomeTitle"></h1>
+    <p class="sub" data-i="welcomeSub"></p>
+  </div>
+  <div class="lang" role="group" aria-label="Language">
+    <button data-lang="ru">RU</button><button data-lang="en">EN</button>
+  </div>
+  <button class="btn" id="btn-continue" data-i="continue"></button>
+</section>
+
+<!-- Screen 2: 2FA -->
+<section class="screen" id="s-verify">
+  <h1 data-i="verifyTitle"></h1>
+  <p class="sub" data-i="verifySub"></p>
+  <div class="hint" data-i="verifyHint"></div>
+  <div class="otp" id="otp"></div>
+  <div class="msg" id="otp-msg" role="alert"></div>
+  <button class="btn" id="btn-verify" data-i="verify"></button>
+</section>
+
+<!-- Screen 3: plans -->
+<section class="screen" id="s-plans">
+  <h1 data-i="plansTitle"></h1>
+  <div class="box plan free">
+    <header><h2>Free</h2><span class="tag ok" data-i="available"></span></header>
+    <p class="sub" data-i="freeDesc"></p>
+    <button class="btn" id="btn-free" data-i="chooseFree"></button>
+  </div>
+  <div class="box plan go">
+    <header><h2>Plan GO</h2><span class="tag" data-i="soon"></span></header>
+    <p class="sub" data-i="goDesc"></p>
+    <button class="btn" disabled data-i="inDev"></button>
+  </div>
+</section>
+
+<!-- Screen 4: dashboard -->
+<section class="screen" id="s-main">
+  <div class="top">
+    <div><p class="sub" data-i="hello"></p><h2 id="m-name"></h2></div>
+    <button class="avatar" id="avatar-top" aria-label="Profile"></button>
+  </div>
+  <div class="box">
+    <div class="kv"><span data-i="requests"></span><span class="tag">0 / 100</span></div>
+    <div class="meter"><i style="width:0%"></i></div>
+  </div>
+  <div class="box">
+    <div class="kv"><span data-i="status"></span><span class="tag ok">Free</span></div>
+  </div>
+  <div class="box">
+    <span class="sub" data-i="about"></span>
+    <p id="m-desc"></p>
+  </div>
+</section>
+
+<!-- Profile modal -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="p-title">
+    <h2 id="p-title" data-i="profile"></h2>
+    <div class="pic">
+      <div class="avatar" id="avatar-big"></div>
+      <button class="btn ghost" id="btn-photo" data-i="changePhoto"></button>
+      <input type="file" id="file" accept="image/*" hidden>
+    </div>
+    <div>
+      <label class="sub" for="desc" data-i="about"></label>
+      <textarea id="desc" maxlength="200"></textarea>
+      <div class="count"><span id="cnt">0</span>/200</div>
+    </div>
+    <div class="box" style="padding:10px 14px"><div class="kv"><span data-i="status"></span><span class="tag ok">Free</span></div></div>
+    <div class="row">
+      <button class="btn ghost" id="btn-close" data-i="close"></button>
+      <button class="btn" id="btn-save" data-i="save"></button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, get, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+/* ───────── Firebase ───────── */
+const firebaseConfig = {
+  apiKey: "AIzaSyBZ8Qm4BeX6U1vCMNb-_FgNBp0OQUkC-9k",
+  authDomain: "tetete-d31c8.firebaseapp.com",
+  databaseURL: "https://tetete-d31c8-default-rtdb.firebaseio.com",
+  projectId: "tetete-d31c8",
+  storageBucket: "tetete-d31c8.firebasestorage.app",
+  messagingSenderId: "130781376435",
+  appId: "1:130781376435:web:8588052eb0f36ce99fe5c6",
+  measurementId: "G-B9J1GPPJZF"
+};
+const db = getDatabase(initializeApp(firebaseConfig));
+
+/* Firebase calls can hang forever when offline: give them a deadline */
+const withTimeout = (p, ms = 8000) =>
+  Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), ms))]);
+
+/* ───────── Telegram ───────── */
+const tg = window.Telegram?.WebApp;
+tg?.ready(); tg?.expand();
+try { tg?.setHeaderColor("#0c0708"); tg?.setBackgroundColor("#0c0708"); } catch {}
+const tgUser = tg?.initDataUnsafe?.user || { id: "demo", first_name: "Demo" }; // "demo" = opened in a plain browser
+const uid = String(tgUser.id);
+
+/* ───────── i18n ───────── */
+const T = {
+  ru: {
+    welcomeTitle:"Добро пожаловать", welcomeSub:"Выберите язык и продолжайте. Дальше короткое подтверждение входа.", continue:"Продолжить",
+    verifyTitle:"Подтвердите вход", verifySub:"Введите 6-значный код из чата с ботом.",
+    verifyHint:"Нет кода? Отправьте боту <b>/code</b> или нажмите <b>«Получить код»</b> в чате.", verify:"Подтвердить",
+    errFormat:"Введите все 6 цифр.", errWrong:"Неверный код.", errExpired:"Код устарел. Запросите новый.", errNone:"Код не найден. Запросите его у бота.",
+    errNet:"Нет связи с сервером. Попробуйте ещё раз.", errLock:"Слишком много попыток. Подождите",
+    plansTitle:"Выберите тариф", available:"Доступен", soon:"Скоро", inDev:"В разработке", chooseFree:"Выбрать Free",
+    freeDesc:"100 запросов в день. Ограниченный набор команд, которые используются в Go Plans.",
+    goDesc:"Больше запросов и все команды. Тариф в разработке.",
+    hello:"Вы вошли как", requests:"Запросы сегодня", status:"Статус", about:"О себе",
+    emptyDesc:"Описание не добавлено. Нажмите на аватар, чтобы заполнить профиль.",
+    profile:"Профиль", changePhoto:"Сменить фото", close:"Закрыть", save:"Сохранить", saved:"Сохранено", photoErr:"Не удалось открыть фото"
+  },
+  en: {
+    welcomeTitle:"Welcome", welcomeSub:"Pick a language and continue. A quick sign-in check comes next.", continue:"Continue",
+    verifyTitle:"Confirm sign-in", verifySub:"Enter the 6-digit code from your chat with the bot.",
+    verifyHint:"No code? Send the bot <b>/code</b> or tap <b>“Get code”</b> in the chat.", verify:"Confirm",
+    errFormat:"Enter all 6 digits.", errWrong:"Wrong code.", errExpired:"This code expired. Request a new one.", errNone:"No code found. Request one from the bot.",
+    errNet:"Can’t reach the server. Try again.", errLock:"Too many attempts. Wait",
+    plansTitle:"Choose a plan", available:"Available", soon:"Coming soon", inDev:"In development", chooseFree:"Choose Free",
+    freeDesc:"100 requests per day. Limited commands used in Go Plans.",
+    goDesc:"More requests and every command. This plan is in development.",
+    hello:"Signed in as", requests:"Requests today", status:"Status", about:"About you",
+    emptyDesc:"No description yet. Tap your avatar to fill in your profile.",
+    profile:"Profile", changePhoto:"Change photo", close:"Close", save:"Save", saved:"Saved", photoErr:"Couldn’t open the photo"
+  }
+};
+let lang = "ru";
+try { lang = localStorage.getItem("lang") || (tg?.initDataUnsafe?.user?.language_code === "en" ? "en" : "ru"); } catch {}
+let profile = { description:"", avatar:"", plan:"" };
+const $ = s => document.querySelector(s);
+const t = k => T[lang][k];
+
+function applyLang(){
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i]").forEach(el => el.innerHTML = t(el.dataset.i));
+  document.querySelectorAll(".lang button").forEach(b => b.classList.toggle("on", b.dataset.lang === lang));
+  $("#m-desc").textContent = profile.description || t("emptyDesc");
+}
+document.querySelectorAll(".lang button").forEach(b => b.onclick = () => {
+  lang = b.dataset.lang; try { localStorage.setItem("lang", lang); } catch {} applyLang();
+});
+
+/* ───────── Helpers ───────── */
+let current = "s-welcome";
+function show(id){
+  current = id;
+  document.querySelectorAll(".screen").forEach(s => s.classList.toggle("active", s.id === id));
+  window.scrollTo(0, 0);
+  // Telegram's native back button works on the code screen
+  if (tg?.BackButton) id === "s-verify" ? tg.BackButton.show() : tg.BackButton.hide();
+}
+tg?.BackButton?.onClick(() => { if (current === "s-verify") show("s-welcome"); });
+
+let toastTimer;
+function toast(msg){
+  const el = $("#toast"); el.textContent = msg; el.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("show"), 1900);
+}
+function paintAvatar(el, src){
+  el.style.backgroundImage = src ? `url("${src}")` : "";
+  el.textContent = src ? "" : (tgUser.first_name || "?")[0].toUpperCase();
+}
+
+/* ───────── Screen 2: 6-digit input ───────── */
+const otp = $("#otp");
+const cells = [];
+for (let i = 0; i < 6; i++){
+  const inp = document.createElement("input");
+  inp.inputMode = "numeric"; inp.maxLength = 1; inp.setAttribute("aria-label", `Digit ${i + 1}`);
+  inp.autocomplete = i === 0 ? "one-time-code" : "off";
+  inp.addEventListener("input", () => {
+    inp.value = inp.value.replace(/\D/g, "");
+    if (inp.value && cells[i + 1]) cells[i + 1].focus();
+    if (cells.every(c => c.value)) verify();
+  });
+  inp.addEventListener("keydown", e => { if (e.key === "Backspace" && !inp.value && i) cells[i - 1].focus(); });
+  inp.addEventListener("focus", () => inp.select());
+  inp.addEventListener("paste", e => {
+    const d = (e.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 6);
+    if (!d) return;
+    e.preventDefault();
+    cells.forEach((c, j) => c.value = d[j] || "");
+    cells[Math.min(d.length, 5)].focus();
+    if (d.length === 6) verify();
+  });
+  cells.push(inp); otp.append(inp);
+}
+
+let busy = false, attempts = 0, lockedUntil = 0;
+async function verify(){
+  if (busy) return;                                   // stops double submits (auto + button)
+  const msg = $("#otp-msg"); msg.textContent = "";
+  const fail = key => {
+    msg.textContent = t(key);
+    otp.classList.add("bad"); setTimeout(() => otp.classList.remove("bad"), 400);
+    cells.forEach(c => c.value = ""); cells[0].focus();
+  };
+  const wait = Math.ceil((lockedUntil - Date.now()) / 1000);
+  if (wait > 0) return fail("errLock"), msg.textContent += ` ${wait}s`;
+  const code = cells.map(c => c.value).join("");
+  if (code.length !== 6) return fail("errFormat");
+
+  busy = true; $("#btn-verify").disabled = true;
+  try {
+    const snap = await withTimeout(get(ref(db, `codes/${uid}`)));
+    const data = snap.val();
+    if (!data) return fail("errNone");
+    if (Date.now() > Number(data.expires)) return fail("errExpired");
+    if (code !== String(data.code)){
+      if (++attempts >= 5){ attempts = 0; lockedUntil = Date.now() + 30000; }   // client-side brute-force brake
+      return fail("errWrong");
+    }
+    attempts = 0;
+    remove(ref(db, `codes/${uid}`)).catch(() => {});  // one-time use
+    try { sessionStorage.setItem("verified", uid); } catch {}
+    await afterVerify();
+  } catch (e){ console.error(e); fail("errNet"); }
+  finally { busy = false; $("#btn-verify").disabled = false; }
+}
+
+/* Returning users who already picked a plan go straight to the dashboard */
+async function afterVerify(){
+  try {
+    const snap = await withTimeout(get(ref(db, `users/${uid}`)));
+    if (snap.exists()) profile = { ...profile, ...snap.val() };
+  } catch (e){ console.error(e); }
+  profile.plan === "free" ? enterDashboard() : show("s-plans");
+}
+
+/* ───────── Screen 3 → 4 ───────── */
+$("#btn-free").onclick = async () => {
+  const b = $("#btn-free"); b.disabled = true;
+  try {
+    await withTimeout(update(ref(db, `users/${uid}`), {
+      plan: "free", name: tgUser.first_name || "", username: tgUser.username || "", lang, createdAt: Date.now()
+    }));
+    profile.plan = "free";
+    enterDashboard();
+  } catch (e){ console.error(e); toast(t("errNet")); }
+  finally { b.disabled = false; }
+};
+function enterDashboard(){
+  $("#m-name").textContent = tgUser.first_name || "";
+  paintAvatar($("#avatar-top"), profile.avatar);
+  $("#m-desc").textContent = profile.description || t("emptyDesc");
+  show("s-main");
+}
+
+/* ───────── Profile modal (edits are a draft until "Save") ───────── */
+const modal = $("#modal");
+let draftAvatar = "";
+const updateCount = () => $("#cnt").textContent = $("#desc").value.length;
+function openModal(){
+  draftAvatar = profile.avatar;
+  $("#desc").value = profile.description; updateCount();
+  paintAvatar($("#avatar-big"), draftAvatar);
+  modal.classList.add("open"); document.body.classList.add("lock");
+}
+function closeModal(){ modal.classList.remove("open"); document.body.classList.remove("lock"); }
+$("#avatar-top").onclick = openModal;
+$("#btn-close").onclick = closeModal;
+$("#desc").oninput = updateCount;
+modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+$("#btn-photo").onclick = () => $("#file").click();
+
+/* Crop to a square, shrink to 256px JPEG, keep as a data URL */
+$("#file").onchange = e => {
+  const f = e.target.files[0]; e.target.value = "";
+  if (!f) return;
+  const url = URL.createObjectURL(f), img = new Image();
+  img.onload = () => {
+    const s = 256, c = document.createElement("canvas"); c.width = c.height = s;
+    const k = Math.max(s / img.width, s / img.height), w = img.width * k, h = img.height * k;
+    c.getContext("2d").drawImage(img, (s - w) / 2, (s - h) / 2, w, h);
+    draftAvatar = c.toDataURL("image/jpeg", .85);
+    paintAvatar($("#avatar-big"), draftAvatar);
+    URL.revokeObjectURL(url);
+  };
+  img.onerror = () => { URL.revokeObjectURL(url); toast(t("photoErr")); };
+  img.src = url;
+};
+$("#btn-save").onclick = async () => {
+  const b = $("#btn-save"); b.disabled = true;
+  const description = $("#desc").value.trim();
+  try {
+    await withTimeout(update(ref(db, `users/${uid}`), { description, avatar: draftAvatar || "", lang }));
+    profile.description = description; profile.avatar = draftAvatar;
+    paintAvatar($("#avatar-top"), profile.avatar);
+    $("#m-desc").textContent = description || t("emptyDesc");
+    tg?.HapticFeedback?.notificationOccurred("success");
+    toast(t("saved")); closeModal();
+  } catch (e){ console.error(e); toast(t("errNet")); }
+  finally { b.disabled = false; }
+};
+
+/* ───────── Boot ───────── */
+$("#btn-continue").onclick = () => {
+  let ok = false; try { ok = sessionStorage.getItem("verified") === uid; } catch {}
+  if (ok) return afterVerify();
+  show("s-verify"); cells[0].focus();
+};
+$("#btn-verify").onclick = verify;
+applyLang();
+</script>
+</body>
+</html>
