@@ -1,787 +1,317 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#0c0506" />
-<title>Crimson</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-/* ===================== THEME ===================== */
-:root{
-  --bg:#0c0506; --bg2:#14080a; --surface:#1a0b0e; --surface2:#22100f;
-  --line:rgba(224,41,74,.16); --line2:rgba(243,230,228,.08);
-  --crimson:#a50f2a; --blood:#6e0718; --ember:#e3294b; --rose:#ff6b7f;
-  --ivory:#f3e6e2; --muted:#a08486; --dim:#6b5254; --gold:#d9b98c;
-  --ok:#e3294b; --err:#ff5c6c;
-  --r:18px; --ease:cubic-bezier(.2,.8,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
-  --display:"Cormorant Garamond",Georgia,serif; --body:"Manrope",system-ui,sans-serif; --mono:"JetBrains Mono",monospace;
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{background:var(--bg);color:var(--ivory);font-family:var(--body);min-height:100dvh}
-body{overflow-x:hidden;font-size:15px;line-height:1.45}
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-/* ambient glow + grain */
-body::before{content:"";position:fixed;inset:-20%;pointer-events:none;z-index:0;
-  background:radial-gradient(60% 40% at 50% 0%,rgba(165,15,42,.45),transparent 70%),
-             radial-gradient(50% 35% at 100% 100%,rgba(110,7,24,.35),transparent 70%),
-             radial-gradient(40% 30% at 0% 70%,rgba(110,7,24,.22),transparent 70%);
-  animation:breathe 9s ease-in-out infinite alternate}
-body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.08;mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-@keyframes breathe{to{transform:scale(1.08) translateY(2%);opacity:.8}}
-
-.app{position:relative;z-index:1;max-width:460px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding:14px 18px calc(22px + env(safe-area-inset-bottom))}
-
-/* ===================== HEADER ===================== */
-.hdr{display:flex;align-items:center;gap:12px;padding:6px 0 14px}
-.hdr .mark{width:40px;height:40px;filter:drop-shadow(0 4px 14px rgba(227,41,75,.45))}
-.brand{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:.06em;line-height:1}
-.brand small{display:block;font-family:var(--body);font-size:10px;letter-spacing:.32em;color:var(--muted);font-weight:700;margin-top:4px;text-transform:uppercase}
-.stepno{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted)}
-.stepno b{color:var(--ember)}
-.progress{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:18px}
-.progress i{height:3px;border-radius:3px;background:var(--line2);position:relative;overflow:hidden}
-.progress i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--crimson),var(--ember));transform:scaleX(0);transform-origin:left;transition:transform .6s var(--ease)}
-.progress i.on::after{transform:scaleX(1)}
-.progress i.cur::after{box-shadow:0 0 12px var(--ember)}
-
-.banner{display:flex;gap:10px;align-items:center;font-size:12.5px;color:var(--gold);background:rgba(217,185,140,.07);border:1px solid rgba(217,185,140,.2);padding:9px 12px;border-radius:12px;margin-bottom:14px;animation:rise .6s var(--ease) both}
-.banner svg{flex:none}
-
-/* ===================== SCREENS ===================== */
-.screen{display:none;flex:1;flex-direction:column}
-.screen.active{display:flex}
-.screen.fwd>*{animation:rise .55s var(--ease) both}
-.screen.back>*{animation:fall .55s var(--ease) both}
-.screen>*:nth-child(2){animation-delay:.06s}.screen>*:nth-child(3){animation-delay:.12s}
-.screen>*:nth-child(4){animation-delay:.18s}.screen>*:nth-child(5){animation-delay:.24s}.screen>*:nth-child(6){animation-delay:.3s}
-@keyframes rise{from{opacity:0;transform:translateY(18px)}}
-@keyframes fall{from{opacity:0;transform:translateY(-14px)}}
-
-.eyebrow{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--ember);font-weight:800;margin-bottom:8px}
-h1{font-family:var(--display);font-weight:600;font-size:38px;line-height:1.02;letter-spacing:-.01em;margin-bottom:10px}
-h1 em{font-style:italic;color:var(--rose)}
-.lead{color:var(--muted);margin-bottom:24px;max-width:34ch}
-.spacer{flex:1;min-height:20px}
-
-/* cards */
-.card{background:linear-gradient(160deg,rgba(40,14,18,.9),rgba(20,8,10,.9));border:1px solid var(--line);border-radius:var(--r);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 20px 40px -20px rgba(0,0,0,.8)}
-
-/* robot row */
-.robot{display:flex;align-items:center;gap:14px;padding:16px;cursor:pointer;user-select:none;transition:transform .2s var(--ease),border-color .3s}
-.robot:active{transform:scale(.985)}
-.robot.done{border-color:rgba(227,41,75,.5);cursor:default}
-.cbx{width:30px;height:30px;border-radius:8px;border:2px solid #5b3a3d;background:#0d0607;display:grid;place-items:center;flex:none;transition:all .35s var(--spring)}
-.robot:hover .cbx{border-color:var(--ember)}
-.cbx .spin{display:none;width:22px;height:22px;border-radius:50%;border:2.5px solid rgba(227,41,75,.2);border-top-color:var(--ember);animation:rot .7s linear infinite}
-.cbx svg{display:none}
-.cbx svg path{stroke-dasharray:24;stroke-dashoffset:24}
-.robot.loading .cbx{border-color:transparent;background:transparent}
-.robot.loading .spin{display:block}
-.robot.done .cbx{background:var(--crimson);border-color:var(--ember);box-shadow:0 0 0 6px rgba(227,41,75,.12)}
-.robot.done .cbx svg{display:block}
-.robot.done .cbx svg path{animation:draw .45s .1s var(--ease) forwards}
-@keyframes draw{to{stroke-dashoffset:0}}
-@keyframes rot{to{transform:rotate(360deg)}}
-.robot .lbl{font-weight:600;font-size:15.5px}
-.robot .sub{font-size:12px;color:var(--dim)}
-.robot .rc{margin-left:auto;text-align:center;font-size:9px;color:var(--dim);letter-spacing:.08em}
-.robot .rc svg{width:26px;height:26px;display:block;margin:0 auto 2px}
-
-/* buttons */
-.btn{width:100%;height:54px;border-radius:15px;font-weight:800;font-size:15px;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden;transition:transform .15s var(--ease),opacity .3s,filter .3s}
-.btn:active:not(:disabled){transform:scale(.97)}
-.btn-p{background:linear-gradient(180deg,#c41634,#8d0c23);color:#fff4f2;box-shadow:0 12px 30px -10px rgba(227,41,75,.7),inset 0 1px 0 rgba(255,255,255,.2)}
-.btn-p::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.22),transparent);transform:skewX(-20deg);animation:sheen 3.6s 1s infinite}
-@keyframes sheen{0%{left:-60%}35%,100%{left:130%}}
-.btn:disabled{opacity:.35;filter:grayscale(.6);cursor:not-allowed}
-.btn:disabled::after{display:none}
-.btn-g{background:rgba(243,230,228,.04);border:1px solid var(--line2);color:var(--ivory);height:48px;font-weight:700}
-.link{color:var(--rose);font-weight:700;font-size:14px;padding:10px;text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(255,107,127,.4)}
-.link:disabled{color:var(--dim);text-decoration:none;cursor:default}
-.mini-spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;animation:rot .7s linear infinite}
-
-.note{display:flex;gap:10px;font-size:12.5px;color:var(--muted);margin-top:16px;align-items:flex-start}
-.note svg{flex:none;margin-top:1px}
-
-/* status messages */
-.msg{min-height:22px;font-size:13.5px;font-weight:600;text-align:center;margin:12px 0 4px;transition:opacity .3s}
-.msg.err{color:var(--err)}.msg.ok{color:var(--rose)}.msg.info{color:var(--muted)}
-.errbox{padding:18px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
-.errbox p{color:var(--muted);font-size:14px}
-.errbox .t{color:var(--ivory);font-weight:800;font-size:16px}
-
-/* sending */
-.sending{display:flex;flex-direction:column;align-items:center;gap:18px;padding:40px 10px}
-.pulse{width:84px;height:84px;position:relative;display:grid;place-items:center}
-.pulse::before,.pulse::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--ember);animation:ring 1.8s var(--ease) infinite}
-.pulse::after{animation-delay:.9s}
-@keyframes ring{from{transform:scale(.5);opacity:1}to{transform:scale(1.4);opacity:0}}
-.pulse svg{width:40px;height:40px}
-
-/* code cells */
-.otp{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:6px 0}
-.otp input{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;color:transparent;caret-color:transparent;z-index:2;letter-spacing:40px}
-.cell{aspect-ratio:.82;border-radius:13px;background:#120708;border:1.5px solid #3a2023;display:grid;place-items:center;font-family:var(--mono);font-size:26px;font-weight:700;transition:border-color .2s,transform .25s var(--spring),box-shadow .2s;position:relative}
-.cell.fill{border-color:#7a2a35;transform:translateY(-2px)}
-.cell.cur{border-color:var(--ember);box-shadow:0 0 0 4px rgba(227,41,75,.15)}
-.cell.cur::after{content:"";width:2px;height:40%;background:var(--ember);animation:blink 1s steps(2) infinite}
-.otp.busy .cell{opacity:.5}
-.otp.good .cell{border-color:var(--ember);background:rgba(165,15,42,.25)}
-@keyframes blink{50%{opacity:0}}
-.shake{animation:shake .5s cubic-bezier(.36,.07,.19,.97) both!important}
-@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-8px)}40%,60%{transform:translateX(8px)}}
-
-/* language */
-.langs{display:grid;gap:12px}
-.lang{display:flex;align-items:center;gap:16px;padding:20px;text-align:left;transition:transform .2s var(--ease),border-color .3s,background .3s}
-.lang:active{transform:scale(.98)}
-.lang .code{font-family:var(--display);font-size:40px;font-weight:700;width:58px;color:var(--dim);transition:color .3s;line-height:1}
-.lang .n{font-weight:800;font-size:17px}.lang .d{font-size:12.5px;color:var(--muted)}
-.radio{margin-left:auto;width:24px;height:24px;border-radius:50%;border:2px solid #4a2b2e;display:grid;place-items:center;transition:all .3s var(--spring)}
-.radio::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--ivory);transform:scale(0);transition:transform .35s var(--spring)}
-.sel{border-color:var(--ember)!important;background:linear-gradient(160deg,rgba(110,7,24,.55),rgba(30,8,12,.9))!important}
-.sel .code{color:var(--rose)}
-.sel .radio{border-color:var(--ember);background:var(--crimson)}
-.sel .radio::after{transform:scale(1)}
-
-/* plans */
-.plans{display:grid;gap:12px}
-.plan{padding:20px;text-align:left;position:relative;transition:transform .2s var(--ease),border-color .3s,background .3s}
-.plan .top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.plan .pn{font-family:var(--display);font-size:32px;font-weight:700;line-height:1}
-.plan .price{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.06em}
-.plan ul{list-style:none;display:grid;gap:7px}
-.plan li{display:flex;gap:9px;font-size:13.5px;color:#d8c4c2;align-items:center}
-.plan li svg{flex:none}
-.plan.go{cursor:not-allowed;overflow:hidden;background:linear-gradient(150deg,rgba(60,46,30,.35),rgba(18,10,10,.9));border-color:rgba(217,185,140,.2)}
-.plan.go>*:not(.badge){opacity:.42;filter:grayscale(.5)}
-.plan.go .pn{background:linear-gradient(120deg,#f1dcb8,#a7845a);-webkit-background-clip:text;background-clip:text;color:transparent}
-.badge{position:absolute;top:18px;right:16px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(217,185,140,.35);background:rgba(12,5,6,.7);padding:6px 10px;border-radius:99px;display:flex;gap:6px;align-items:center}
-
-/* done */
-.done-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:12px 0 6px}
-.seal{width:132px;height:132px;position:relative;margin-bottom:18px;animation:sealIn 1s var(--spring) both}
-.seal::before{content:"";position:absolute;inset:-30%;border-radius:50%;background:radial-gradient(circle,rgba(227,41,75,.45),transparent 65%);animation:breathe 3s ease-in-out infinite alternate}
-.seal svg{position:relative;width:100%;height:100%}
-@keyframes sealIn{from{opacity:0;transform:scale(.4) rotate(-25deg)}}
-.summary{padding:6px 18px;margin:18px 0 8px}
-.summary .row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line2);font-size:14px}
-.summary .row:last-child{border:0}
-.summary .k{color:var(--muted)}.summary .v{font-weight:800}
-.center{text-align:center}
-
-/* skeleton */
-.skel{border-radius:14px;background:linear-gradient(90deg,#1a0b0e 25%,#2a1216 50%,#1a0b0e 75%);background-size:200% 100%;animation:sk 1.3s infinite}
-@keyframes sk{to{background-position:-200% 0}}
-
-/* ===================== SHEET ===================== */
-.scrim{position:fixed;inset:0;background:rgba(5,1,2,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:50;opacity:0;pointer-events:none;transition:opacity .35s}
-.scrim.open{opacity:1;pointer-events:auto}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;max-width:460px;margin:0 auto;background:linear-gradient(180deg,#1f0c10,#120608);border:1px solid var(--line);border-bottom:0;border-radius:26px 26px 0 0;padding:10px 18px calc(20px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .5s var(--ease);box-shadow:0 -30px 60px -20px rgba(165,15,42,.5)}
-.sheet.open{transform:none}
-.grab{width:40px;height:4px;border-radius:4px;background:#4a2b2e;margin:0 auto 14px}
-.cap-head{background:linear-gradient(135deg,#a50f2a,#6e0718);border-radius:14px;padding:14px 16px;margin-bottom:12px}
-.cap-head small{font-size:12px;opacity:.8}
-.cap-head b{display:block;font-family:var(--display);font-size:28px;line-height:1.05;font-weight:700}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.tile{aspect-ratio:1;border-radius:14px;background:#0f0607;border:1.5px solid #2e1719;display:grid;place-items:center;position:relative;transition:transform .25s var(--spring),border-color .2s,background .2s;animation:pop .45s var(--spring) both}
-@keyframes pop{from{opacity:0;transform:scale(.6)}}
-.tile svg.sh{width:52%;height:52%;transition:transform .25s var(--spring)}
-.tile.on{border-color:var(--ember);background:rgba(165,15,42,.2);transform:scale(.94)}
-.tile.on svg.sh{transform:scale(.85)}
-.tile .tick{position:absolute;top:6px;left:6px;width:20px;height:20px;border-radius:50%;background:var(--ember);display:grid;place-items:center;transform:scale(0);transition:transform .3s var(--spring)}
-.tile.on .tick{transform:scale(1)}
-.cap-foot{display:flex;gap:10px;align-items:center}
-.cap-foot .btn{flex:1}
-.iconbtn{width:48px;height:48px;border-radius:14px;border:1px solid var(--line2);display:grid;place-items:center;flex:none;transition:transform .4s var(--ease)}
-.iconbtn:active{transform:rotate(-180deg)}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#160d10">
+  <title>AstroX</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+      background: #160d10;
+      color: #f4e9e7;
+      --red: #c65350;
+      --muted: #a99999;
+      --line: #402c31;
+      --card: #211519;
+    }
+    * { box-sizing: border-box; -webkit-user-select: none; user-select: none; }
+    input, textarea { -webkit-user-select: text; user-select: text; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 80% 0%, #4b1b25 0, transparent 42%),
+        radial-gradient(ellipse at 0% 100%, #35141c 0, transparent 35%),
+        #160d10;
+    }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    .wrap { width: min(520px, 100%); margin: auto; padding: 20px 18px 36px; }
+    header { display: flex; align-items: center; justify-content: space-between; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; }
+    .mark {
+      display: grid; place-items: center; width: 34px; height: 34px;
+      border: 1px solid #a54e50; border-radius: 11px;
+      color: #f3aaa2; background: #57252d;
+    }
+    .badge {
+      color: #c28b86; border: 1px solid var(--line); border-radius: 999px;
+      padding: 7px 10px; font-size: 10px; letter-spacing: .08em;
+    }
+    .hero { padding: 42px 0 24px; }
+    .eyebrow { color: #d17c75; font-size: 10px; letter-spacing: .16em; }
+    h1 { margin: 14px 0 10px; font-size: clamp(40px, 12vw, 58px); line-height: 1; letter-spacing: -.06em; }
+    h1 span { color: #d36a63; }
+    .sub { max-width: 430px; color: var(--muted); line-height: 1.65; font-size: 14px; }
+    .card {
+      padding: 22px; border: 1px solid var(--line); border-radius: 18px;
+      background: linear-gradient(150deg, #28191e, #1d1216);
+      box-shadow: 0 22px 65px #08030566;
+    }
+    .caption { color: #c77b74; font-size: 10px; letter-spacing: .14em; }
+    h2 { margin: 7px 0 8px; font-size: 21px; }
+    .muted { color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .notice { margin: 15px 0; padding: 12px; border: 1px solid #4a3035; border-radius: 12px; color: #c8b7b5; font-size: 12px; line-height: 1.55; }
+    .btn {
+      width: 100%; min-height: 46px; margin-top: 12px; padding: 12px 15px;
+      border: 0; border-radius: 11px; cursor: pointer; font-weight: 750;
+      background: linear-gradient(110deg, #b94345, #d05a54); color: white;
+    }
+    .btn:disabled { opacity: .55; cursor: wait; }
+    .btn.secondary { border: 1px solid #53343a; background: #2b1a20; color: #ead8d5; }
+    .field-label { display: block; margin: 14px 0 7px; color: #c7b7b5; font-size: 12px; }
+    input {
+      display: block; width: 100%; height: 46px; padding: 0 13px;
+      border: 1px solid #50353a; border-radius: 10px; outline: none;
+      color: #fff; background: #180f12;
+    }
+    input:focus { border-color: #bd5d58; }
+    .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 9px; }
+    .choice {
+      min-height: 43px; padding: 10px; border: 1px solid #493137;
+      border-radius: 10px; background: #1d1317; cursor: pointer;
+    }
+    .choice.active { border-color: #bf5b56; background: #482126; }
+    .plan {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 9px; padding: 13px; border: 1px solid #ad514f;
+      border-radius: 11px; background: #3a1c21;
+    }
+    .plan small { display: block; margin-top: 4px; color: var(--muted); }
+    .soon { color: #bd817c; font-size: 9px; letter-spacing: .08em; }
+    .user { display: flex; align-items: center; gap: 11px; margin: 13px 0; }
+    .avatar {
+      display: grid; place-items: center; width: 42px; height: 42px;
+      overflow: hidden; border-radius: 13px; color: #f5c7c0;
+      background: #60343a; font-weight: 800;
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .status { min-height: 20px; margin-top: 12px; color: #bd9e9e; font-size: 12px; line-height: 1.5; }
+    .status.error { color: #ff9b91; }
+    .status.good { color: #a9cfad; }
+    .foot { margin-top: 18px; color: #89797c; text-align: center; font-size: 10px; }
+    [hidden] { display: none !important; }
+    @media (max-width: 400px) {
+      .wrap { padding: 16px 14px 28px; }
+      .card { padding: 18px; }
+    }
+  </style>
 </head>
 <body>
-<!-- ===================== SVG SPRITES ===================== -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <linearGradient id="gC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4a68"/><stop offset=".55" stop-color="#b3122e"/><stop offset="1" stop-color="#4a0410"/></linearGradient>
-    <linearGradient id="gR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0c9b8"/><stop offset="1" stop-color="#7a3a3a"/></linearGradient>
-    <radialGradient id="gI" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="#2a0a10"/><stop offset="1" stop-color="#0a0304"/></radialGradient>
-  </defs>
-  <!-- Crimson emblem: faceted gem-shield with a keyhole drop -->
-  <symbol id="logo" viewBox="0 0 64 64">
-    <path d="M32 3 L56 14 L56 33 C56 47 45 56 32 61 C19 56 8 47 8 33 L8 14 Z" fill="url(#gC)"/>
-    <path d="M32 3 L56 14 L56 33 C56 47 45 56 32 61 C19 56 8 47 8 33 L8 14 Z" fill="none" stroke="url(#gR)" stroke-width="1.4" opacity=".7"/>
-    <path d="M32 9 L50 17.5 L50 33 C50 43.5 42 50.5 32 54.5 C22 50.5 14 43.5 14 33 L14 17.5 Z" fill="url(#gI)"/>
-    <path d="M32 9 L32 54.5 M14 17.5 L50 33 M50 17.5 L14 33" stroke="#e3294b" stroke-width=".5" opacity=".25"/>
-    <path d="M32 17 C32 17 23.5 27 23.5 32.5 A8.5 8.5 0 0 0 40.5 32.5 C40.5 27 32 17 32 17 Z" fill="url(#gC)"/>
-    <circle cx="32" cy="32" r="2.6" fill="#0a0304"/><path d="M30.6 33.5 L33.4 33.5 L34 39 L30 39 Z" fill="#0a0304"/>
-    <path d="M27.5 28 C28.5 25.5 30 23.5 31 22" stroke="#ffd0d6" stroke-width="1.2" stroke-linecap="round" opacity=".55" fill="none"/>
-  </symbol>
-  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
-  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
-  <symbol id="i-send" viewBox="0 0 24 24"><path d="M3 11.5L21 3l-6.5 18-3-7.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
-  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="currentColor"/></symbol>
-  <symbol id="i-dot" viewBox="0 0 24 24"><path d="M12 3l2.2 6.8H21l-5.5 4 2.1 6.7L12 16.4l-5.6 4.1 2.1-6.7-5.5-4h6.8z" fill="currentColor"/></symbol>
-</svg>
+  <main class="wrap" id="app">
+    <header>
+      <div class="brand"><span class="mark">A</span> AstroX</div>
+      <span class="badge">TELEGRAM MINI APP</span>
+    </header>
 
-<div class="app">
-  <header class="hdr">
-    <svg class="mark"><use href="#logo"/></svg>
-    <div class="brand">CRIMSON<small data-i18n="tagline"></small></div>
-    <div class="stepno" id="stepno"></div>
-  </header>
-  <div class="progress" id="progress"><i></i><i></i><i></i><i></i><i></i></div>
-  <div class="banner" id="banner" hidden><svg width="16" height="16"><use href="#i-eye"/></svg><span data-i18n="preview"></span></div>
+    <section class="hero">
+      <div class="eyebrow">YOUR ACCOUNT, YOUR CHOICE</div>
+      <h1>Welcome<br>to <span>AstroX.</span></h1>
+      <p class="sub">Choose your language and plan. Your settings are saved to your account.</p>
+    </section>
 
-  <!-- Boot: checking returning user -->
-  <section class="screen" id="s0">
-    <div class="skel" style="height:14px;width:30%;margin-bottom:14px"></div>
-    <div class="skel" style="height:40px;width:80%;margin-bottom:10px"></div>
-    <div class="skel" style="height:16px;width:60%;margin-bottom:28px"></div>
-    <div class="skel" style="height:64px;margin-bottom:12px"></div>
-    <div class="skel" style="height:54px"></div>
-    <div id="bootErr"></div>
-  </section>
+    <section class="card">
+      <div class="caption">SECURE ACCOUNT SETUP</div>
+      <h2 id="heading">One quick check.</h2>
+      <p class="muted" id="intro">Open AstroX inside Telegram to continue.</p>
 
-  <!-- Step 1: Human check -->
-  <section class="screen" id="s1">
-    <div class="eyebrow" data-i18n="s1eyebrow"></div>
-    <h1 data-i18n-html="s1title"></h1>
-    <p class="lead" data-i18n="s1lead"></p>
-    <div class="card robot" id="robot" role="checkbox" aria-checked="false" tabindex="0">
-      <div class="cbx"><span class="spin"></span><svg width="18" height="18" viewBox="0 0 24 24" color="#fff"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <div><div class="lbl" data-i18n="robot"></div><div class="sub" id="robotSub" data-i18n="robotSub"></div></div>
-      <div class="rc"><svg><use href="#logo"/></svg>CRIMSON<br>GUARD</div>
-    </div>
-    <div class="spacer"></div>
-    <div>
-      <button class="btn btn-p" id="getCode" disabled><svg width="18" height="18"><use href="#i-send"/></svg><span data-i18n="getCode"></span></button>
-      <div class="note"><svg width="15" height="15"><use href="#i-lock"/></svg><span data-i18n="s1note"></span></div>
-    </div>
-  </section>
-
-  <!-- Step 2: Code -->
-  <section class="screen" id="s2">
-    <div class="eyebrow" data-i18n="s2eyebrow"></div>
-    <h1 data-i18n-html="s2title"></h1>
-    <p class="lead" id="s2lead" data-i18n="s2lead"></p>
-    <div id="codeArea"></div>
-    <div class="spacer"></div>
-  </section>
-
-  <!-- Step 3: Language -->
-  <section class="screen" id="s3">
-    <div class="eyebrow" data-i18n="s3eyebrow"></div>
-    <h1 data-i18n-html="s3title"></h1>
-    <p class="lead" data-i18n="s3lead"></p>
-    <div class="langs">
-      <button class="card lang" data-lang="en"><span class="code">EN</span><span><div class="n">English</div><div class="d" data-i18n="enDesc"></div></span><span class="radio"></span></button>
-      <button class="card lang" data-lang="ru"><span class="code">RU</span><span><div class="n">Русский</div><div class="d" data-i18n="ruDesc"></div></span><span class="radio"></span></button>
-    </div>
-    <div class="spacer"></div>
-    <button class="btn btn-p" id="langNext"><span data-i18n="continue"></span></button>
-  </section>
-
-  <!-- Step 4: Plan -->
-  <section class="screen" id="s4">
-    <div class="eyebrow" data-i18n="s4eyebrow"></div>
-    <h1 data-i18n-html="s4title"></h1>
-    <p class="lead" data-i18n="s4lead"></p>
-    <div class="plans">
-      <button class="card plan sel" id="planFree">
-        <div class="top"><span class="pn">Free</span><span class="price" data-i18n="freePrice"></span><span class="radio" style="margin-left:auto"></span></div>
-        <ul>
-          <li><svg width="14" height="14" color="#e3294b"><use href="#i-check"/></svg><span data-i18n="f1"></span></li>
-          <li><svg width="14" height="14" color="#e3294b"><use href="#i-check"/></svg><span data-i18n="f2"></span></li>
-          <li><svg width="14" height="14" color="#e3294b"><use href="#i-check"/></svg><span data-i18n="f3"></span></li>
-        </ul>
-      </button>
-      <div class="card plan go" id="planGo" aria-disabled="true">
-        <span class="badge"><svg width="11" height="11"><use href="#i-lock"/></svg><span data-i18n="inDev"></span></span>
-        <div class="top"><span class="pn">GO</span><span class="price" data-i18n="goPrice"></span></div>
-        <ul>
-          <li><svg width="14" height="14" color="#d9b98c"><use href="#i-dot"/></svg><span data-i18n="g1"></span></li>
-          <li><svg width="14" height="14" color="#d9b98c"><use href="#i-dot"/></svg><span data-i18n="g2"></span></li>
-          <li><svg width="14" height="14" color="#d9b98c"><use href="#i-dot"/></svg><span data-i18n="g3"></span></li>
-        </ul>
+      <div class="notice">
+        AstroX verifies your Telegram Mini App session. We never ask for Telegram login codes or passwords.
       </div>
-    </div>
-    <div class="msg err" id="saveMsg"></div>
-    <div class="spacer"></div>
-    <button class="btn btn-p" id="planSave"><span data-i18n="continue"></span></button>
-  </section>
 
-  <!-- Step 5: Done -->
-  <section class="screen" id="s5">
-    <div class="done-hero">
-      <div class="seal"><svg><use href="#logo"/></svg></div>
-      <div class="eyebrow" data-i18n="s5eyebrow"></div>
-      <h1 data-i18n-html="s5title"></h1>
-      <p class="lead" style="margin:0 auto" data-i18n="s5lead"></p>
-    </div>
-    <div class="card summary">
-      <div class="row"><span class="k" data-i18n="sumName"></span><span class="v" id="sumName"></span></div>
-      <div class="row"><span class="k" data-i18n="sumLang"></span><span class="v" id="sumLang"></span></div>
-      <div class="row"><span class="k" data-i18n="sumPlan"></span><span class="v">Free</span></div>
-    </div>
-    <div class="center"><button class="link" id="changeSettings" data-i18n="change"></button></div>
-    <div class="spacer"></div>
-    <button class="btn btn-p" id="closeBtn"><span data-i18n="close"></span></button>
-  </section>
-</div>
+      <div id="human" hidden>
+        <button class="btn" id="startCheck">✓ &nbsp; I’m not a robot</button>
+        <form id="captchaForm" hidden>
+          <label class="field-label" id="question" for="answer">Solve the check</label>
+          <input id="answer" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="Your answer">
+          <button class="btn" id="verifyBtn" type="submit">Verify session</button>
+        </form>
+      </div>
 
-<!-- Captcha bottom sheet -->
-<div class="scrim" id="scrim"></div>
-<div class="sheet" id="sheet" role="dialog" aria-modal="true">
-  <div class="grab"></div>
-  <div class="cap-head"><small data-i18n="capSelect"></small><b id="capTarget"></b><small data-i18n="capHint"></small></div>
-  <div class="grid" id="capGrid"></div>
-  <div class="cap-foot">
-    <button class="iconbtn" id="capRefresh" aria-label="refresh"><svg width="20" height="20"><use href="#i-refresh"/></svg></button>
-    <button class="btn btn-p" id="capVerify"><span data-i18n="verify"></span></button>
-  </div>
-  <div class="msg err" id="capMsg"></div>
-</div>
+      <div id="settings" hidden>
+        <div class="user">
+          <div class="avatar" id="avatar">A</div>
+          <div><strong id="userName">AstroX user</strong><div class="muted">Telegram account verified</div></div>
+        </div>
 
-<script>
-/* ==========================================================================
-   CRIMSON — Telegram Mini App access gate (single file, vanilla JS)
-   ========================================================================== */
+        <label class="field-label">Language</label>
+        <div class="choices">
+          <button class="choice active" data-language="en" type="button">🇬🇧 &nbsp; English</button>
+          <button class="choice" data-language="ru" type="button">🇷🇺 &nbsp; Русский</button>
+        </div>
 
-/* Firebase config kept for reference only — the app talks to RTDB over REST. */
-const firebaseConfig = {
-  apiKey: "AIzaSyC9bFmAi81u8wgR4t59ytgACJGj8gJBYKw",
-  projectId: "ttew-61e15",
-  databaseURL: "https://ttew-61e15-default-rtdb.firebaseio.com"
-};
-const DB = "https://ttew-61e15-default-rtdb.firebaseio.com";
+        <label class="field-label">Plan</label>
+        <div class="plan"><span><strong>Free</strong><small>Available now</small></span><strong>$0</strong></div>
+        <div class="plan"><span><strong>GO</strong><small>More features coming</small></span><span class="soon">IN DEVELOPMENT</span></div>
 
-/* ---------- Telegram bootstrap ---------- */
-const tg = window.Telegram && window.Telegram.WebApp;
-const inTelegram = !!(tg && tg.initData);
-const tgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
-const uid = inTelegram && tgUser.id ? String(tgUser.id) : "guest";
+        <button class="btn" id="saveBtn" type="button">Save preferences</button>
+      </div>
 
-if (tg) {
-  try { tg.ready(); tg.expand(); tg.setHeaderColor("#0c0506"); tg.setBackgroundColor("#0c0506"); } catch (e) {}
-}
+      <div id="status" class="status" role="status"></div>
+      <div class="foot">AstroX · Your account stays yours</div>
+    </section>
+  </main>
 
-/* Haptics — no-ops outside Telegram */
-const haptic = {
-  tap(s = "light") { try { tg.HapticFeedback.impactOccurred(s); } catch (e) {} },
-  sel() { try { tg.HapticFeedback.selectionChanged(); } catch (e) {} },
-  note(t) { try { tg.HapticFeedback.notificationOccurred(t); } catch (e) {} }
-};
+  <script>
+    // Replace with the HTTPS origin of your published Replit API.
+    const API_ORIGIN = "https://YOUR-REPLIT-API-ORIGIN";
 
-/* ---------- i18n ---------- */
-const I18N = {
-  en: {
-    tagline: "Access gate", preview: "Preview mode: open this app from the bot to verify",
-    step: "Step",
-    s1eyebrow: "Checkpoint", s1title: "Prove you are <em>human.</em>", s1lead: "One quick check before the vault door opens.",
-    robot: "I'm not a robot", robotSub: "Tap to start the check", robotDone: "Verified just now",
-    getCode: "Get code", s1note: "The code will be delivered privately in your chat with the bot.",
-    capSelect: "Select all", capHint: "Then press Verify. Tap the arrow for a new set.",
-    circle: "circles", square: "squares", triangle: "triangles",
-    verify: "Verify", capWrong: "Not quite. A fresh set is ready.", capEmpty: "Select at least one tile.",
-    s2eyebrow: "One-time code", s2title: "Enter the <em>code.</em>", s2lead: "Six digits, sent by the bot.",
-    sending: "Sending code via bot...", hint: "Check your chat with the bot",
-    resendIn: "Resend in {s}s", resend: "Resend code", checking: "Checking...",
-    bad: "Wrong code. Attempts left: {n}", expired: "Code expired. Request a new one.", locked: "Too many attempts. Request a new code.",
-    cooldown: "Too soon. You can request a new code in {s}s.", denied: "Verification failed, reopen the app from the bot",
-    blocked: "Press Start in the bot first", openBot: "Open the bot",
-    noResponse: "Bot is not responding", noResponseSub: "It may be offline. Try again in a moment.",
-    netErr: "Network error. Check your connection.", retry: "Retry", requestNew: "Request new code", accepted: "Code accepted",
-    unknown: "Unexpected response from the bot.",
-    s3eyebrow: "Language", s3title: "Choose your <em>tongue.</em>", s3lead: "The whole app switches instantly.",
-    enDesc: "Interface and bot messages", ruDesc: "Интерфейс и сообщения бота",
-    continue: "Continue",
-    s4eyebrow: "Plan", s4title: "Pick your <em>tier.</em>", s4lead: "Start free. GO is being forged.",
-    freePrice: "0 / forever", goPrice: "Soon", inDev: "In development",
-    f1: "Core bot access", f2: "Standard response speed", f3: "Basic notifications",
-    g1: "Priority queue", g2: "Extended limits", g3: "Private features",
-    saving: "Saving...", saveErr: "Could not save. Check your connection and retry.",
-    s5eyebrow: "Access granted", s5title: "The door is <em>open.</em>", s5lead: "You are verified. Return to the bot to continue.",
-    sumName: "Account", sumLang: "Language", sumPlan: "Plan", change: "Change settings", close: "Close",
-    bootErr: "Could not load your profile.", guest: "Guest"
-  },
-  ru: {
-    tagline: "Шлюз доступа", preview: "Режим просмотра: откройте приложение из бота для проверки",
-    step: "Шаг",
-    s1eyebrow: "Проверка", s1title: "Докажите, что вы <em>человек.</em>", s1lead: "Одна короткая проверка перед тем, как дверь откроется.",
-    robot: "Я не робот", robotSub: "Нажмите, чтобы начать", robotDone: "Проверка пройдена",
-    getCode: "Получить код", s1note: "Код придёт лично вам в чат с ботом.",
-    capSelect: "Выберите все", capHint: "Затем нажмите «Проверить». Стрелка — новый набор.",
-    circle: "круги", square: "квадраты", triangle: "треугольники",
-    verify: "Проверить", capWrong: "Не совсем. Новый набор готов.", capEmpty: "Выберите хотя бы одну ячейку.",
-    s2eyebrow: "Одноразовый код", s2title: "Введите <em>код.</em>", s2lead: "Шесть цифр от бота.",
-    sending: "Отправляем код через бота...", hint: "Проверьте чат с ботом",
-    resendIn: "Повторно через {s} с", resend: "Отправить код снова", checking: "Проверяем...",
-    bad: "Неверный код. Осталось попыток: {n}", expired: "Код истёк. Запросите новый.", locked: "Слишком много попыток. Запросите новый код.",
-    cooldown: "Слишком рано. Новый код можно запросить через {s} с.", denied: "Проверка не пройдена, откройте приложение заново из бота",
-    blocked: "Сначала нажмите Start в боте", openBot: "Открыть бота",
-    noResponse: "Бот не отвечает", noResponseSub: "Возможно, он офлайн. Попробуйте чуть позже.",
-    netErr: "Ошибка сети. Проверьте подключение.", retry: "Повторить", requestNew: "Запросить новый код", accepted: "Код принят",
-    unknown: "Неожиданный ответ от бота.",
-    s3eyebrow: "Язык", s3title: "Выберите <em>язык.</em>", s3lead: "Всё приложение переключится мгновенно.",
-    enDesc: "Interface and bot messages", ruDesc: "Интерфейс и сообщения бота",
-    continue: "Продолжить",
-    s4eyebrow: "Тариф", s4title: "Выберите <em>уровень.</em>", s4lead: "Начните бесплатно. GO уже куётся.",
-    freePrice: "0 / навсегда", goPrice: "Скоро", inDev: "В разработке",
-    f1: "Базовый доступ к боту", f2: "Стандартная скорость", f3: "Основные уведомления",
-    g1: "Приоритетная очередь", g2: "Расширенные лимиты", g3: "Закрытые функции",
-    saving: "Сохраняем...", saveErr: "Не удалось сохранить. Проверьте подключение и повторите.",
-    s5eyebrow: "Доступ открыт", s5title: "Дверь <em>открыта.</em>", s5lead: "Вы прошли проверку. Вернитесь в бота, чтобы продолжить.",
-    sumName: "Аккаунт", sumLang: "Язык", sumPlan: "Тариф", change: "Изменить настройки", close: "Закрыть",
-    bootErr: "Не удалось загрузить профиль.", guest: "Гость"
-  }
-};
-const lc = (tgUser.language_code || navigator.language || "en").toLowerCase();
-let lang = lc.startsWith("ru") ? "ru" : "en";
-const t = (k, v = {}) => (I18N[lang][k] || k).replace(/\{(\w+)\}/g, (_, x) => v[x]);
+    const webApp = window.Telegram && window.Telegram.WebApp;
+    const initData = webApp && webApp.initData ? webApp.initData : "";
+    const statusBox = document.getElementById("status");
+    const human = document.getElementById("human");
+    const captchaForm = document.getElementById("captchaForm");
+    const settings = document.getElementById("settings");
+    const answer = document.getElementById("answer");
 
-/* Re-render every static string, then the dynamic bits of the current screen */
-function applyI18n() {
-  document.documentElement.lang = lang;
-  document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
-  document.querySelectorAll("[data-i18n-html]").forEach(el => el.innerHTML = t(el.dataset.i18nHtml));
-  if (captchaOk) $("#robotSub").textContent = t("robotDone");
-  $("#capTarget").textContent = t(cap.target || "circle");
-  renderStepNo();
-  if (step === 2) renderCode();
-  if (step === 5) renderSummary();
-}
+    let captchaToken = "";
+    let language = "en";
+    let busy = false;
 
-/* ---------- helpers ---------- */
-const $ = s => document.querySelector(s);
-const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const nonceGen = () => { const a = "abcdefghijklmnopqrstuvwxyz0123456789"; let s = ""; for (let i = 0; i < 12; i++) s += a[Math.floor(Math.random() * a.length)]; return s; };
-const sleep = ms => new Promise(r => setTimeout(r, ms));
+    webApp?.ready();
+    webApp?.expand();
 
-/* Firebase REST helper — throws on network / HTTP failure */
-async function db(path, method = "GET", body) {
-  const res = await fetch(DB + "/" + path + ".json", {
-    method, headers: { "Content-Type": "application/json" },
-    body: body === undefined ? undefined : JSON.stringify(body)
-  });
-  if (!res.ok) throw new Error("HTTP " + res.status);
-  return res.json();
-}
+    function setStatus(message, kind = "") {
+      statusBox.textContent = message;
+      statusBox.className = "status " + kind;
+    }
 
-/* Poll responses/{uid} for a matching nonce. A "session" token lets us cancel
-   when the user navigates away: any call to cancelPolls() invalidates it. */
-let pollSession = 0;
-function cancelPolls() { pollSession++; }
-async function pollResponse(nonce, timeout = 20000) {
-  const my = ++pollSession, start = Date.now();
-  while (Date.now() - start < timeout) {
-    await sleep(1000);
-    if (my !== pollSession) return { cancelled: true };
-    let r;
-    try { r = await db("responses/" + uid); } catch (e) { if (my !== pollSession) return { cancelled: true }; return { netError: true }; }
-    if (my !== pollSession) return { cancelled: true };
-    if (r && r.nonce === nonce) return r;
-  }
-  return { timeout: true };
-}
+    async function api(path, body, method = "POST") {
+      if (API_ORIGIN.includes("YOUR-REPLIT-API-ORIGIN")) {
+        throw new Error("Set API_ORIGIN in this file to your published API address.");
+      }
+      const response = await fetch(API_ORIGIN.replace(/\/+$/, "") + path, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Request failed. Please try again.");
+      return data;
+    }
 
-/* ---------- step navigation ---------- */
-let step = 0, fromDone = false;
-function go(n, dir = "fwd") {
-  cancelPolls();
-  stopTimer();
-  step = n;
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active", "fwd", "back"));
-  const el = $("#s" + n); void el.offsetWidth;
-  el.classList.add("active", dir);
-  document.querySelectorAll("#progress i").forEach((b, i) => { b.classList.toggle("on", i < n); b.classList.toggle("cur", i === n - 1); });
-  renderStepNo();
-  // Telegram BackButton where it makes sense
-  if (tg && tg.BackButton) { (n === 2 || n === 4 || (n === 3 && fromDone)) ? tg.BackButton.show() : tg.BackButton.hide(); }
-  if (n === 2) startRequest();
-  if (n === 3) renderLang();
-  if (n === 5) renderSummary();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-function goBack() {
-  haptic.tap();
-  if (step === 2) go(1, "back");
-  else if (step === 4) go(3, "back");
-  else if (step === 3 && fromDone) go(5, "back");
-}
-if (tg && tg.BackButton) tg.BackButton.onClick(goBack);
-function renderStepNo() { $("#stepno").innerHTML = step ? `${t("step")} <b>${step}</b>/5` : ""; }
+    function showPreferences(user, preferences) {
+      human.hidden = true;
+      settings.hidden = false;
+      document.getElementById("heading").textContent = "Make it yours.";
+      document.getElementById("intro").textContent = "Choose your language and keep the Free plan active.";
+      document.getElementById("userName").textContent = user.firstName || "AstroX user";
 
-/* ==========================================================================
-   STEP 1 — human check + captcha
-   ========================================================================== */
-let captchaOk = false;
-const cap = { target: "circle", shapes: [], picked: new Set() };
-const SHAPES = ["circle", "square", "triangle"];
-const shapeSVG = (s, i) => {
-  const hue = ["#e3294b", "#ff6b7f", "#c41634", "#f3e6e2", "#d9b98c"][i % 5];
-  const rot = Math.floor(Math.random() * 40 - 20);
-  const inner = s === "circle" ? `<circle cx="50" cy="50" r="38"/>`
-    : s === "square" ? `<rect x="15" y="15" width="70" height="70" rx="6" transform="rotate(${rot} 50 50)"/>`
-    : `<path d="M50 10 L90 84 L10 84 Z" stroke-linejoin="round" transform="rotate(${rot} 50 50)"/>`;
-  const fill = Math.random() < .5;
-  return `<svg class="sh" viewBox="0 0 100 100" fill="${fill ? hue : "none"}" stroke="${hue}" stroke-width="${fill ? 0 : 8}">${inner}</svg>`;
-};
-function genCaptcha() {
-  cap.target = SHAPES[Math.floor(Math.random() * 3)];
-  const others = SHAPES.filter(s => s !== cap.target);
-  const n = 2 + Math.floor(Math.random() * 3); // 2..4 targets
-  const arr = Array.from({ length: 9 }, (_, i) => i < n ? cap.target : others[Math.floor(Math.random() * 2)]);
-  for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
-  cap.shapes = arr; cap.picked = new Set();
-  $("#capTarget").textContent = t(cap.target);
-  $("#capGrid").innerHTML = arr.map((s, i) =>
-    `<button class="tile" data-i="${i}" style="animation-delay:${i * 35}ms">${shapeSVG(s, i)}<span class="tick"><svg width="12" height="12" color="#fff"><use href="#i-check"/></svg></span></button>`).join("");
-}
-function openSheet() { genCaptcha(); $("#capMsg").textContent = ""; $("#scrim").classList.add("open"); $("#sheet").classList.add("open"); }
-function closeSheet() { $("#scrim").classList.remove("open"); $("#sheet").classList.remove("open"); }
+      const avatar = document.getElementById("avatar");
+      if (user.photoUrl) {
+        const image = document.createElement("img");
+        image.src = user.photoUrl;
+        image.alt = "";
+        image.referrerPolicy = "no-referrer";
+        avatar.replaceChildren(image);
+      } else {
+        avatar.textContent = (user.firstName || "A").slice(0, 1).toUpperCase();
+      }
 
-$("#robot").addEventListener("click", () => {
-  const r = $("#robot");
-  if (captchaOk || r.classList.contains("loading")) return;
-  haptic.tap("medium");
-  r.classList.add("loading");
-  setTimeout(() => { r.classList.remove("loading"); openSheet(); }, 1000);
-});
-$("#capGrid").addEventListener("click", e => {
-  const b = e.target.closest(".tile"); if (!b) return;
-  const i = +b.dataset.i; haptic.sel();
-  cap.picked.has(i) ? cap.picked.delete(i) : cap.picked.add(i);
-  b.classList.toggle("on");
-});
-$("#capRefresh").addEventListener("click", () => { haptic.tap(); genCaptcha(); $("#capMsg").textContent = ""; });
-$("#scrim").addEventListener("click", closeSheet);
-$("#capVerify").addEventListener("click", () => {
-  if (!cap.picked.size) { $("#capMsg").textContent = t("capEmpty"); haptic.note("warning"); return; }
-  const correct = cap.shapes.every((s, i) => (s === cap.target) === cap.picked.has(i));
-  if (correct) {
-    haptic.note("success");
-    closeSheet(); captchaOk = true;
-    const r = $("#robot"); r.classList.add("done"); r.setAttribute("aria-checked", "true");
-    $("#robotSub").textContent = t("robotDone");
-    $("#getCode").disabled = false;
-  } else {
-    haptic.note("error");
-    $("#capMsg").textContent = t("capWrong");
-    const g = $("#capGrid"); g.classList.remove("shake"); void g.offsetWidth; g.classList.add("shake");
-    setTimeout(genCaptcha, 450);
-  }
-});
-$("#getCode").addEventListener("click", () => { if (captchaOk) { haptic.tap("medium"); go(2); } });
+      language = preferences?.language === "ru" ? "ru" : "en";
+      document.querySelectorAll("[data-language]").forEach(button => {
+        button.classList.toggle("active", button.dataset.language === language);
+      });
+      setStatus(preferences ? "Saved settings restored." : "", preferences ? "good" : "");
+    }
 
-/* ==========================================================================
-   STEP 2 — request + verify code
-   state: sending | input | verifying | timeout | error
-   ========================================================================== */
-const code = { state: "sending", value: "", msg: "", msgType: "info", cooldown: 0, errKey: "", showBot: false, retry: "request" };
-let timer = null;
-function stopTimer() { if (timer) clearInterval(timer); timer = null; }
-function startCountdown(sec) {
-  stopTimer(); code.cooldown = sec; renderResend();
-  timer = setInterval(() => {
-    code.cooldown--; renderResend();
-    if (code.cooldown <= 0) stopTimer();
-    if (code.cooldown <= 0 && code.state === "cooldown") { code.state = "error"; code.errKey = ""; renderCode(); }
-  }, 1000);
-}
-
-async function startRequest() {
-  code.state = "sending"; code.value = ""; code.msg = ""; renderCode();
-  const nonce = nonceGen();
-  try {
-    await db("requests/" + uid, "PUT", { nonce, initData: tg ? tg.initData : "", lang, ts: Date.now() });
-  } catch (e) { return showErr("netErr", "request"); }
-  if (step !== 2) return;
-  const r = await pollResponse(nonce);
-  if (r.cancelled) return;
-  if (r.netError) return showErr("netErr", "request");
-  if (r.timeout) return showErr("noResponse", "request", true);
-  switch (r.type) {
-    case "sent":
-      haptic.note("success");
-      code.state = "input"; code.msg = t("hint"); code.msgType = "info"; renderCode(); startCountdown(30); break;
-    case "cooldown":
-      haptic.note("warning");
-      code.state = "cooldown"; code.cooldownTotal = +r.wait || 30; renderCode(); startCountdown(+r.wait || 30); break;
-    case "denied": showErr("denied", null); break;
-    case "blocked": code.showBot = true; showErr("blocked", null); break;
-    default: showErr("unknown", "request");
-  }
-}
-
-async function verifyCode() {
-  if (code.state !== "input" || code.value.length !== 6) return;
-  code.state = "verifying"; code.msg = t("checking"); code.msgType = "info"; renderCode();
-  const nonce = nonceGen();
-  try { await db("verify/" + uid, "PUT", { nonce, code: code.value, ts: Date.now() }); }
-  catch (e) { return inputErr(t("netErr")); }
-  const r = await pollResponse(nonce);
-  if (r.cancelled) return;
-  if (r.netError) return inputErr(t("netErr"));
-  if (r.timeout) return showErr("noResponse", "verify", true);
-  switch (r.type) {
-    case "ok":
-      haptic.note("success");
-      code.state = "ok"; code.msg = t("accepted"); code.msgType = "ok"; renderCode();
-      setTimeout(() => { if (step === 2) go(3); }, 650); break;
-    case "bad": inputErr(t("bad", { n: r.left ?? 0 })); break;
-    case "expired": showErr("expired", "request"); break;
-    case "locked": showErr("locked", "request"); break;
-    default: inputErr(t("unknown"));
-  }
-}
-function inputErr(msg) {
-  haptic.note("error");
-  code.state = "input"; code.value = ""; code.msg = msg; code.msgType = "err"; renderCode();
-  const o = $("#otp"); if (o) { o.classList.add("shake"); setTimeout(() => o.classList.remove("shake"), 500); }
-}
-function showErr(key, retry, timeout = false) {
-  if (step !== 2) return;
-  haptic.note("error");
-  code.state = "error"; code.errKey = key; code.retry = retry; code.isTimeout = timeout; renderCode();
-}
-
-function renderResend() {
-  const b = $("#resend"); if (!b) return;
-  if (code.state === "cooldown") {
-    const m = $("#cdMsg"); if (m) m.textContent = t("cooldown", { s: Math.max(code.cooldown, 0) });
-  }
-  b.disabled = code.cooldown > 0;
-  b.textContent = code.cooldown > 0 ? t("resendIn", { s: code.cooldown }) : t("resend");
-}
-
-function renderCode() {
-  const a = $("#codeArea");
-  if (code.state === "sending") {
-    a.innerHTML = `<div class="sending"><div class="pulse"><svg color="#e3294b"><use href="#i-send"/></svg></div><div class="msg info">${t("sending")}</div></div>`;
-    return;
-  }
-  if (code.state === "error") {
-    const isBlock = code.errKey === "blocked";
-    a.innerHTML = `<div class="card errbox shake">
-      <div class="t">${t(code.errKey)}</div>
-      ${code.isTimeout ? `<p>${t("noResponseSub")}</p>` : ""}
-      ${code.retry ? `<button class="btn btn-p" id="errRetry">${t(code.retry === "request" && ["expired", "locked"].includes(code.errKey) ? "requestNew" : "retry")}</button>` : ""}
-      ${isBlock ? `<button class="btn btn-p" id="openBot">${t("openBot")}</button><button class="btn btn-g" id="errRetry2">${t("retry")}</button>` : ""}
-    </div>`;
-    const rb = $("#errRetry");
-    if (rb) rb.onclick = () => { haptic.tap(); code.retry === "verify" ? (code.state = "input", code.value = "", code.msg = "", renderCode()) : startRequest(); };
-    const ob = $("#openBot"); if (ob) ob.onclick = () => { haptic.tap(); tg && tg.close(); };
-    const r2 = $("#errRetry2"); if (r2) r2.onclick = () => { haptic.tap(); startRequest(); };
-    return;
-  }
-  if (code.state === "cooldown") {
-    a.innerHTML = `<div class="card errbox"><div class="t" id="cdMsg"></div><button class="link" id="resend"></button></div>`;
-    $("#resend").onclick = () => { haptic.tap(); startRequest(); };
-    renderResend(); return;
-  }
-  // input / verifying / ok
-  const v = code.value;
-  const cells = Array.from({ length: 6 }, (_, i) =>
-    `<div class="cell ${v[i] ? "fill" : ""} ${i === v.length && code.state === "input" ? "cur" : ""}">${v[i] ? esc(v[i]) : ""}</div>`).join("");
-  if (!$("#otp")) {
-    a.innerHTML = `<div class="otp" id="otp"><input id="otpIn" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" aria-label="code"><div id="cells" style="display:contents"></div></div>
-      <div class="msg" id="codeMsg"></div>
-      <div class="center"><button class="link" id="resend"></button></div>
-      <div class="note"><svg width="15" height="15"><use href="#i-chat"/></svg><span>${t("hint")}</span></div>`;
-    const inp = $("#otpIn");
-    inp.addEventListener("input", () => {
-      const clean = inp.value.replace(/\D/g, "").slice(0, 6);
-      if (code.state !== "input") { inp.value = code.value; return; }
-      if (clean.length > code.value.length) haptic.sel();
-      code.value = clean; inp.value = clean;
-      if (code.msgType === "err" && clean) { code.msg = t("hint"); code.msgType = "info"; }
-      renderCode();
-      if (clean.length === 6) verifyCode();
+    document.querySelectorAll("[data-language]").forEach(button => {
+      button.addEventListener("click", () => {
+        language = button.dataset.language;
+        document.querySelectorAll("[data-language]").forEach(option =>
+          option.classList.toggle("active", option === button)
+        );
+      });
     });
-    $("#resend").onclick = () => { if (code.cooldown <= 0) { haptic.tap(); startRequest(); } };
-    setTimeout(() => inp.focus(), 80);
-  }
-  $("#cells").innerHTML = cells;
-  const inp = $("#otpIn"); if (inp.value !== v) inp.value = v;
-  inp.disabled = code.state !== "input";
-  if (code.state === "input" && document.activeElement !== inp) setTimeout(() => inp.focus(), 50);
-  const otp = $("#otp");
-  otp.classList.toggle("busy", code.state === "verifying");
-  otp.classList.toggle("good", code.state === "ok");
-  const m = $("#codeMsg"); m.textContent = code.msg; m.className = "msg " + code.msgType;
-  renderResend();
-}
 
-/* ==========================================================================
-   STEP 3 — language
-   ========================================================================== */
-function renderLang() { document.querySelectorAll(".lang").forEach(c => c.classList.toggle("sel", c.dataset.lang === lang)); }
-document.querySelectorAll(".lang").forEach(c => c.addEventListener("click", () => {
-  if (lang === c.dataset.lang) return;
-  haptic.sel(); lang = c.dataset.lang; renderLang(); applyI18n();
-}));
-$("#langNext").addEventListener("click", () => { haptic.tap("medium"); go(4); });
+    document.getElementById("startCheck").addEventListener("click", async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      setStatus("Preparing the human check…");
+      try {
+        const challenge = await api("/api/telegram/captcha", {});
+        captchaToken = challenge.token;
+        document.getElementById("question").textContent = challenge.question;
+        captchaForm.hidden = false;
+        answer.focus();
+        setStatus("");
+      } catch (error) {
+        setStatus(error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    });
 
-/* ==========================================================================
-   STEP 4 — plan + save
-   ========================================================================== */
-$("#planFree").addEventListener("click", () => haptic.sel());
-$("#planGo").addEventListener("click", () => {
-  haptic.note("warning");
-  const g = $("#planGo"); g.classList.remove("shake"); void g.offsetWidth; g.classList.add("shake");
-});
-$("#planSave").addEventListener("click", async () => {
-  const b = $("#planSave"); if (b.disabled) return;
-  haptic.tap("medium");
-  b.disabled = true; b.innerHTML = `<span class="mini-spin"></span><span>${t("saving")}</span>`;
-  $("#saveMsg").textContent = "";
-  try {
-    await db("users/" + uid, "PUT", { lang, plan: "free", name: tgUser.first_name || "", username: tgUser.username || "", ts: Date.now(), notified: false });
-    haptic.note("success"); fromDone = false; go(5);
-  } catch (e) {
-    haptic.note("error"); $("#saveMsg").textContent = t("saveErr");
-  } finally {
-    b.disabled = false; b.innerHTML = `<span data-i18n="continue">${t("continue")}</span>`;
-  }
-});
+    captchaForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      if (busy || !captchaToken || !initData) return;
+      busy = true;
+      document.getElementById("verifyBtn").disabled = true;
+      setStatus("Checking your Telegram session…");
+      try {
+        const result = await api("/api/telegram/verify", {
+          initData,
+          captchaToken,
+          captchaAnswer: answer.value.trim()
+        });
+        showPreferences(result.user, result.preferences);
+      } catch (error) {
+        setStatus(error.message, "error");
+      } finally {
+        busy = false;
+        document.getElementById("verifyBtn").disabled = false;
+      }
+    });
 
-/* ==========================================================================
-   STEP 5 — done
-   ========================================================================== */
-function renderSummary() {
-  $("#sumName").textContent = tgUser.first_name ? tgUser.first_name + (tgUser.username ? " @" + tgUser.username : "") : t("guest");
-  $("#sumLang").textContent = lang === "ru" ? "Русский" : "English";
-}
-$("#changeSettings").addEventListener("click", () => { haptic.tap(); fromDone = true; go(3, "back"); });
-$("#closeBtn").addEventListener("click", () => { haptic.tap("medium"); if (tg) tg.close(); });
+    document.getElementById("saveBtn").addEventListener("click", async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      setStatus("Saving your preferences…");
+      try {
+        await api("/api/telegram/preferences", { initData, language, plan: "free" }, "PUT");
+        setStatus("Preferences saved. You’re all set!", "good");
+      } catch (error) {
+        setStatus(error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    });
 
-/* ==========================================================================
-   BOOT — check returning user
-   ========================================================================== */
-async function boot() {
-  $("#bootErr").innerHTML = "";
-  try {
-    const u = await db("users/" + uid);
-    if (u && typeof u === "object") {
-      if (u.lang === "en" || u.lang === "ru") lang = u.lang;
-      applyI18n(); go(5);
-    } else go(1);
-  } catch (e) {
-    $("#bootErr").innerHTML = `<div class="card errbox" style="margin-top:16px"><div class="t">${t("bootErr")}</div><p>${t("netErr")}</p><button class="btn btn-p" id="bootRetry">${t("retry")}</button></div>`;
-    $("#bootRetry").onclick = () => { haptic.tap(); boot(); };
-  }
-}
+    if (!initData) {
+      setStatus("Open this page from the AstroX bot inside Telegram.", "error");
+    } else {
+      api("/api/telegram/session", { initData })
+        .then(result => {
+          if (result.preferences) {
+            showPreferences(result.user, result.preferences);
+          } else {
+            human.hidden = false;
+            setStatus("Complete the quick check to continue.");
+          }
+        })
+        .catch(error => setStatus(error.message, "error"));
+    }
 
-if (!inTelegram) $("#banner").hidden = false;
-applyI18n();
-go(0);
-boot();
-</script>
+    function isTextField(target) {
+      return target instanceof HTMLElement &&
+        Boolean(target.closest("input, textarea, [contenteditable='true']"));
+    }
+    document.addEventListener("copy", event => {
+      if (!isTextField(event.target)) event.preventDefault();
+    });
+    document.addEventListener("cut", event => {
+      if (!isTextField(event.target)) event.preventDefault();
+    });
+    document.addEventListener("contextmenu", event => {
+      if (!isTextField(event.target)) event.preventDefault();
+    });
+    document.addEventListener("keydown", event => {
+      if (!isTextField(event.target) && (event.ctrlKey || event.metaKey) &&
+          ["c", "x"].includes(event.key.toLowerCase())) event.preventDefault();
+    });
+  </script>
 </body>
-</html>
+  </html>
