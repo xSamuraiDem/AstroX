@@ -1,693 +1,787 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>VortexPay // Terminal Core</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0c0506" />
+<title>Crimson</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
+/* ===================== THEME ===================== */
 :root{
-  --bg:#07090e;--bg-sub:#0c1017;--card:#101520;--card-border:#1c2738;--card-hover:#162030;
-  --tx:#d8e2ec;--tx-dim:#5b6e85;--tx-bright:#f0f6fc;
-  --neon-cyan:#00e5ff;--neon-green:#00ff66;--neon-purple:#bd93f9;--neon-gold:#ffd166;--neon-red:#ff5555;
-  --glow-cyan:0 0 14px rgba(0,229,255,0.45);--glow-green:0 0 14px rgba(0,255,102,0.45);
-  --font-mono:'JetBrains Mono',monospace;--font-tech:'Orbitron',sans-serif;
+  --bg:#0c0506; --bg2:#14080a; --surface:#1a0b0e; --surface2:#22100f;
+  --line:rgba(224,41,74,.16); --line2:rgba(243,230,228,.08);
+  --crimson:#a50f2a; --blood:#6e0718; --ember:#e3294b; --rose:#ff6b7f;
+  --ivory:#f3e6e2; --muted:#a08486; --dim:#6b5254; --gold:#d9b98c;
+  --ok:#e3294b; --err:#ff5c6c;
+  --r:18px; --ease:cubic-bezier(.2,.8,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
+  --display:"Cormorant Garamond",Georgia,serif; --body:"Manrope",system-ui,sans-serif; --mono:"JetBrains Mono",monospace;
 }
-*{box-sizing:border-box;margin:0;padding:0}[hidden]{display:none!important}
-body{
-  font:13px/1.5 var(--font-mono);background:var(--bg);color:var(--tx);
-  overflow-x:hidden;min-height:100vh;
-  background-image:radial-gradient(ellipse at 50% -20%,rgba(0,229,255,0.08),transparent 70%),
-                   linear-gradient(to bottom,rgba(255,255,255,0.015) 1px,transparent 1px),
-                   linear-gradient(to right,rgba(255,255,255,0.015) 1px,transparent 1px);
-  background-size:100% 100%, 28px 28px, 28px 28px;
-}
-/* Scanlines */
-body::after{content:"";position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,0.25) 50%);background-size:100% 4px;z-index:9999;opacity:0.6}
-button,input,select,textarea{font:inherit;color:inherit}a{cursor:pointer;text-decoration:none;color:inherit}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--ivory);font-family:var(--body);min-height:100dvh}
+body{overflow-x:hidden;font-size:15px;line-height:1.45}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+/* ambient glow + grain */
+body::before{content:"";position:fixed;inset:-20%;pointer-events:none;z-index:0;
+  background:radial-gradient(60% 40% at 50% 0%,rgba(165,15,42,.45),transparent 70%),
+             radial-gradient(50% 35% at 100% 100%,rgba(110,7,24,.35),transparent 70%),
+             radial-gradient(40% 30% at 0% 70%,rgba(110,7,24,.22),transparent 70%);
+  animation:breathe 9s ease-in-out infinite alternate}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.08;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+@keyframes breathe{to{transform:scale(1.08) translateY(2%);opacity:.8}}
 
-/* Top Nav / IDE Tab bar */
-.topbar{position:sticky;top:0;z-index:100;background:rgba(7,9,14,0.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--card-border)}
-.sysline{display:flex;align-items:center;justify-content:space-between;padding:4px 14px;background:#05070a;border-bottom:1px solid rgba(255,255,255,0.05);font-size:10px;color:var(--tx-dim);letter-spacing:1px}
-.nav{display:flex;align-items:center;gap:4px;padding:6px 14px;overflow-x:auto}
-.logo{display:flex;align-items:center;gap:8px;font-family:var(--font-tech);font-size:15px;color:var(--tx-bright);background:none;border:none;cursor:pointer;margin-right:12px}
-.logo-tag{background:var(--neon-cyan);color:#000;font-weight:900;padding:1px 5px;border-radius:2px;font-size:11px}
-.nav-tab{padding:6px 10px;border-radius:4px;border:1px solid transparent;color:var(--tx-dim);font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;transition:0.2s}
-.nav-tab:hover{color:var(--tx);background:rgba(255,255,255,0.02)}
-.nav-tab.active{background:var(--card);border-color:var(--card-border);color:var(--neon-cyan);box-shadow:0 0 10px rgba(0,229,255,0.1)}
-.nav-tab.go-tab{border-color:rgba(255,209,102,0.3);color:var(--neon-gold);background:rgba(255,209,102,0.05)}
-.nav-tab.go-tab.active{background:rgba(255,209,102,0.15);box-shadow:0 0 12px rgba(255,209,102,0.3)}
+.app{position:relative;z-index:1;max-width:460px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding:14px 18px calc(22px + env(safe-area-inset-bottom))}
 
-.user-badge{margin-left:auto;display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 10px;border-radius:4px;background:var(--card);border:1px solid var(--card-border)}
-.user-badge:hover{border-color:var(--neon-cyan)}
-.avatar-cli{width:24px;height:24px;border-radius:3px;background:var(--neon-cyan);color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;overflow:hidden}
-.avatar-cli img{width:100%;height:100%;object-fit:cover}
+/* ===================== HEADER ===================== */
+.hdr{display:flex;align-items:center;gap:12px;padding:6px 0 14px}
+.hdr .mark{width:40px;height:40px;filter:drop-shadow(0 4px 14px rgba(227,41,75,.45))}
+.brand{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:.06em;line-height:1}
+.brand small{display:block;font-family:var(--body);font-size:10px;letter-spacing:.32em;color:var(--muted);font-weight:700;margin-top:4px;text-transform:uppercase}
+.stepno{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.stepno b{color:var(--ember)}
+.progress{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:18px}
+.progress i{height:3px;border-radius:3px;background:var(--line2);position:relative;overflow:hidden}
+.progress i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--crimson),var(--ember));transform:scaleX(0);transform-origin:left;transition:transform .6s var(--ease)}
+.progress i.on::after{transform:scaleX(1)}
+.progress i.cur::after{box-shadow:0 0 12px var(--ember)}
 
-/* Main Container */
-main{max-width:1120px;margin:0 auto;padding:20px 14px 80px}
-.term-box{background:var(--card);border:1px solid var(--card-border);border-radius:6px;margin-bottom:14px;position:relative;overflow:hidden}
-.term-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--bg-sub);border-bottom:1px solid var(--card-border);font-size:11px;color:var(--tx-dim);letter-spacing:0.5px}
-.term-body{padding:14px}
-.mac-dots{display:flex;gap:5px}.mac-dot{width:9px;height:9px;border-radius:50%;background:#ff5f56}.mac-dot:nth-child(2){background:#ffbd2e}.mac-dot:nth-child(3){background:#27c93f}
+.banner{display:flex;gap:10px;align-items:center;font-size:12.5px;color:var(--gold);background:rgba(217,185,140,.07);border:1px solid rgba(217,185,140,.2);padding:9px 12px;border-radius:12px;margin-bottom:14px;animation:rise .6s var(--ease) both}
+.banner svg{flex:none}
 
-/* Typography & Badges */
-.pt{font-family:var(--font-tech);font-size:22px;color:var(--tx-bright);margin-bottom:14px;display:flex;align-items:center;gap:10px}
-.code-inline{background:rgba(0,229,255,0.08);color:var(--neon-cyan);padding:2px 6px;border-radius:3px;border:1px solid rgba(0,229,255,0.2);font-size:11.5px}
-.tag{font-size:10px;padding:2px 6px;border-radius:2px;font-weight:700;display:inline-flex;align-items:center;gap:4px;text-transform:uppercase}
-.tag-cyan{background:rgba(0,229,255,0.15);color:var(--neon-cyan);border:1px solid rgba(0,229,255,0.3)}
-.tag-green{background:rgba(0,255,102,0.15);color:var(--neon-green);border:1px solid rgba(0,255,102,0.3)}
-.tag-gold{background:rgba(255,209,102,0.18);color:var(--neon-gold);border:1px solid rgba(255,209,102,0.4)}
-.tag-red{background:rgba(255,85,85,0.15);color:var(--neon-red);border:1px solid rgba(255,85,85,0.3)}
+/* ===================== SCREENS ===================== */
+.screen{display:none;flex:1;flex-direction:column}
+.screen.active{display:flex}
+.screen.fwd>*{animation:rise .55s var(--ease) both}
+.screen.back>*{animation:fall .55s var(--ease) both}
+.screen>*:nth-child(2){animation-delay:.06s}.screen>*:nth-child(3){animation-delay:.12s}
+.screen>*:nth-child(4){animation-delay:.18s}.screen>*:nth-child(5){animation-delay:.24s}.screen>*:nth-child(6){animation-delay:.3s}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}}
+@keyframes fall{from{opacity:0;transform:translateY(-14px)}}
 
-/* Buttons & Inputs */
-.btn{background:var(--card);border:1px solid var(--card-border);color:var(--tx-bright);padding:8px 14px;border-radius:4px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-weight:600;transition:0.2s}
-.btn:hover{border-color:var(--neon-cyan);background:var(--card-hover);color:var(--neon-cyan)}
-.btn-cyan{background:var(--neon-cyan);color:#000;border:1px solid var(--neon-cyan);box-shadow:var(--glow-cyan);font-weight:700}
-.btn-cyan:hover{background:#38ecff;color:#000}
-.btn-gold{background:var(--neon-gold);color:#000;border:1px solid var(--neon-gold);box-shadow:0 0 14px rgba(255,209,102,0.45);font-weight:700}
-.btn-gold:hover{background:#ffe08a;color:#000}
-.btn-danger{border-color:var(--neon-red);color:var(--neon-red)}
-.btn-danger:hover{background:rgba(255,85,85,0.15)}
-.btn:disabled{opacity:0.4;cursor:not-allowed;border-color:var(--card-border);color:var(--tx-dim);box-shadow:none}
+.eyebrow{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--ember);font-weight:800;margin-bottom:8px}
+h1{font-family:var(--display);font-weight:600;font-size:38px;line-height:1.02;letter-spacing:-.01em;margin-bottom:10px}
+h1 em{font-style:italic;color:var(--rose)}
+.lead{color:var(--muted);margin-bottom:24px;max-width:34ch}
+.spacer{flex:1;min-height:20px}
 
-.inp,select,textarea{width:100%;background:var(--bg-sub);border:1px solid var(--card-border);border-radius:4px;padding:9px 12px;color:var(--tx-bright);outline:none;transition:0.2s}
-.inp:focus,select:focus,textarea:focus{border-color:var(--neon-cyan);box-shadow:0 0 8px rgba(0,229,255,0.25)}
+/* cards */
+.card{background:linear-gradient(160deg,rgba(40,14,18,.9),rgba(20,8,10,.9));border:1px solid var(--line);border-radius:var(--r);box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 20px 40px -20px rgba(0,0,0,.8)}
 
-/* GO Subscription & Quotas Widget */
-.go-banner{
-  background:linear-gradient(135deg,#121722,#1d1a10);
-  border:1px solid rgba(255,209,102,0.4);border-radius:6px;padding:18px;position:relative;margin-bottom:18px;
-  box-shadow:0 0 25px rgba(255,209,102,0.08);
-}
-.go-banner::before{content:"PREMIUM // GO";position:absolute;top:6px;right:10px;font-size:9px;color:var(--neon-gold);letter-spacing:2px;font-weight:800}
-.quota-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:14px 0}
-.quota-cell{background:var(--bg);border:1px solid var(--card-border);border-radius:4px;padding:12px;position:relative}
-.quota-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:11px;color:var(--tx-dim)}
-.quota-val{font-size:18px;font-weight:800;color:var(--tx-bright);font-family:var(--font-tech)}
-.quota-bar{height:5px;background:var(--bg-sub);border-radius:2px;margin-top:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.05)}
-.quota-fill{height:100%;background:var(--neon-cyan);border-radius:2px;transition:width 0.3s}
-.quota-fill.gold{background:var(--neon-gold)}
+/* robot row */
+.robot{display:flex;align-items:center;gap:14px;padding:16px;cursor:pointer;user-select:none;transition:transform .2s var(--ease),border-color .3s}
+.robot:active{transform:scale(.985)}
+.robot.done{border-color:rgba(227,41,75,.5);cursor:default}
+.cbx{width:30px;height:30px;border-radius:8px;border:2px solid #5b3a3d;background:#0d0607;display:grid;place-items:center;flex:none;transition:all .35s var(--spring)}
+.robot:hover .cbx{border-color:var(--ember)}
+.cbx .spin{display:none;width:22px;height:22px;border-radius:50%;border:2.5px solid rgba(227,41,75,.2);border-top-color:var(--ember);animation:rot .7s linear infinite}
+.cbx svg{display:none}
+.cbx svg path{stroke-dasharray:24;stroke-dashoffset:24}
+.robot.loading .cbx{border-color:transparent;background:transparent}
+.robot.loading .spin{display:block}
+.robot.done .cbx{background:var(--crimson);border-color:var(--ember);box-shadow:0 0 0 6px rgba(227,41,75,.12)}
+.robot.done .cbx svg{display:block}
+.robot.done .cbx svg path{animation:draw .45s .1s var(--ease) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes rot{to{transform:rotate(360deg)}}
+.robot .lbl{font-weight:600;font-size:15.5px}
+.robot .sub{font-size:12px;color:var(--dim)}
+.robot .rc{margin-left:auto;text-align:center;font-size:9px;color:var(--dim);letter-spacing:.08em}
+.robot .rc svg{width:26px;height:26px;display:block;margin:0 auto 2px}
 
-/* Interactive Help Tooltip (?) */
-.q-mark{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:16px;height:16px;border-radius:50%;background:rgba(255,209,102,0.15);
-  color:var(--neon-gold);font-weight:800;font-size:11px;cursor:pointer;
-  position:relative;border:1px solid rgba(255,209,102,0.4);
-}
-.q-mark:hover .q-tip{opacity:1;visibility:visible;transform:translateY(0)}
-.q-tip{
-  position:absolute;bottom:calc(100% + 8px);right:-10px;width:260px;
-  background:#0c1017;border:1px solid var(--neon-gold);box-shadow:0 0 16px rgba(0,0,0,0.8);
-  padding:10px 12px;border-radius:4px;font-size:11px;line-height:1.45;color:var(--tx);
-  opacity:0;visibility:hidden;transform:translateY(6px);transition:0.2s;z-index:999;
-  text-transform:none;font-weight:normal;pointer-events:none;
-}
-.q-tip::after{content:"";position:absolute;top:100%;right:13px;border:5px solid transparent;border-top-color:var(--neon-gold)}
+/* buttons */
+.btn{width:100%;height:54px;border-radius:15px;font-weight:800;font-size:15px;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden;transition:transform .15s var(--ease),opacity .3s,filter .3s}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn-p{background:linear-gradient(180deg,#c41634,#8d0c23);color:#fff4f2;box-shadow:0 12px 30px -10px rgba(227,41,75,.7),inset 0 1px 0 rgba(255,255,255,.2)}
+.btn-p::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.22),transparent);transform:skewX(-20deg);animation:sheen 3.6s 1s infinite}
+@keyframes sheen{0%{left:-60%}35%,100%{left:130%}}
+.btn:disabled{opacity:.35;filter:grayscale(.6);cursor:not-allowed}
+.btn:disabled::after{display:none}
+.btn-g{background:rgba(243,230,228,.04);border:1px solid var(--line2);color:var(--ivory);height:48px;font-weight:700}
+.link{color:var(--rose);font-weight:700;font-size:14px;padding:10px;text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(255,107,127,.4)}
+.link:disabled{color:var(--dim);text-decoration:none;cursor:default}
+.mini-spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;animation:rot .7s linear infinite}
 
-/* Products list */
-.prod-row{display:grid;grid-template-columns:200px 1fr 100px 140px;gap:12px;align-items:center;padding:12px;border-bottom:1px solid var(--card-border);transition:0.15s;cursor:pointer}
-.prod-row:hover{background:var(--card-hover)}
-.prod-row:last-child{border-bottom:none}
-@media(max-width:768px){
-  .prod-row{grid-template-columns:1fr;gap:6px}
-}
+.note{display:flex;gap:10px;font-size:12.5px;color:var(--muted);margin-top:16px;align-items:flex-start}
+.note svg{flex:none;margin-top:1px}
 
-/* CLI Mini Console */
-.cli-box{background:#040608;border:1px solid var(--card-border);border-radius:4px;padding:10px 12px;font-size:12px;color:var(--neon-green);margin-top:14px}
-.cli-log{max-height:120px;overflow-y:auto;margin-bottom:8px;font-size:11.5px;color:var(--tx-dim)}
-.cli-log div{margin-bottom:3px}
-.cli-input-line{display:flex;align-items:center;gap:8px}
-.cli-prompt{color:var(--neon-cyan);font-weight:700}
-.cli-input{background:transparent;border:none;color:var(--neon-green);outline:none;width:100%;font-family:var(--font-mono)}
+/* status messages */
+.msg{min-height:22px;font-size:13.5px;font-weight:600;text-align:center;margin:12px 0 4px;transition:opacity .3s}
+.msg.err{color:var(--err)}.msg.ok{color:var(--rose)}.msg.info{color:var(--muted)}
+.errbox{padding:18px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center}
+.errbox p{color:var(--muted);font-size:14px}
+.errbox .t{color:var(--ivory);font-weight:800;font-size:16px}
 
-/* Bottom Status Bar */
-.statusbar{position:fixed;bottom:0;left:0;right:0;background:#05070a;border-top:1px solid var(--card-border);padding:4px 12px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--tx-dim);z-index:100}
+/* sending */
+.sending{display:flex;flex-direction:column;align-items:center;gap:18px;padding:40px 10px}
+.pulse{width:84px;height:84px;position:relative;display:grid;place-items:center}
+.pulse::before,.pulse::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--ember);animation:ring 1.8s var(--ease) infinite}
+.pulse::after{animation-delay:.9s}
+@keyframes ring{from{transform:scale(.5);opacity:1}to{transform:scale(1.4);opacity:0}}
+.pulse svg{width:40px;height:40px}
 
-/* Toast */
-.toast{position:fixed;bottom:42px;left:50%;transform:translateX(-50%);background:#0c1017;border:1px solid var(--neon-cyan);box-shadow:var(--glow-cyan);color:var(--neon-cyan);padding:8px 16px;border-radius:4px;font-size:12px;opacity:0;pointer-events:none;transition:0.25s;z-index:9999}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
+/* code cells */
+.otp{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:6px 0}
+.otp input{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;color:transparent;caret-color:transparent;z-index:2;letter-spacing:40px}
+.cell{aspect-ratio:.82;border-radius:13px;background:#120708;border:1.5px solid #3a2023;display:grid;place-items:center;font-family:var(--mono);font-size:26px;font-weight:700;transition:border-color .2s,transform .25s var(--spring),box-shadow .2s;position:relative}
+.cell.fill{border-color:#7a2a35;transform:translateY(-2px)}
+.cell.cur{border-color:var(--ember);box-shadow:0 0 0 4px rgba(227,41,75,.15)}
+.cell.cur::after{content:"";width:2px;height:40%;background:var(--ember);animation:blink 1s steps(2) infinite}
+.otp.busy .cell{opacity:.5}
+.otp.good .cell{border-color:var(--ember);background:rgba(165,15,42,.25)}
+@keyframes blink{50%{opacity:0}}
+.shake{animation:shake .5s cubic-bezier(.36,.07,.19,.97) both!important}
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-8px)}40%,60%{transform:translateX(8px)}}
+
+/* language */
+.langs{display:grid;gap:12px}
+.lang{display:flex;align-items:center;gap:16px;padding:20px;text-align:left;transition:transform .2s var(--ease),border-color .3s,background .3s}
+.lang:active{transform:scale(.98)}
+.lang .code{font-family:var(--display);font-size:40px;font-weight:700;width:58px;color:var(--dim);transition:color .3s;line-height:1}
+.lang .n{font-weight:800;font-size:17px}.lang .d{font-size:12.5px;color:var(--muted)}
+.radio{margin-left:auto;width:24px;height:24px;border-radius:50%;border:2px solid #4a2b2e;display:grid;place-items:center;transition:all .3s var(--spring)}
+.radio::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--ivory);transform:scale(0);transition:transform .35s var(--spring)}
+.sel{border-color:var(--ember)!important;background:linear-gradient(160deg,rgba(110,7,24,.55),rgba(30,8,12,.9))!important}
+.sel .code{color:var(--rose)}
+.sel .radio{border-color:var(--ember);background:var(--crimson)}
+.sel .radio::after{transform:scale(1)}
+
+/* plans */
+.plans{display:grid;gap:12px}
+.plan{padding:20px;text-align:left;position:relative;transition:transform .2s var(--ease),border-color .3s,background .3s}
+.plan .top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.plan .pn{font-family:var(--display);font-size:32px;font-weight:700;line-height:1}
+.plan .price{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.06em}
+.plan ul{list-style:none;display:grid;gap:7px}
+.plan li{display:flex;gap:9px;font-size:13.5px;color:#d8c4c2;align-items:center}
+.plan li svg{flex:none}
+.plan.go{cursor:not-allowed;overflow:hidden;background:linear-gradient(150deg,rgba(60,46,30,.35),rgba(18,10,10,.9));border-color:rgba(217,185,140,.2)}
+.plan.go>*:not(.badge){opacity:.42;filter:grayscale(.5)}
+.plan.go .pn{background:linear-gradient(120deg,#f1dcb8,#a7845a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.badge{position:absolute;top:18px;right:16px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(217,185,140,.35);background:rgba(12,5,6,.7);padding:6px 10px;border-radius:99px;display:flex;gap:6px;align-items:center}
+
+/* done */
+.done-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:12px 0 6px}
+.seal{width:132px;height:132px;position:relative;margin-bottom:18px;animation:sealIn 1s var(--spring) both}
+.seal::before{content:"";position:absolute;inset:-30%;border-radius:50%;background:radial-gradient(circle,rgba(227,41,75,.45),transparent 65%);animation:breathe 3s ease-in-out infinite alternate}
+.seal svg{position:relative;width:100%;height:100%}
+@keyframes sealIn{from{opacity:0;transform:scale(.4) rotate(-25deg)}}
+.summary{padding:6px 18px;margin:18px 0 8px}
+.summary .row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line2);font-size:14px}
+.summary .row:last-child{border:0}
+.summary .k{color:var(--muted)}.summary .v{font-weight:800}
+.center{text-align:center}
+
+/* skeleton */
+.skel{border-radius:14px;background:linear-gradient(90deg,#1a0b0e 25%,#2a1216 50%,#1a0b0e 75%);background-size:200% 100%;animation:sk 1.3s infinite}
+@keyframes sk{to{background-position:-200% 0}}
+
+/* ===================== SHEET ===================== */
+.scrim{position:fixed;inset:0;background:rgba(5,1,2,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:50;opacity:0;pointer-events:none;transition:opacity .35s}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;max-width:460px;margin:0 auto;background:linear-gradient(180deg,#1f0c10,#120608);border:1px solid var(--line);border-bottom:0;border-radius:26px 26px 0 0;padding:10px 18px calc(20px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .5s var(--ease);box-shadow:0 -30px 60px -20px rgba(165,15,42,.5)}
+.sheet.open{transform:none}
+.grab{width:40px;height:4px;border-radius:4px;background:#4a2b2e;margin:0 auto 14px}
+.cap-head{background:linear-gradient(135deg,#a50f2a,#6e0718);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.cap-head small{font-size:12px;opacity:.8}
+.cap-head b{display:block;font-family:var(--display);font-size:28px;line-height:1.05;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tile{aspect-ratio:1;border-radius:14px;background:#0f0607;border:1.5px solid #2e1719;display:grid;place-items:center;position:relative;transition:transform .25s var(--spring),border-color .2s,background .2s;animation:pop .45s var(--spring) both}
+@keyframes pop{from{opacity:0;transform:scale(.6)}}
+.tile svg.sh{width:52%;height:52%;transition:transform .25s var(--spring)}
+.tile.on{border-color:var(--ember);background:rgba(165,15,42,.2);transform:scale(.94)}
+.tile.on svg.sh{transform:scale(.85)}
+.tile .tick{position:absolute;top:6px;left:6px;width:20px;height:20px;border-radius:50%;background:var(--ember);display:grid;place-items:center;transform:scale(0);transition:transform .3s var(--spring)}
+.tile.on .tick{transform:scale(1)}
+.cap-foot{display:flex;gap:10px;align-items:center}
+.cap-foot .btn{flex:1}
+.iconbtn{width:48px;height:48px;border-radius:14px;border:1px solid var(--line2);display:grid;place-items:center;flex:none;transition:transform .4s var(--ease)}
+.iconbtn:active{transform:rotate(-180deg)}
 </style>
 </head>
 <body>
+<!-- ===================== SVG SPRITES ===================== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4a68"/><stop offset=".55" stop-color="#b3122e"/><stop offset="1" stop-color="#4a0410"/></linearGradient>
+    <linearGradient id="gR" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0c9b8"/><stop offset="1" stop-color="#7a3a3a"/></linearGradient>
+    <radialGradient id="gI" cx=".5" cy=".4" r=".6"><stop offset="0" stop-color="#2a0a10"/><stop offset="1" stop-color="#0a0304"/></radialGradient>
+  </defs>
+  <!-- Crimson emblem: faceted gem-shield with a keyhole drop -->
+  <symbol id="logo" viewBox="0 0 64 64">
+    <path d="M32 3 L56 14 L56 33 C56 47 45 56 32 61 C19 56 8 47 8 33 L8 14 Z" fill="url(#gC)"/>
+    <path d="M32 3 L56 14 L56 33 C56 47 45 56 32 61 C19 56 8 47 8 33 L8 14 Z" fill="none" stroke="url(#gR)" stroke-width="1.4" opacity=".7"/>
+    <path d="M32 9 L50 17.5 L50 33 C50 43.5 42 50.5 32 54.5 C22 50.5 14 43.5 14 33 L14 17.5 Z" fill="url(#gI)"/>
+    <path d="M32 9 L32 54.5 M14 17.5 L50 33 M50 17.5 L14 33" stroke="#e3294b" stroke-width=".5" opacity=".25"/>
+    <path d="M32 17 C32 17 23.5 27 23.5 32.5 A8.5 8.5 0 0 0 40.5 32.5 C40.5 27 32 17 32 17 Z" fill="url(#gC)"/>
+    <circle cx="32" cy="32" r="2.6" fill="#0a0304"/><path d="M30.6 33.5 L33.4 33.5 L34 39 L30 39 Z" fill="#0a0304"/>
+    <path d="M27.5 28 C28.5 25.5 30 23.5 31 22" stroke="#ffd0d6" stroke-width="1.2" stroke-linecap="round" opacity=".55" fill="none"/>
+  </symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M3 11.5L21 3l-6.5 18-3-7.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="currentColor"/></symbol>
+  <symbol id="i-dot" viewBox="0 0 24 24"><path d="M12 3l2.2 6.8H21l-5.5 4 2.1 6.7L12 16.4l-5.6 4.1 2.1-6.7-5.5-4h6.8z" fill="currentColor"/></symbol>
+</svg>
 
-<div class="topbar">
-  <div class="sysline">
-    <div>VORTEX_NET // P2P PROTOCOL v2.4</div>
-    <div id="pingLine">PING: 24ms | STATUS: CONNECTED</div>
-  </div>
-  <div class="nav">
-    <button class="logo" id="logoBtn"><span class="logo-tag">VTX</span> VORTEX<span>PAY</span></button>
-    <div class="nav-tab active" data-v="market"><span>[01]</span> Каталог</div>
-    <div class="nav-tab go-tab" data-v="go"><span>⚡</span> ПОДПИСКА GO</div>
-    <div class="nav-tab" data-v="purchases"><span>[02]</span> Сделки</div>
-    <div class="nav-tab" data-v="sales"><span>[03]</span> Продажи</div>
-    <div class="nav-tab" data-v="messages"><span>[04]</span> Терминал/Чат</div>
-    <div class="nav-tab" data-v="support"><span>[05]</span> Поддержка</div>
-    <div class="user-badge" id="userBadge">
-      <div class="avatar-cli" id="cliAvatar">V</div>
-      <span id="cliNick" style="font-size:11.5px;font-weight:600">user</span>
-      <span class="tag tag-cyan" id="cliTier">FREE</span>
+<div class="app">
+  <header class="hdr">
+    <svg class="mark"><use href="#logo"/></svg>
+    <div class="brand">CRIMSON<small data-i18n="tagline"></small></div>
+    <div class="stepno" id="stepno"></div>
+  </header>
+  <div class="progress" id="progress"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="banner" id="banner" hidden><svg width="16" height="16"><use href="#i-eye"/></svg><span data-i18n="preview"></span></div>
+
+  <!-- Boot: checking returning user -->
+  <section class="screen" id="s0">
+    <div class="skel" style="height:14px;width:30%;margin-bottom:14px"></div>
+    <div class="skel" style="height:40px;width:80%;margin-bottom:10px"></div>
+    <div class="skel" style="height:16px;width:60%;margin-bottom:28px"></div>
+    <div class="skel" style="height:64px;margin-bottom:12px"></div>
+    <div class="skel" style="height:54px"></div>
+    <div id="bootErr"></div>
+  </section>
+
+  <!-- Step 1: Human check -->
+  <section class="screen" id="s1">
+    <div class="eyebrow" data-i18n="s1eyebrow"></div>
+    <h1 data-i18n-html="s1title"></h1>
+    <p class="lead" data-i18n="s1lead"></p>
+    <div class="card robot" id="robot" role="checkbox" aria-checked="false" tabindex="0">
+      <div class="cbx"><span class="spin"></span><svg width="18" height="18" viewBox="0 0 24 24" color="#fff"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><div class="lbl" data-i18n="robot"></div><div class="sub" id="robotSub" data-i18n="robotSub"></div></div>
+      <div class="rc"><svg><use href="#logo"/></svg>CRIMSON<br>GUARD</div>
     </div>
+    <div class="spacer"></div>
+    <div>
+      <button class="btn btn-p" id="getCode" disabled><svg width="18" height="18"><use href="#i-send"/></svg><span data-i18n="getCode"></span></button>
+      <div class="note"><svg width="15" height="15"><use href="#i-lock"/></svg><span data-i18n="s1note"></span></div>
+    </div>
+  </section>
+
+  <!-- Step 2: Code -->
+  <section class="screen" id="s2">
+    <div class="eyebrow" data-i18n="s2eyebrow"></div>
+    <h1 data-i18n-html="s2title"></h1>
+    <p class="lead" id="s2lead" data-i18n="s2lead"></p>
+    <div id="codeArea"></div>
+    <div class="spacer"></div>
+  </section>
+
+  <!-- Step 3: Language -->
+  <section class="screen" id="s3">
+    <div class="eyebrow" data-i18n="s3eyebrow"></div>
+    <h1 data-i18n-html="s3title"></h1>
+    <p class="lead" data-i18n="s3lead"></p>
+    <div class="langs">
+      <button class="card lang" data-lang="en"><span class="code">EN</span><span><div class="n">English</div><div class="d" data-i18n="enDesc"></div></span><span class="radio"></span></button>
+      <button class="card lang" data-lang="ru"><span class="code">RU</span><span><div class="n">Русский</div><div class="d" data-i18n="ruDesc"></div></span><span class="radio"></span></button>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn btn-p" id="langNext"><span data-i18n="continue"></span></button>
+  </section>
+
+  <!-- Step 4: Plan -->
+  <section class="screen" id="s4">
+    <div class="eyebrow" data-i18n="s4eyebrow"></div>
+    <h1 data-i18n-html="s4title"></h1>
+    <p class="lead" data-i18n="s4lead"></p>
+    <div class="plans">
+      <button class="card plan sel" id="planFree">
+        <div class="top"><span class="pn">Free</span><span class="price" data-i18n="freePrice"></span><span class="radio" style="margin-left:auto"></span></div>
+        <ul>
+          <li><svg width="14" height="14" color="#e3294b"><use href="#i-check"/></svg><span data-i18n="f1"></span></li>
+          <li><svg width="14" height="14" color="#e3294b"><use href="#i-check"/></svg><span data-i18n="f2"></span></li>
+          <li><svg width="14" height="14" color="#e3294b"><use href="#i-check"/></svg><span data-i18n="f3"></span></li>
+        </ul>
+      </button>
+      <div class="card plan go" id="planGo" aria-disabled="true">
+        <span class="badge"><svg width="11" height="11"><use href="#i-lock"/></svg><span data-i18n="inDev"></span></span>
+        <div class="top"><span class="pn">GO</span><span class="price" data-i18n="goPrice"></span></div>
+        <ul>
+          <li><svg width="14" height="14" color="#d9b98c"><use href="#i-dot"/></svg><span data-i18n="g1"></span></li>
+          <li><svg width="14" height="14" color="#d9b98c"><use href="#i-dot"/></svg><span data-i18n="g2"></span></li>
+          <li><svg width="14" height="14" color="#d9b98c"><use href="#i-dot"/></svg><span data-i18n="g3"></span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="msg err" id="saveMsg"></div>
+    <div class="spacer"></div>
+    <button class="btn btn-p" id="planSave"><span data-i18n="continue"></span></button>
+  </section>
+
+  <!-- Step 5: Done -->
+  <section class="screen" id="s5">
+    <div class="done-hero">
+      <div class="seal"><svg><use href="#logo"/></svg></div>
+      <div class="eyebrow" data-i18n="s5eyebrow"></div>
+      <h1 data-i18n-html="s5title"></h1>
+      <p class="lead" style="margin:0 auto" data-i18n="s5lead"></p>
+    </div>
+    <div class="card summary">
+      <div class="row"><span class="k" data-i18n="sumName"></span><span class="v" id="sumName"></span></div>
+      <div class="row"><span class="k" data-i18n="sumLang"></span><span class="v" id="sumLang"></span></div>
+      <div class="row"><span class="k" data-i18n="sumPlan"></span><span class="v">Free</span></div>
+    </div>
+    <div class="center"><button class="link" id="changeSettings" data-i18n="change"></button></div>
+    <div class="spacer"></div>
+    <button class="btn btn-p" id="closeBtn"><span data-i18n="close"></span></button>
+  </section>
+</div>
+
+<!-- Captcha bottom sheet -->
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <div class="grab"></div>
+  <div class="cap-head"><small data-i18n="capSelect"></small><b id="capTarget"></b><small data-i18n="capHint"></small></div>
+  <div class="grid" id="capGrid"></div>
+  <div class="cap-foot">
+    <button class="iconbtn" id="capRefresh" aria-label="refresh"><svg width="20" height="20"><use href="#i-refresh"/></svg></button>
+    <button class="btn btn-p" id="capVerify"><span data-i18n="verify"></span></button>
   </div>
+  <div class="msg err" id="capMsg"></div>
 </div>
-
-<main id="mainView"></main>
-
-<div class="statusbar">
-  <div><span style="color:var(--neon-green)">●</span> VORTEX_DAEMON_OK | REQ_TODAY: <span id="statReq" style="color:var(--tx-bright)">0/25</span></div>
-  <div id="statExpire">TIER: FREE</div>
-</div>
-
-<div class="toast" id="toast"></div>
 
 <script>
-const DB="https://tetete-d31c8-default-rtdb.firebaseio.com", ADMIN="8515868917", TTL=30;
-const tg=window.Telegram&&Telegram.WebApp;if(tg){tg.ready();tg.expand()}
-const tu=tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user, uid=tu?String(tu.id):null;
-const $=i=>document.getElementById(i);
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+/* ==========================================================================
+   CRIMSON — Telegram Mini App access gate (single file, vanilla JS)
+   ========================================================================== */
 
-async function fb(p,m="GET",b,q=""){
-  const o={method:m};
-  if(b!==undefined){o.headers={"Content-Type":"application/json"};o.body=JSON.stringify(b)}
-  const r=await fetch(`${DB}/${p}.json${q}`,o);
-  if(!r.ok)throw Error("HTTP "+r.status);
-  return r.json();
+/* Firebase config kept for reference only — the app talks to RTDB over REST. */
+const firebaseConfig = {
+  apiKey: "AIzaSyC9bFmAi81u8wgR4t59ytgACJGj8gJBYKw",
+  projectId: "ttew-61e15",
+  databaseURL: "https://ttew-61e15-default-rtdb.firebaseio.com"
+};
+const DB = "https://ttew-61e15-default-rtdb.firebaseio.com";
+
+/* ---------- Telegram bootstrap ---------- */
+const tg = window.Telegram && window.Telegram.WebApp;
+const inTelegram = !!(tg && tg.initData);
+const tgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || {};
+const uid = inTelegram && tgUser.id ? String(tgUser.id) : "guest";
+
+if (tg) {
+  try { tg.ready(); tg.expand(); tg.setHeaderColor("#0c0506"); tg.setBackgroundColor("#0c0506"); } catch (e) {}
 }
 
-function toast(t){
-  const e=$("toast");e.textContent="> "+t;e.classList.add("show");
-  clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("show"),2800);
-}
+/* Haptics — no-ops outside Telegram */
+const haptic = {
+  tap(s = "light") { try { tg.HapticFeedback.impactOccurred(s); } catch (e) {} },
+  sel() { try { tg.HapticFeedback.selectionChanged(); } catch (e) {} },
+  note(t) { try { tg.HapticFeedback.notificationOccurred(t); } catch (e) {} }
+};
 
-const rub=n=>Number(n).toLocaleString("ru-RU",{minimumFractionDigits:2,maximumFractionDigits:2})+" ₽";
-const dt=t=>new Date(t).toLocaleString("ru-RU",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
-
-let me={};
-let quotaData={dayUsed:12,dayMax:25,weekUsed:45,weekMax:150,monthUsed:180,monthMax:600,expiresTs:0,isGo:false};
-
-// Инициализация квот пользователя
-function updateQuotasFromProfile(p){
-  const now=Date.now();
-  const subUntil=p.sub_go_until||0;
-  const isGo=subUntil>now;
-  quotaData.isGo=isGo;
-  quotaData.expiresTs=subUntil;
-  if(isGo){
-    quotaData.dayMax=250;
-    quotaData.weekMax=1500;
-    quotaData.monthMax=6000;
-  } else {
-    quotaData.dayMax=25;
-    quotaData.weekMax=150;
-    quotaData.monthMax=600;
+/* ---------- i18n ---------- */
+const I18N = {
+  en: {
+    tagline: "Access gate", preview: "Preview mode: open this app from the bot to verify",
+    step: "Step",
+    s1eyebrow: "Checkpoint", s1title: "Prove you are <em>human.</em>", s1lead: "One quick check before the vault door opens.",
+    robot: "I'm not a robot", robotSub: "Tap to start the check", robotDone: "Verified just now",
+    getCode: "Get code", s1note: "The code will be delivered privately in your chat with the bot.",
+    capSelect: "Select all", capHint: "Then press Verify. Tap the arrow for a new set.",
+    circle: "circles", square: "squares", triangle: "triangles",
+    verify: "Verify", capWrong: "Not quite. A fresh set is ready.", capEmpty: "Select at least one tile.",
+    s2eyebrow: "One-time code", s2title: "Enter the <em>code.</em>", s2lead: "Six digits, sent by the bot.",
+    sending: "Sending code via bot...", hint: "Check your chat with the bot",
+    resendIn: "Resend in {s}s", resend: "Resend code", checking: "Checking...",
+    bad: "Wrong code. Attempts left: {n}", expired: "Code expired. Request a new one.", locked: "Too many attempts. Request a new code.",
+    cooldown: "Too soon. You can request a new code in {s}s.", denied: "Verification failed, reopen the app from the bot",
+    blocked: "Press Start in the bot first", openBot: "Open the bot",
+    noResponse: "Bot is not responding", noResponseSub: "It may be offline. Try again in a moment.",
+    netErr: "Network error. Check your connection.", retry: "Retry", requestNew: "Request new code", accepted: "Code accepted",
+    unknown: "Unexpected response from the bot.",
+    s3eyebrow: "Language", s3title: "Choose your <em>tongue.</em>", s3lead: "The whole app switches instantly.",
+    enDesc: "Interface and bot messages", ruDesc: "Интерфейс и сообщения бота",
+    continue: "Continue",
+    s4eyebrow: "Plan", s4title: "Pick your <em>tier.</em>", s4lead: "Start free. GO is being forged.",
+    freePrice: "0 / forever", goPrice: "Soon", inDev: "In development",
+    f1: "Core bot access", f2: "Standard response speed", f3: "Basic notifications",
+    g1: "Priority queue", g2: "Extended limits", g3: "Private features",
+    saving: "Saving...", saveErr: "Could not save. Check your connection and retry.",
+    s5eyebrow: "Access granted", s5title: "The door is <em>open.</em>", s5lead: "You are verified. Return to the bot to continue.",
+    sumName: "Account", sumLang: "Language", sumPlan: "Plan", change: "Change settings", close: "Close",
+    bootErr: "Could not load your profile.", guest: "Guest"
+  },
+  ru: {
+    tagline: "Шлюз доступа", preview: "Режим просмотра: откройте приложение из бота для проверки",
+    step: "Шаг",
+    s1eyebrow: "Проверка", s1title: "Докажите, что вы <em>человек.</em>", s1lead: "Одна короткая проверка перед тем, как дверь откроется.",
+    robot: "Я не робот", robotSub: "Нажмите, чтобы начать", robotDone: "Проверка пройдена",
+    getCode: "Получить код", s1note: "Код придёт лично вам в чат с ботом.",
+    capSelect: "Выберите все", capHint: "Затем нажмите «Проверить». Стрелка — новый набор.",
+    circle: "круги", square: "квадраты", triangle: "треугольники",
+    verify: "Проверить", capWrong: "Не совсем. Новый набор готов.", capEmpty: "Выберите хотя бы одну ячейку.",
+    s2eyebrow: "Одноразовый код", s2title: "Введите <em>код.</em>", s2lead: "Шесть цифр от бота.",
+    sending: "Отправляем код через бота...", hint: "Проверьте чат с ботом",
+    resendIn: "Повторно через {s} с", resend: "Отправить код снова", checking: "Проверяем...",
+    bad: "Неверный код. Осталось попыток: {n}", expired: "Код истёк. Запросите новый.", locked: "Слишком много попыток. Запросите новый код.",
+    cooldown: "Слишком рано. Новый код можно запросить через {s} с.", denied: "Проверка не пройдена, откройте приложение заново из бота",
+    blocked: "Сначала нажмите Start в боте", openBot: "Открыть бота",
+    noResponse: "Бот не отвечает", noResponseSub: "Возможно, он офлайн. Попробуйте чуть позже.",
+    netErr: "Ошибка сети. Проверьте подключение.", retry: "Повторить", requestNew: "Запросить новый код", accepted: "Код принят",
+    unknown: "Неожиданный ответ от бота.",
+    s3eyebrow: "Язык", s3title: "Выберите <em>язык.</em>", s3lead: "Всё приложение переключится мгновенно.",
+    enDesc: "Interface and bot messages", ruDesc: "Интерфейс и сообщения бота",
+    continue: "Продолжить",
+    s4eyebrow: "Тариф", s4title: "Выберите <em>уровень.</em>", s4lead: "Начните бесплатно. GO уже куётся.",
+    freePrice: "0 / навсегда", goPrice: "Скоро", inDev: "В разработке",
+    f1: "Базовый доступ к боту", f2: "Стандартная скорость", f3: "Основные уведомления",
+    g1: "Приоритетная очередь", g2: "Расширенные лимиты", g3: "Закрытые функции",
+    saving: "Сохраняем...", saveErr: "Не удалось сохранить. Проверьте подключение и повторите.",
+    s5eyebrow: "Доступ открыт", s5title: "Дверь <em>открыта.</em>", s5lead: "Вы прошли проверку. Вернитесь в бота, чтобы продолжить.",
+    sumName: "Аккаунт", sumLang: "Язык", sumPlan: "Тариф", change: "Изменить настройки", close: "Закрыть",
+    bootErr: "Не удалось загрузить профиль.", guest: "Гость"
   }
-  $("cliTier").textContent=isGo?"GO":"FREE";
-  $("cliTier").className=isGo?"tag tag-gold":"tag tag-cyan";
-  $("statReq").textContent=`${quotaData.dayUsed}/${quotaData.dayMax}`;
-  if(isGo){
-    const dLeft=Math.ceil((subUntil-now)/(86400000));
-    $("statExpire").innerHTML=`TIER: <b style="color:var(--neon-gold)">GO</b> (истекает через ${dLeft} дн.)`;
-  } else {
-    $("statExpire").textContent="TIER: FREE (25 req/day)";
-  }
+};
+const lc = (tgUser.language_code || navigator.language || "en").toLowerCase();
+let lang = lc.startsWith("ru") ? "ru" : "en";
+const t = (k, v = {}) => (I18N[lang][k] || k).replace(/\{(\w+)\}/g, (_, x) => v[x]);
+
+/* Re-render every static string, then the dynamic bits of the current screen */
+function applyI18n() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = t(el.dataset.i18n));
+  document.querySelectorAll("[data-i18n-html]").forEach(el => el.innerHTML = t(el.dataset.i18nHtml));
+  if (captchaOk) $("#robotSub").textContent = t("robotDone");
+  $("#capTarget").textContent = t(cap.target || "circle");
+  renderStepNo();
+  if (step === 2) renderCode();
+  if (step === 5) renderSummary();
 }
 
-async function cmd(name,args){
-  const r=await fb("cmds","POST",{initData:tg?tg.initData:"",cmd:name,args,ts:Date.now()});
-  for(let i=0;i<12;i++){
-    await sleep(800);
-    const x=await fb("cmd_res/"+r.name);
-    if(x){fb("cmd_res/"+r.name,"DELETE");return x}
-  }
-  return{ok:false,msg:"Таймаут шлюза бота"};
-}
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const nonceGen = () => { const a = "abcdefghijklmnopqrstuvwxyz0123456789"; let s = ""; for (let i = 0; i < 12; i++) s += a[Math.floor(Math.random() * a.length)]; return s; };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// Покупка подписки GO через Telegram Stars Invoice
-async function buyGoSubscription(){
-  if(!uid)return toast("Ошибка сессии: откройте WebApp в боте");
-  toast("Генерация Telegram Stars инвойса на 150 ⭐️...");
-  try{
-    await fb("invoice_links/"+uid,"DELETE");
-    await fb("invoices/"+uid,"PUT",{stars:150,type:"sub_go",ts:Date.now()});
-    let d=null;const end=Date.now()+14000;
-    while(Date.now()<end){
-      d=await fb("invoice_links/"+uid);
-      if(d&&(d.url||d.error))break;
-      await sleep(1000);
-    }
-    if(!d||d.error)throw Error(d?d.error:"Бот не сгенерировал ссылку на оплату");
-    if(tg&&tg.openInvoice){
-      tg.openInvoice(d.url,async status=>{
-        if(status==="paid"){
-          toast("Оплата подтверждена! Активируем GO...");
-          await sleep(1500);
-          await loadUser();
-          go("go");
-        } else {
-          toast("Оплата отменена или не завершена");
-        }
-      });
-    } else {
-      window.open(d.url,"_blank");
-    }
-  }catch(e){
-    toast("ERR: "+e.message);
-  }
-}
-
-// Загрузка пользователя
-async function loadUser(){
-  if(!uid)return;
-  const p=(await fb("profiles/"+uid).catch(()=>null))||{};
-  me=p;
-  $("cliNick").textContent=p.nick||p.first_name||`id_${uid.slice(-4)}`;
-  if(p.avatar||p.tg_avatar){
-    $("cliAvatar").innerHTML=`<img src="${p.avatar||p.tg_avatar}">`;
-  }
-  updateQuotasFromProfile(p);
-}
-
-// Роутинг видов
-const V={};
-function go(view,arg){
-  document.querySelectorAll(".nav-tab").forEach(t=>t.classList.toggle("active",t.dataset.v===view));
-  window.scrollTo(0,0);
-  $("mainView").innerHTML='<div style="padding:40px;text-align:center;color:var(--tx-dim)">[FETCHING_DATA...]</div>';
-  (V[view]||V.market)(arg).catch(e=>{
-    $("mainView").innerHTML=`<div class="term-box"><div class="term-body" style="color:var(--neon-red)">ERR_VIEW_CRASH: ${esc(e.message)}</div></div>`;
+/* Firebase REST helper — throws on network / HTTP failure */
+async function db(path, method = "GET", body) {
+  const res = await fetch(DB + "/" + path + ".json", {
+    method, headers: { "Content-Type": "application/json" },
+    body: body === undefined ? undefined : JSON.stringify(body)
   });
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  return res.json();
 }
 
-document.querySelectorAll(".nav-tab").forEach(t=>t.onclick=()=>go(t.dataset.v));
-$("logoBtn").onclick=()=>go("market");
-$("userBadge").onclick=()=>go("go");
-
-// ----------------- ВИД: GO SUBSCRIPTION & КВОТЫ -----------------
-V.go=async()=>{
-  const now=Date.now();
-  const isGo=quotaData.isGo;
-  const expTs=quotaData.expiresTs;
-
-  let expireString="—";
-  let timeLeftString="Подписка не активна";
-  if(isGo&&expTs>now){
-    const d=new Date(expTs);
-    expireString=`${d.toLocaleDateString("ru-RU")} ${d.toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"})} UTC`;
-    const diffHours=Math.max(0,Math.floor((expTs-now)/(3600000)));
-    const days=Math.floor(diffHours/24);
-    const hours=diffHours%24;
-    timeLeftString=`Осталось: ${days} дн. ${hours} ч.`;
+/* Poll responses/{uid} for a matching nonce. A "session" token lets us cancel
+   when the user navigates away: any call to cancelPolls() invalidates it. */
+let pollSession = 0;
+function cancelPolls() { pollSession++; }
+async function pollResponse(nonce, timeout = 20000) {
+  const my = ++pollSession, start = Date.now();
+  while (Date.now() - start < timeout) {
+    await sleep(1000);
+    if (my !== pollSession) return { cancelled: true };
+    let r;
+    try { r = await db("responses/" + uid); } catch (e) { if (my !== pollSession) return { cancelled: true }; return { netError: true }; }
+    if (my !== pollSession) return { cancelled: true };
+    if (r && r.nonce === nonce) return r;
   }
+  return { timeout: true };
+}
 
-  $("mainView").innerHTML=`
-    <div class="pt"><span style="color:var(--neon-gold)">⚡</span> ТАРИФ И СИСТЕМА ЛИМИТОВ // GO</div>
+/* ---------- step navigation ---------- */
+let step = 0, fromDone = false;
+function go(n, dir = "fwd") {
+  cancelPolls();
+  stopTimer();
+  step = n;
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active", "fwd", "back"));
+  const el = $("#s" + n); void el.offsetWidth;
+  el.classList.add("active", dir);
+  document.querySelectorAll("#progress i").forEach((b, i) => { b.classList.toggle("on", i < n); b.classList.toggle("cur", i === n - 1); });
+  renderStepNo();
+  // Telegram BackButton where it makes sense
+  if (tg && tg.BackButton) { (n === 2 || n === 4 || (n === 3 && fromDone)) ? tg.BackButton.show() : tg.BackButton.hide(); }
+  if (n === 2) startRequest();
+  if (n === 3) renderLang();
+  if (n === 5) renderSummary();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function goBack() {
+  haptic.tap();
+  if (step === 2) go(1, "back");
+  else if (step === 4) go(3, "back");
+  else if (step === 3 && fromDone) go(5, "back");
+}
+if (tg && tg.BackButton) tg.BackButton.onClick(goBack);
+function renderStepNo() { $("#stepno").innerHTML = step ? `${t("step")} <b>${step}</b>/5` : ""; }
 
-    <div class="go-banner">
-      <div style="font-family:var(--font-tech);font-size:24px;color:var(--neon-gold);margin-bottom:6px">VORTEX GO // DEVELOPER TIER</div>
-      <p style="color:var(--tx-dim);max-width:680px;margin-bottom:14px;font-size:12.5px">
-        Специальный тарифный план для активных трейдеров и разработчиков. Повышает суточный лимит запросов в 10 раз, снимает задержки очереди, открывает команды терминала и дает статус [GO] в профиле.
-      </p>
-
-      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-        <div style="font-size:22px;font-weight:800;color:var(--tx-bright);font-family:var(--font-tech)">150 ⭐️ <span style="font-size:12px;color:var(--tx-dim);font-family:var(--font-mono)">/ месяц</span></div>
-        <button class="btn btn-gold" id="btnBuyGo">${isGo?"⚡ ПРОДЛИТЬ ПОДПИСКУ GO":"⚡ ОФОРМИТЬ ПОДПИСКУ GO"}</button>
-        ${isGo?'<span class="tag tag-green">АКТИВНА</span>':'<span class="tag tag-cyan">БАЗОВЫЙ ДОСТУП</span>'}
-      </div>
-    </div>
-
-    <!-- МЕНЕДЖЕР КВОТ И ЛИМИТОВ -->
-    <div class="term-box">
-      <div class="term-header">
-        <div class="mac-dots"><div class="mac-dot"></div><div class="mac-dot"></div><div class="mac-dot"></div></div>
-        <div>QUOTA_MONITOR // VORTEX_API</div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <span>СПРАВКА О ЛИМИТАХ</span>
-          <div class="q-mark">?
-            <div class="q-tip">
-              <b>Пояснение системы лимитов:</b><br><br>
-              • <b>Лимит в день:</b> сбрасывается ежедневно в 00:00 UTC. С подпиской GO вам доступно <b>250 запросов</b> в день (вместо 25 на базовом).<br>
-              • <b>Лимит в неделю:</b> 1,500 запросов.<br>
-              • <b>Лимит в месяц:</b> 6,000 запросов.<br>
-              • При исчерпании лимита API отвечает статусом 429 Too Many Requests до момента сброса.
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="term-body">
-        
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-          <div>
-            <div style="font-size:11px;color:var(--tx-dim)">ТЕКУЩИЙ СТАТУС ПОДПИСКИ</div>
-            <div style="font-size:15px;font-weight:700;color:${isGo?'var(--neon-gold)':'var(--neon-cyan)'}">
-              ${isGo?'⚡ ПОДПИСКА GO АКТИВИРОВАНА':'БАЗОВЫЙ ПЛАН (FREE)'}
-            </div>
-          </div>
-          <div style="text-align:right">
-            <div style="font-size:11px;color:var(--tx-dim)">СРОК ДЕЙСТВИЯ: ДО СКОЛЬКИ ИСТЕКАЕТ</div>
-            <div style="font-size:13px;font-weight:600;color:var(--tx-bright)">
-              ${expireString} <span style="color:var(--tx-dim);font-size:11px">(${timeLeftString})</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="quota-grid">
-          <div class="quota-cell">
-            <div class="quota-header">
-              <span>ЛИМИТ В ДЕНЬ</span>
-              <span class="code-inline">${quotaData.dayUsed} / ${quotaData.dayMax} req</span>
-            </div>
-            <div class="quota-val">${quotaData.dayMax} <span style="font-size:11px;color:var(--tx-dim)">макс/сутки</span></div>
-            <div class="quota-bar">
-              <div class="quota-fill ${isGo?'gold':''}" style="width:${(quotaData.dayUsed/quotaData.dayMax)*100}%"></div>
-            </div>
-            <div style="font-size:10px;color:var(--tx-dim);margin-top:6px">Сброс: 00:00 UTC</div>
-          </div>
-
-          <div class="quota-cell">
-            <div class="quota-header">
-              <span>ЛИМИТ В НЕДЕЛЮ</span>
-              <span class="code-inline">${quotaData.weekUsed} / ${quotaData.weekMax} req</span>
-            </div>
-            <div class="quota-val">${quotaData.weekMax} <span style="font-size:11px;color:var(--tx-dim)">макс/нед</span></div>
-            <div class="quota-bar">
-              <div class="quota-fill ${isGo?'gold':''}" style="width:${(quotaData.weekUsed/quotaData.weekMax)*100}%"></div>
-            </div>
-            <div style="font-size:10px;color:var(--tx-dim);margin-top:6px">Сброс: каждый пн.</div>
-          </div>
-
-          <div class="quota-cell">
-            <div class="quota-header">
-              <span>ЛИМИТ В МЕСЯЦ</span>
-              <span class="code-inline">${quotaData.monthUsed} / ${quotaData.monthMax} req</span>
-            </div>
-            <div class="quota-val">${quotaData.monthMax} <span style="font-size:11px;color:var(--tx-dim)">макс/мес</span></div>
-            <div class="quota-bar">
-              <div class="quota-fill ${isGo?'gold':''}" style="width:${(quotaData.monthUsed/quotaData.monthMax)*100}%"></div>
-            </div>
-            <div style="font-size:10px;color:var(--tx-dim);margin-top:6px">Скользящее окно 30 дн.</div>
-          </div>
-        </div>
-
-        <!-- ТЕРМИНАЛ КОМАНД CLI -->
-        <div style="font-size:12px;font-weight:700;margin-top:16px;color:var(--tx-bright);display:flex;align-items:center;gap:6px">
-          <span>КОДЕРСКИЙ ТЕРМИНАЛ // CLI</span>
-          <span class="tag tag-cyan">SHELL</span>
-        </div>
-        <div class="cli-box">
-          <div class="cli-log" id="cliOutput">
-            <div>[VTX-CLI v2.4 initialized. Type 'help' to inspect commands.]</div>
-            <div>[Current tier: ${isGo?'GO (Unrestricted)':'FREE'}. Daily limit: ${quotaData.dayMax}]</div>
-          </div>
-          <div class="cli-input-line">
-            <span class="cli-prompt">vortex@user:~$</span>
-            <input type="text" class="cli-input" id="cliCmdInput" placeholder="bump-all, ping, quotas, tier, help..." autocomplete="off">
-          </div>
-        </div>
-
-      </div>
-    </div>
-  `;
-
-  $("btnBuyGo").onclick=buyGoSubscription;
-
-  // Обработка CLI команд
-  const cmdInp=$("cliCmdInput");
-  const logOut=$("cliOutput");
-  cmdInp.onkeydown=async e=>{
-    if(e.key==="Enter"){
-      const raw=cmdInp.value.trim();
-      if(!raw)return;
-      cmdInp.value="";
-      const line=document.createElement("div");
-      line.innerHTML=`<span style="color:var(--neon-cyan)">vortex@user:~$</span> ${esc(raw)}`;
-      logOut.appendChild(line);
-
-      const parts=raw.split(" ");
-      const c=parts[0].toLowerCase();
-      let resText="";
-
-      if(c==="help"){
-        resText="Доступные команды:<br>• <b>bump-all</b> — поднять все свои лоты без кулдауна (требует GO)<br>• <b>quotas</b> — статус лимитов в день/неделю/месяц<br>• <b>tier</b> — статус подписки GO<br>• <b>ping</b> — задержка шлюза<br>• <b>clear</b> — очистить консоль";
-      } else if(c==="ping"){
-        resText="PONG: 21ms (P2P Cluster #4 Online)";
-      } else if(c==="quotas"){
-        resText=`Лимиты: ${quotaData.dayUsed}/${quotaData.dayMax} в день | ${quotaData.weekUsed}/${quotaData.weekMax} в нед | ${quotaData.monthUsed}/${quotaData.monthMax} в мес`;
-      } else if(c==="tier"){
-        resText=quotaData.isGo?`Статус: GO TIER активен до ${expireString}`:"Статус: FREE TIER (150 ⭐️/мес для апгрейда)";
-      } else if(c==="clear"){
-        logOut.innerHTML="";
-        return;
-      } else if(c==="bump-all"){
-        if(!quotaData.isGo){
-          resText="<span style='color:var(--neon-red)'>ACCESS_DENIED:</span> Команда 'bump-all' доступна только для пользователей подписки GO!";
-        } else {
-          resText="Выполняю пакетный подъем всех товаров...";
-          const r=await cmd("cli_bump_all",{});
-          resText=r.ok?`<span style='color:var(--neon-green)'>SUCCESS:</span> ${esc(r.msg)}`:`<span style='color:var(--neon-red)'>FAIL:</span> ${esc(r.msg)}`;
-        }
-      } else {
-        resText=`Команда не распознана: '${esc(c)}'. Введите 'help'.`;
-      }
-
-      const resLine=document.createElement("div");
-      resLine.innerHTML=`> ${resText}`;
-      logOut.appendChild(resLine);
-      logOut.scrollTop=logOut.scrollHeight;
-    }
-  };
+/* ==========================================================================
+   STEP 1 — human check + captcha
+   ========================================================================== */
+let captchaOk = false;
+const cap = { target: "circle", shapes: [], picked: new Set() };
+const SHAPES = ["circle", "square", "triangle"];
+const shapeSVG = (s, i) => {
+  const hue = ["#e3294b", "#ff6b7f", "#c41634", "#f3e6e2", "#d9b98c"][i % 5];
+  const rot = Math.floor(Math.random() * 40 - 20);
+  const inner = s === "circle" ? `<circle cx="50" cy="50" r="38"/>`
+    : s === "square" ? `<rect x="15" y="15" width="70" height="70" rx="6" transform="rotate(${rot} 50 50)"/>`
+    : `<path d="M50 10 L90 84 L10 84 Z" stroke-linejoin="round" transform="rotate(${rot} 50 50)"/>`;
+  const fill = Math.random() < .5;
+  return `<svg class="sh" viewBox="0 0 100 100" fill="${fill ? hue : "none"}" stroke="${hue}" stroke-width="${fill ? 0 : 8}">${inner}</svg>`;
 };
+function genCaptcha() {
+  cap.target = SHAPES[Math.floor(Math.random() * 3)];
+  const others = SHAPES.filter(s => s !== cap.target);
+  const n = 2 + Math.floor(Math.random() * 3); // 2..4 targets
+  const arr = Array.from({ length: 9 }, (_, i) => i < n ? cap.target : others[Math.floor(Math.random() * 2)]);
+  for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
+  cap.shapes = arr; cap.picked = new Set();
+  $("#capTarget").textContent = t(cap.target);
+  $("#capGrid").innerHTML = arr.map((s, i) =>
+    `<button class="tile" data-i="${i}" style="animation-delay:${i * 35}ms">${shapeSVG(s, i)}<span class="tick"><svg width="12" height="12" color="#fff"><use href="#i-check"/></svg></span></button>`).join("");
+}
+function openSheet() { genCaptcha(); $("#capMsg").textContent = ""; $("#scrim").classList.add("open"); $("#sheet").classList.add("open"); }
+function closeSheet() { $("#scrim").classList.remove("open"); $("#sheet").classList.remove("open"); }
 
-// ----------------- ВИД: КАТАЛОГ -----------------
-V.market=async()=>{
-  const prods=Object.values((await fb("products").catch(()=>null))||{}).filter(p=>p.active!==false);
-  
-  $("mainView").innerHTML=`
-    <div class="pt"><span style="color:var(--neon-cyan)">[//]</span> РЕПОЗИТОРИЙ ТОВАРОВ // P2P MARKET</div>
+$("#robot").addEventListener("click", () => {
+  const r = $("#robot");
+  if (captchaOk || r.classList.contains("loading")) return;
+  haptic.tap("medium");
+  r.classList.add("loading");
+  setTimeout(() => { r.classList.remove("loading"); openSheet(); }, 1000);
+});
+$("#capGrid").addEventListener("click", e => {
+  const b = e.target.closest(".tile"); if (!b) return;
+  const i = +b.dataset.i; haptic.sel();
+  cap.picked.has(i) ? cap.picked.delete(i) : cap.picked.add(i);
+  b.classList.toggle("on");
+});
+$("#capRefresh").addEventListener("click", () => { haptic.tap(); genCaptcha(); $("#capMsg").textContent = ""; });
+$("#scrim").addEventListener("click", closeSheet);
+$("#capVerify").addEventListener("click", () => {
+  if (!cap.picked.size) { $("#capMsg").textContent = t("capEmpty"); haptic.note("warning"); return; }
+  const correct = cap.shapes.every((s, i) => (s === cap.target) === cap.picked.has(i));
+  if (correct) {
+    haptic.note("success");
+    closeSheet(); captchaOk = true;
+    const r = $("#robot"); r.classList.add("done"); r.setAttribute("aria-checked", "true");
+    $("#robotSub").textContent = t("robotDone");
+    $("#getCode").disabled = false;
+  } else {
+    haptic.note("error");
+    $("#capMsg").textContent = t("capWrong");
+    const g = $("#capGrid"); g.classList.remove("shake"); void g.offsetWidth; g.classList.add("shake");
+    setTimeout(genCaptcha, 450);
+  }
+});
+$("#getCode").addEventListener("click", () => { if (captchaOk) { haptic.tap("medium"); go(2); } });
 
-    <div style="display:flex;gap:8px;margin-bottom:14px">
-      <input class="inp" id="searchInp" placeholder="Поиск по названию или категории..." style="flex:1">
-      <button class="btn btn-cyan" id="btnSearch">FIND</button>
-    </div>
+/* ==========================================================================
+   STEP 2 — request + verify code
+   state: sending | input | verifying | timeout | error
+   ========================================================================== */
+const code = { state: "sending", value: "", msg: "", msgType: "info", cooldown: 0, errKey: "", showBot: false, retry: "request" };
+let timer = null;
+function stopTimer() { if (timer) clearInterval(timer); timer = null; }
+function startCountdown(sec) {
+  stopTimer(); code.cooldown = sec; renderResend();
+  timer = setInterval(() => {
+    code.cooldown--; renderResend();
+    if (code.cooldown <= 0) stopTimer();
+    if (code.cooldown <= 0 && code.state === "cooldown") { code.state = "error"; code.errKey = ""; renderCode(); }
+  }, 1000);
+}
 
-    <div class="term-box">
-      <div class="term-header">
-        <div class="mac-dots"><div class="mac-dot"></div><div class="mac-dot"></div><div class="mac-dot"></div></div>
-        <div>ITEMS_COUNT: ${prods.length}</div>
-        <div>STREAM: LIVE</div>
-      </div>
-      <div id="prodContainer">
-        ${prods.map(p=>`
-          <div class="prod-row" onclick="go('offer','${p.id}')">
-            <div>
-              <span class="tag tag-cyan">${esc(p.category||'General')}</span>
-              <b style="color:var(--tx-bright);display:block;margin-top:4px">${esc(p.titleRu||p.titleEn)}</b>
-            </div>
-            <div style="color:var(--tx-dim);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-              ${esc(p.descRu||p.descEn||'—')}
-            </div>
-            <div style="color:var(--neon-green);font-size:11px">
-              ${p.stock!=null?p.stock+' шт.':'∞ inf'}
-            </div>
-            <div style="text-align:right">
-              <span style="font-size:15px;font-weight:800;color:var(--neon-cyan)">${rub(p.price)}</span>
-            </div>
-          </div>
-        `).join("")||'<div style="padding:30px;text-align:center;color:var(--tx-dim)">Нет доступных товаров</div>'}
-      </div>
-    </div>
-  `;
-};
+async function startRequest() {
+  code.state = "sending"; code.value = ""; code.msg = ""; renderCode();
+  const nonce = nonceGen();
+  try {
+    await db("requests/" + uid, "PUT", { nonce, initData: tg ? tg.initData : "", lang, ts: Date.now() });
+  } catch (e) { return showErr("netErr", "request"); }
+  if (step !== 2) return;
+  const r = await pollResponse(nonce);
+  if (r.cancelled) return;
+  if (r.netError) return showErr("netErr", "request");
+  if (r.timeout) return showErr("noResponse", "request", true);
+  switch (r.type) {
+    case "sent":
+      haptic.note("success");
+      code.state = "input"; code.msg = t("hint"); code.msgType = "info"; renderCode(); startCountdown(30); break;
+    case "cooldown":
+      haptic.note("warning");
+      code.state = "cooldown"; code.cooldownTotal = +r.wait || 30; renderCode(); startCountdown(+r.wait || 30); break;
+    case "denied": showErr("denied", null); break;
+    case "blocked": code.showBot = true; showErr("blocked", null); break;
+    default: showErr("unknown", "request");
+  }
+}
 
-// ----------------- ВИД: ТОВАР -----------------
-V.offer=async(id)=>{
-  const p=await fb("products/"+id);
-  if(!p)return toast("Товар не найден");
-  $("mainView").innerHTML=`
-    <a class="btn" style="margin-bottom:12px" onclick="go('market')">← НАЗАД В КАТАЛОГ</a>
-    <div class="term-box">
-      <div class="term-header">
-        <div>ITEM_ID: ${esc(p.id)}</div>
-        <div class="tag tag-cyan">${esc(p.category)}</div>
-      </div>
-      <div class="term-body">
-        <h2 style="font-size:20px;color:var(--tx-bright);margin-bottom:8px">${esc(p.titleRu||p.titleEn)}</h2>
-        <div style="font-size:24px;font-weight:800;color:var(--neon-cyan);margin-bottom:14px">${rub(p.price)}</div>
-        <div style="background:var(--bg-sub);border:1px solid var(--card-border);padding:12px;border-radius:4px;margin-bottom:14px;white-space:pre-wrap;color:var(--tx)">${esc(p.descRu||p.descEn)}</div>
-        <button class="btn btn-cyan" style="padding:10px 20px" id="btnBuyItem">КУПИТЬ (P2P ESCROW)</button>
-      </div>
-    </div>
-  `;
-  $("btnBuyItem").onclick=async()=>{
-    if(p.owner===uid)return toast("Нельзя купить свой собственный товар");
-    toast("Оформление сделки...");
-    const o={id:"O"+Math.random().toString(36).slice(2,8).toUpperCase(),code:Math.random().toString(36).slice(2,8).toUpperCase(),productId:id,title:p.titleRu||p.titleEn,price:p.price,buyerId:uid,buyerName:me.nick||me.first_name,sellerId:p.owner,sellerName:p.sellerName,status:"pending",created:Date.now()};
-    await fb("orders/"+o.id,"PUT",o);
-    toast("Сделка создана!");
-    go("purchases");
-  };
-};
+async function verifyCode() {
+  if (code.state !== "input" || code.value.length !== 6) return;
+  code.state = "verifying"; code.msg = t("checking"); code.msgType = "info"; renderCode();
+  const nonce = nonceGen();
+  try { await db("verify/" + uid, "PUT", { nonce, code: code.value, ts: Date.now() }); }
+  catch (e) { return inputErr(t("netErr")); }
+  const r = await pollResponse(nonce);
+  if (r.cancelled) return;
+  if (r.netError) return inputErr(t("netErr"));
+  if (r.timeout) return showErr("noResponse", "verify", true);
+  switch (r.type) {
+    case "ok":
+      haptic.note("success");
+      code.state = "ok"; code.msg = t("accepted"); code.msgType = "ok"; renderCode();
+      setTimeout(() => { if (step === 2) go(3); }, 650); break;
+    case "bad": inputErr(t("bad", { n: r.left ?? 0 })); break;
+    case "expired": showErr("expired", "request"); break;
+    case "locked": showErr("locked", "request"); break;
+    default: inputErr(t("unknown"));
+  }
+}
+function inputErr(msg) {
+  haptic.note("error");
+  code.state = "input"; code.value = ""; code.msg = msg; code.msgType = "err"; renderCode();
+  const o = $("#otp"); if (o) { o.classList.add("shake"); setTimeout(() => o.classList.remove("shake"), 500); }
+}
+function showErr(key, retry, timeout = false) {
+  if (step !== 2) return;
+  haptic.note("error");
+  code.state = "error"; code.errKey = key; code.retry = retry; code.isTimeout = timeout; renderCode();
+}
 
-// ----------------- ВИД: ПОКУПКИ -----------------
-V.purchases=async()=>{
-  const orders=Object.values((await fb("orders").catch(()=>null))||{}).filter(o=>o.buyerId===uid);
-  $("mainView").innerHTML=`
-    <div class="pt"><span style="color:var(--neon-green)">[//]</span> МОИ СДЕЛКИ (ПОКУПКИ)</div>
-    <div class="term-box">
-      <div class="term-body">
-        ${orders.map(o=>`
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--card-border)">
-            <div>
-              <b>#${esc(o.code)} · ${esc(o.title)}</b>
-              <div style="color:var(--tx-dim);font-size:11px">${dt(o.created)} | Статус: ${esc(o.status)}</div>
-            </div>
-            <div>
-              <span style="font-weight:700;color:var(--neon-cyan);margin-right:10px">${rub(o.price)}</span>
-            </div>
-          </div>
-        `).join("")||'<div style="color:var(--tx-dim)">У вас пока нет покупок.</div>'}
-      </div>
-    </div>
-  `;
-};
+function renderResend() {
+  const b = $("#resend"); if (!b) return;
+  if (code.state === "cooldown") {
+    const m = $("#cdMsg"); if (m) m.textContent = t("cooldown", { s: Math.max(code.cooldown, 0) });
+  }
+  b.disabled = code.cooldown > 0;
+  b.textContent = code.cooldown > 0 ? t("resendIn", { s: code.cooldown }) : t("resend");
+}
 
-// ----------------- ВИД: ПРОДАЖИ -----------------
-V.sales=async()=>{
-  const prods=Object.values((await fb("products").catch(()=>null))||{}).filter(p=>p.owner===uid);
-  $("mainView").innerHTML=`
-    <div class="pt"><span style="color:var(--neon-cyan)">[//]</span> ПАНЕЛЬ ПРОДАВЦА</div>
-    <div class="term-box">
-      <div class="term-header">
-        <div>МОИ ЛОТЫ (${prods.length})</div>
-        <button class="btn btn-cyan" style="padding:4px 8px;font-size:11px" id="btnAddLot">+ НОВЫЙ ЛОТ</button>
-      </div>
-      <div class="term-body" id="lotFormContainer"></div>
-      <div class="term-body">
-        ${prods.map(p=>`
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--card-border)">
-            <div><b>${esc(p.titleRu)}</b> <span style="color:var(--tx-dim)">(${esc(p.category)})</span></div>
-            <div style="display:flex;gap:6px">
-              <span style="font-weight:700;color:var(--neon-cyan)">${rub(p.price)}</span>
-              <button class="btn btn-danger" style="padding:2px 8px;font-size:10px" onclick="deleteProduct('${p.id}')">DEL</button>
-            </div>
-          </div>
-        `).join("")||'<div style="color:var(--tx-dim)">У вас нет выставленных товаров.</div>'}
-      </div>
-    </div>
-  `;
+function renderCode() {
+  const a = $("#codeArea");
+  if (code.state === "sending") {
+    a.innerHTML = `<div class="sending"><div class="pulse"><svg color="#e3294b"><use href="#i-send"/></svg></div><div class="msg info">${t("sending")}</div></div>`;
+    return;
+  }
+  if (code.state === "error") {
+    const isBlock = code.errKey === "blocked";
+    a.innerHTML = `<div class="card errbox shake">
+      <div class="t">${t(code.errKey)}</div>
+      ${code.isTimeout ? `<p>${t("noResponseSub")}</p>` : ""}
+      ${code.retry ? `<button class="btn btn-p" id="errRetry">${t(code.retry === "request" && ["expired", "locked"].includes(code.errKey) ? "requestNew" : "retry")}</button>` : ""}
+      ${isBlock ? `<button class="btn btn-p" id="openBot">${t("openBot")}</button><button class="btn btn-g" id="errRetry2">${t("retry")}</button>` : ""}
+    </div>`;
+    const rb = $("#errRetry");
+    if (rb) rb.onclick = () => { haptic.tap(); code.retry === "verify" ? (code.state = "input", code.value = "", code.msg = "", renderCode()) : startRequest(); };
+    const ob = $("#openBot"); if (ob) ob.onclick = () => { haptic.tap(); tg && tg.close(); };
+    const r2 = $("#errRetry2"); if (r2) r2.onclick = () => { haptic.tap(); startRequest(); };
+    return;
+  }
+  if (code.state === "cooldown") {
+    a.innerHTML = `<div class="card errbox"><div class="t" id="cdMsg"></div><button class="link" id="resend"></button></div>`;
+    $("#resend").onclick = () => { haptic.tap(); startRequest(); };
+    renderResend(); return;
+  }
+  // input / verifying / ok
+  const v = code.value;
+  const cells = Array.from({ length: 6 }, (_, i) =>
+    `<div class="cell ${v[i] ? "fill" : ""} ${i === v.length && code.state === "input" ? "cur" : ""}">${v[i] ? esc(v[i]) : ""}</div>`).join("");
+  if (!$("#otp")) {
+    a.innerHTML = `<div class="otp" id="otp"><input id="otpIn" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" aria-label="code"><div id="cells" style="display:contents"></div></div>
+      <div class="msg" id="codeMsg"></div>
+      <div class="center"><button class="link" id="resend"></button></div>
+      <div class="note"><svg width="15" height="15"><use href="#i-chat"/></svg><span>${t("hint")}</span></div>`;
+    const inp = $("#otpIn");
+    inp.addEventListener("input", () => {
+      const clean = inp.value.replace(/\D/g, "").slice(0, 6);
+      if (code.state !== "input") { inp.value = code.value; return; }
+      if (clean.length > code.value.length) haptic.sel();
+      code.value = clean; inp.value = clean;
+      if (code.msgType === "err" && clean) { code.msg = t("hint"); code.msgType = "info"; }
+      renderCode();
+      if (clean.length === 6) verifyCode();
+    });
+    $("#resend").onclick = () => { if (code.cooldown <= 0) { haptic.tap(); startRequest(); } };
+    setTimeout(() => inp.focus(), 80);
+  }
+  $("#cells").innerHTML = cells;
+  const inp = $("#otpIn"); if (inp.value !== v) inp.value = v;
+  inp.disabled = code.state !== "input";
+  if (code.state === "input" && document.activeElement !== inp) setTimeout(() => inp.focus(), 50);
+  const otp = $("#otp");
+  otp.classList.toggle("busy", code.state === "verifying");
+  otp.classList.toggle("good", code.state === "ok");
+  const m = $("#codeMsg"); m.textContent = code.msg; m.className = "msg " + code.msgType;
+  renderResend();
+}
 
-  $("btnAddLot").onclick=()=>{
-    $("lotFormContainer").innerHTML=`
-      <div style="background:var(--bg-sub);padding:12px;border:1px solid var(--card-border);border-radius:4px;margin-bottom:12px">
-        <div style="font-weight:700;margin-bottom:8px;color:var(--neon-cyan)">> СОЗДАНИЕ НОВОГО ЛОТА</div>
-        <input class="inp" id="nlTitle" placeholder="Название товара" style="margin-bottom:8px">
-        <textarea class="inp" id="nlDesc" placeholder="Описание" style="margin-bottom:8px;min-height:60px"></textarea>
-        <div style="display:flex;gap:8px;margin-bottom:8px">
-          <input class="inp" id="nlPrice" type="number" placeholder="Цена (руб)">
-          <select class="inp" id="nlCat"><option>Игры</option><option>Roblox</option><option>Подписки</option><option>Аккаунты</option></select>
-        </div>
-        <button class="btn btn-cyan" id="nlSave">СОХРАНИТЬ ЛОТ</button>
-      </div>
-    `;
-    $("nlSave").onclick=async()=>{
-      const title=$("nlTitle").value.trim();
-      const price=Number($("nlPrice").value);
-      if(!title||price<=0)return toast("Заполните корректно название и цену");
-      const id="P"+Math.random().toString(36).slice(2,8).toUpperCase();
-      await fb("products/"+id,"PUT",{
-        id,owner:uid,sellerName:me.nick||me.first_name,
-        titleRu:title,titleEn:title,descRu:$("nlDesc").value.trim(),
-        price,category:$("nlCat").value,created:Date.now(),bumpAt:Date.now()
-      });
-      toast("Лот опубликован!");
-      go("sales");
-    };
-  };
-};
+/* ==========================================================================
+   STEP 3 — language
+   ========================================================================== */
+function renderLang() { document.querySelectorAll(".lang").forEach(c => c.classList.toggle("sel", c.dataset.lang === lang)); }
+document.querySelectorAll(".lang").forEach(c => c.addEventListener("click", () => {
+  if (lang === c.dataset.lang) return;
+  haptic.sel(); lang = c.dataset.lang; renderLang(); applyI18n();
+}));
+$("#langNext").addEventListener("click", () => { haptic.tap("medium"); go(4); });
 
-window.deleteProduct=async(id)=>{
-  if(!confirm("Удалить лот?"))return;
-  await fb("products/"+id,"DELETE");
-  toast("Лот удален");
-  go("sales");
-};
+/* ==========================================================================
+   STEP 4 — plan + save
+   ========================================================================== */
+$("#planFree").addEventListener("click", () => haptic.sel());
+$("#planGo").addEventListener("click", () => {
+  haptic.note("warning");
+  const g = $("#planGo"); g.classList.remove("shake"); void g.offsetWidth; g.classList.add("shake");
+});
+$("#planSave").addEventListener("click", async () => {
+  const b = $("#planSave"); if (b.disabled) return;
+  haptic.tap("medium");
+  b.disabled = true; b.innerHTML = `<span class="mini-spin"></span><span>${t("saving")}</span>`;
+  $("#saveMsg").textContent = "";
+  try {
+    await db("users/" + uid, "PUT", { lang, plan: "free", name: tgUser.first_name || "", username: tgUser.username || "", ts: Date.now(), notified: false });
+    haptic.note("success"); fromDone = false; go(5);
+  } catch (e) {
+    haptic.note("error"); $("#saveMsg").textContent = t("saveErr");
+  } finally {
+    b.disabled = false; b.innerHTML = `<span data-i18n="continue">${t("continue")}</span>`;
+  }
+});
 
-// ----------------- ВИД: СООБЩЕНИЯ -----------------
-V.messages=async()=>{
-  $("mainView").innerHTML=`
-    <div class="pt"><span style="color:var(--neon-cyan)">[//]</span> P2P СИСТЕМНЫЙ ЧАТ</div>
-    <div class="term-box">
-      <div class="term-body" style="color:var(--tx-dim)">
-        Откройте конкретный заказ в разделе «Сделки» для доступа к сквозному зашифрованному чату покупатель-продавец.
-      </div>
-    </div>
-  `;
-};
+/* ==========================================================================
+   STEP 5 — done
+   ========================================================================== */
+function renderSummary() {
+  $("#sumName").textContent = tgUser.first_name ? tgUser.first_name + (tgUser.username ? " @" + tgUser.username : "") : t("guest");
+  $("#sumLang").textContent = lang === "ru" ? "Русский" : "English";
+}
+$("#changeSettings").addEventListener("click", () => { haptic.tap(); fromDone = true; go(3, "back"); });
+$("#closeBtn").addEventListener("click", () => { haptic.tap("medium"); if (tg) tg.close(); });
 
-// ----------------- ВИД: ПОДДЕРЖКА & ТИКЕТЫ -----------------
-V.support=async()=>{
-  const tickets=Object.values((await fb("user_tickets/"+uid).catch(()=>null))||{});
-  $("mainView").innerHTML=`
-    <div class="pt"><span style="color:var(--neon-cyan)">[//]</span> СЛУЖБА ПОДДЕРЖКИ // TICKETS</div>
-    <div class="term-box">
-      <div class="term-header">
-        <div>СОЗДАТЬ ТИКЕТ В ТЕХОТДЕЛ</div>
-      </div>
-      <div class="term-body">
-        <select class="inp" id="tTopic" style="margin-bottom:8px">
-          <option>Подписка GO / Квоты</option>
-          <option>Вопрос по оплате / финансам</option>
-          <option>Проблема с заказом</option>
-          <option>Другое</option>
-        </select>
-        <textarea class="inp" id="tText" placeholder="Подробно опишите суть проблемы или вопроса (минимум 10 символов)..." style="min-height:80px;margin-bottom:8px"></textarea>
-        <button class="btn btn-cyan" id="tSend">ОТПРАВИТЬ ТИКЕТ</button>
-      </div>
-    </div>
+/* ==========================================================================
+   BOOT — check returning user
+   ========================================================================== */
+async function boot() {
+  $("#bootErr").innerHTML = "";
+  try {
+    const u = await db("users/" + uid);
+    if (u && typeof u === "object") {
+      if (u.lang === "en" || u.lang === "ru") lang = u.lang;
+      applyI18n(); go(5);
+    } else go(1);
+  } catch (e) {
+    $("#bootErr").innerHTML = `<div class="card errbox" style="margin-top:16px"><div class="t">${t("bootErr")}</div><p>${t("netErr")}</p><button class="btn btn-p" id="bootRetry">${t("retry")}</button></div>`;
+    $("#bootRetry").onclick = () => { haptic.tap(); boot(); };
+  }
+}
 
-    <div class="term-box">
-      <div class="term-header"><div>МОИ ОБРАЩЕНИЯ (${tickets.length})</div></div>
-      <div class="term-body">
-        ${tickets.map(t=>`
-          <div style="padding:10px 0;border-bottom:1px solid var(--card-border)">
-            <div style="display:flex;justify-content:space-between">
-              <b>#${t.id} · ${esc(t.topic)}</b>
-              <span class="tag tag-cyan">${esc(t.status)}</span>
-            </div>
-            <div style="color:var(--tx-dim);font-size:12px;margin:4px 0">${esc(t.text)}</div>
-            ${t.solution?`<div style="color:var(--neon-green);font-size:11.5px">> Ответ инженера: ${esc(t.solution)}</div>`:''}
-          </div>
-        `).join("")||'<div style="color:var(--tx-dim)">У вас нет активных тикетов.</div>'}
-      </div>
-    </div>
-  `;
-
-  $("tSend").onclick=async()=>{
-    const text=$("tText").value.trim();
-    if(text.length<10)return toast("Минимум 10 символов в описании");
-    $("tSend").disabled=true;
-    toast("Отправка тикета в шину...");
-    const r=await cmd("ticket_new",{topic:$("tTopic").value,text,role:"buyer"});
-    if(r.ok){
-      toast("Тикет зарегистрирован!");
-      go("support");
-    } else {
-      toast("ERR: "+r.msg);
-      $("tSend").disabled=false;
-    }
-  };
-};
-
-// Запуск приложения
-(async()=>{
-  await loadUser();
-  go("market");
-})();
+if (!inTelegram) $("#banner").hidden = false;
+applyI18n();
+go(0);
+boot();
 </script>
 </body>
 </html>
