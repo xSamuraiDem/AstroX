@@ -1,317 +1,1191 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="theme-color" content="#160d10">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#100a0d">
+  <meta name="description" content="AstroX — Telegram Mini App">
   <title>AstroX</title>
+
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
     :root {
       color-scheme: dark;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
-      background: #160d10;
-      color: #f4e9e7;
-      --red: #c65350;
-      --muted: #a99999;
-      --line: #402c31;
-      --card: #211519;
+      --bg: #100a0d;
+      --card: #1b1015;
+      --border: #3d202b;
+      --text: #fff5f8;
+      --muted: #b79aa6;
+      --accent: #f04469;
+      --accent-hover: #ff5b7f;
+      --green: #8ce7bc;
     }
-    * { box-sizing: border-box; -webkit-user-select: none; user-select: none; }
-    input, textarea { -webkit-user-select: text; user-select: text; }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
+      min-height: 100dvh;
       background:
-        radial-gradient(ellipse at 80% 0%, #4b1b25 0, transparent 42%),
-        radial-gradient(ellipse at 0% 100%, #35141c 0, transparent 35%),
-        #160d10;
+        radial-gradient(
+          ellipse at 50% -15%,
+          #7e193b66,
+          transparent 60%
+        ),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                   "Segoe UI", sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
     }
-    button, input { font: inherit; }
-    button { color: inherit; }
-    .wrap { width: min(520px, 100%); margin: auto; padding: 20px 18px 36px; }
-    header { display: flex; align-items: center; justify-content: space-between; }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; }
-    .mark {
-      display: grid; place-items: center; width: 34px; height: 34px;
-      border: 1px solid #a54e50; border-radius: 11px;
-      color: #f3aaa2; background: #57252d;
+
+    button, input {
+      font: inherit;
     }
-    .badge {
-      color: #c28b86; border: 1px solid var(--line); border-radius: 999px;
-      padding: 7px 10px; font-size: 10px; letter-spacing: .08em;
+
+    button {
+      cursor: pointer;
+      touch-action: manipulation;
     }
-    .hero { padding: 42px 0 24px; }
-    .eyebrow { color: #d17c75; font-size: 10px; letter-spacing: .16em; }
-    h1 { margin: 14px 0 10px; font-size: clamp(40px, 12vw, 58px); line-height: 1; letter-spacing: -.06em; }
-    h1 span { color: #d36a63; }
-    .sub { max-width: 430px; color: var(--muted); line-height: 1.65; font-size: 14px; }
-    .card {
-      padding: 22px; border: 1px solid var(--line); border-radius: 18px;
-      background: linear-gradient(150deg, #28191e, #1d1216);
-      box-shadow: 0 22px 65px #08030566;
+
+    button:disabled {
+      cursor: wait;
+      opacity: .55;
     }
-    .caption { color: #c77b74; font-size: 10px; letter-spacing: .14em; }
-    h2 { margin: 7px 0 8px; font-size: 21px; }
-    .muted { color: var(--muted); font-size: 13px; line-height: 1.6; }
-    .notice { margin: 15px 0; padding: 12px; border: 1px solid #4a3035; border-radius: 12px; color: #c8b7b5; font-size: 12px; line-height: 1.55; }
-    .btn {
-      width: 100%; min-height: 46px; margin-top: 12px; padding: 12px 15px;
-      border: 0; border-radius: 11px; cursor: pointer; font-weight: 750;
-      background: linear-gradient(110deg, #b94345, #d05a54); color: white;
+
+    button:focus-visible,
+    input:focus-visible {
+      outline: 3px solid #ff9bb3;
+      outline-offset: 4px;
     }
-    .btn:disabled { opacity: .55; cursor: wait; }
-    .btn.secondary { border: 1px solid #53343a; background: #2b1a20; color: #ead8d5; }
-    .field-label { display: block; margin: 14px 0 7px; color: #c7b7b5; font-size: 12px; }
+
     input {
-      display: block; width: 100%; height: 46px; padding: 0 13px;
-      border: 1px solid #50353a; border-radius: 10px; outline: none;
-      color: #fff; background: #180f12;
+      user-select: text;
+      -webkit-user-select: text;
     }
-    input:focus { border-color: #bd5d58; }
-    .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 9px; }
-    .choice {
-      min-height: 43px; padding: 10px; border: 1px solid #493137;
-      border-radius: 10px; background: #1d1317; cursor: pointer;
+
+    .app {
+      max-width: 480px;
+      margin: auto;
+      padding:
+        max(24px, env(safe-area-inset-top))
+        20px
+        max(24px, env(safe-area-inset-bottom));
     }
-    .choice.active { border-color: #bf5b56; background: #482126; }
-    .plan {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-top: 9px; padding: 13px; border: 1px solid #ad514f;
-      border-radius: 11px; background: #3a1c21;
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 48px;
+      margin-bottom: 38px;
     }
-    .plan small { display: block; margin-top: 4px; color: var(--muted); }
-    .soon { color: #bd817c; font-size: 9px; letter-spacing: .08em; }
-    .user { display: flex; align-items: center; gap: 11px; margin: 13px 0; }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 23px;
+      font-weight: 850;
+      letter-spacing: -.8px;
+    }
+
+    .brand span {
+      color: var(--accent);
+    }
+
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(140deg, #ff6087, #9d153d);
+      color: white;
+      font-size: 24px;
+      box-shadow: 0 6px 28px #d6244f30;
+    }
+
     .avatar {
-      display: grid; place-items: center; width: 42px; height: 42px;
-      overflow: hidden; border-radius: 13px; color: #f5c7c0;
-      background: #60343a; font-weight: 800;
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid #6e3448;
+      border-radius: 50%;
+      background: #482031;
+      color: white;
+      font-weight: 800;
     }
-    .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .status { min-height: 20px; margin-top: 12px; color: #bd9e9e; font-size: 12px; line-height: 1.5; }
-    .status.error { color: #ff9b91; }
-    .status.good { color: #a9cfad; }
-    .foot { margin-top: 18px; color: #89797c; text-align: center; font-size: 10px; }
-    [hidden] { display: none !important; }
-    @media (max-width: 400px) {
-      .wrap { padding: 16px 14px 28px; }
-      .card { padding: 18px; }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: #ef8ca6;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(32px, 8vw, 42px);
+      line-height: 1.12;
+      letter-spacing: -1.5px;
+    }
+
+    .intro {
+      margin: 15px 0 28px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .card {
+      padding: 25px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: linear-gradient(145deg, #25151c, var(--card));
+      box-shadow: 0 20px 65px #00000035;
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 23px;
+      letter-spacing: -.6px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 50px;
+      margin-top: 20px;
+      padding: 13px 18px;
+      border: 0;
+      border-radius: 14px;
+      background: var(--accent);
+      color: white;
+      font-weight: 750;
+      transition: background .15s, transform .15s;
+    }
+
+    .button:hover:not(:disabled) {
+      background: var(--accent-hover);
+    }
+
+    .button:active:not(:disabled) {
+      transform: scale(.985);
+    }
+
+    .button.secondary {
+      border: 1px solid var(--border);
+      background: #ffffff07;
+      color: var(--text);
+    }
+
+    .check-button {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      width: 100%;
+      margin-top: 22px;
+      padding: 18px;
+      border: 1px solid #734052;
+      border-radius: 15px;
+      background: #120b10;
+      color: white;
+      text-align: left;
+    }
+
+    .check-box {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      border: 2px solid #ae7186;
+      border-radius: 7px;
+    }
+
+    .challenge {
+      margin: 22px 0 12px;
+      padding: 20px;
+      border: 1px dashed #92506a;
+      border-radius: 15px;
+      background: #0e090c;
+      text-align: center;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: 4px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 9px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 1px solid #633347;
+      border-radius: 13px;
+      background: #100a0e;
+      color: white;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: #ffffff03;
+      color: white;
+      text-align: left;
+    }
+
+    .option strong {
+      display: block;
+      font-size: 17px;
+    }
+
+    .option small {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+    }
+
+    .option.selected {
+      border-color: var(--accent);
+      background: #f0446910;
+    }
+
+    .option.unavailable {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .badge {
+      padding: 6px 8px;
+      border: 1px solid #704052;
+      border-radius: 8px;
+      color: #edb1c3;
+      font-size: 10px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .success {
+      display: grid;
+      place-items: center;
+      width: 62px;
+      height: 62px;
+      margin-bottom: 20px;
+      border: 1px solid #3d7a5d;
+      border-radius: 20px;
+      background: #79e9ab12;
+      color: var(--green);
+      font-size: 30px;
+    }
+
+    .details {
+      margin-top: 24px;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .row span {
+      color: var(--muted);
+    }
+
+    .row strong {
+      overflow-wrap: anywhere;
+      text-align: right;
+    }
+
+    .error {
+      margin-bottom: 18px;
+      padding: 15px;
+      border: 1px solid #9d3c59;
+      border-radius: 14px;
+      background: #5e182b55;
+      color: #ffd5df;
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .spinner {
+      width: 34px;
+      height: 34px;
+      margin: 12px 0 20px;
+      border: 3px solid #ffffff15;
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    footer {
+      padding: 26px 0 8px;
+      color: #8f6b7b;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-align: center;
+    }
+
+    dialog {
+      width: min(420px, calc(100% - 32px));
+      max-height: 85dvh;
+      padding: 25px;
+      overflow: auto;
+      border: 1px solid #653247;
+      border-radius: 24px;
+      background: #201219;
+      color: var(--text);
+    }
+
+    dialog::backdrop {
+      background: #000b;
+      backdrop-filter: blur(7px);
+    }
+
+    dialog h2 {
+      margin-top: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
     }
   </style>
 </head>
+
 <body>
-  <main class="wrap" id="app">
-    <header>
-      <div class="brand"><span class="mark">A</span> AstroX</div>
-      <span class="badge">TELEGRAM MINI APP</span>
+  <main class="app">
+    <header class="header">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">✦</div>
+        <div>Astro<span>X</span></div>
+      </div>
+
+      <button
+        id="profileButton"
+        class="avatar"
+        type="button"
+        aria-label="Профиль / Profile"
+        hidden
+      ></button>
     </header>
 
-    <section class="hero">
-      <div class="eyebrow">YOUR ACCOUNT, YOUR CHOICE</div>
-      <h1>Welcome<br>to <span>AstroX.</span></h1>
-      <p class="sub">Choose your language and plan. Your settings are saved to your account.</p>
+    <p class="eyebrow">TELEGRAM MINI APP</p>
+
+    <h1 data-i18n="welcome">Добро пожаловать в AstroX</h1>
+
+    <p class="intro" data-i18n="intro">
+      Подтверди вход и настрой приложение под себя.
+    </p>
+
+    <div
+      id="error"
+      class="error"
+      role="alert"
+      aria-live="assertive"
+      hidden
+    ></div>
+
+    <section id="loading" class="card" data-screen>
+      <div class="spinner" aria-hidden="true"></div>
+      <h2 data-i18n="loading">Проверяем сессию</h2>
+      <p class="muted" data-i18n="loadingText">
+        Это займёт несколько секунд.
+      </p>
     </section>
 
-    <section class="card">
-      <div class="caption">SECURE ACCOUNT SETUP</div>
-      <h2 id="heading">One quick check.</h2>
-      <p class="muted" id="intro">Open AstroX inside Telegram to continue.</p>
-
-      <div class="notice">
-        AstroX verifies your Telegram Mini App session. We never ask for Telegram login codes or passwords.
-      </div>
-
-      <div id="human" hidden>
-        <button class="btn" id="startCheck">✓ &nbsp; I’m not a robot</button>
-        <form id="captchaForm" hidden>
-          <label class="field-label" id="question" for="answer">Solve the check</label>
-          <input id="answer" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="Your answer">
-          <button class="btn" id="verifyBtn" type="submit">Verify session</button>
-        </form>
-      </div>
-
-      <div id="settings" hidden>
-        <div class="user">
-          <div class="avatar" id="avatar">A</div>
-          <div><strong id="userName">AstroX user</strong><div class="muted">Telegram account verified</div></div>
-        </div>
-
-        <label class="field-label">Language</label>
-        <div class="choices">
-          <button class="choice active" data-language="en" type="button">🇬🇧 &nbsp; English</button>
-          <button class="choice" data-language="ru" type="button">🇷🇺 &nbsp; Русский</button>
-        </div>
-
-        <label class="field-label">Plan</label>
-        <div class="plan"><span><strong>Free</strong><small>Available now</small></span><strong>$0</strong></div>
-        <div class="plan"><span><strong>GO</strong><small>More features coming</small></span><span class="soon">IN DEVELOPMENT</span></div>
-
-        <button class="btn" id="saveBtn" type="button">Save preferences</button>
-      </div>
-
-      <div id="status" class="status" role="status"></div>
-      <div class="foot">AstroX · Your account stays yours</div>
+    <section id="outside" class="card" data-screen hidden>
+      <h2 data-i18n="openTelegram">Открой через Telegram</h2>
+      <p class="muted" data-i18n="outsideText">
+        Для безопасного входа запусти Mini App кнопкой в боте.
+      </p>
     </section>
+
+    <section id="blocked" class="card" data-screen hidden>
+      <h2 data-i18n="connectionError">Не удалось войти</h2>
+      <p class="muted" data-i18n="reopen">
+        Если сессия истекла, закрой Mini App и открой снова через бота.
+      </p>
+      <button
+        id="retryButton"
+        class="button"
+        type="button"
+        data-net
+        data-i18n="retry"
+      >Повторить</button>
+    </section>
+
+    <section id="verify" class="card" data-screen hidden>
+      <h2 data-i18n="humanTitle">Начнём с проверки</h2>
+      <p class="muted" data-i18n="humanText">
+        Подтверди, что ты человек, решив короткую задачу.
+      </p>
+
+      <button
+        id="captchaButton"
+        class="check-button"
+        type="button"
+        data-net
+      >
+        <span class="check-box" aria-hidden="true"></span>
+        <strong data-i18n="notRobot">Я не робот</strong>
+      </button>
+
+      <form id="captchaForm" hidden>
+        <div id="question" class="challenge"></div>
+
+        <label for="answer" data-i18n="answerLabel">
+          Введи ответ
+        </label>
+
+        <input
+          id="answer"
+          type="text"
+          inputmode="numeric"
+          autocomplete="off"
+          maxlength="3"
+          pattern="[0-9]{1,3}"
+          required
+        >
+
+        <button
+          class="button"
+          type="submit"
+          data-net
+          data-i18n="verify"
+        >Подтвердить</button>
+      </form>
+
+      <p class="muted" data-i18n="safeLogin">
+        Вход проверяется через Telegram. Код входа в твой аккаунт не нужен.
+      </p>
+    </section>
+
+    <section id="language" class="card" data-screen hidden>
+      <h2 data-i18n="languageTitle">Выбери язык</h2>
+      <p class="muted" data-i18n="languageText">
+        Его можно будет изменить позже.
+      </p>
+
+      <div class="options">
+        <button
+          class="option"
+          type="button"
+          data-language="ru"
+          aria-pressed="true"
+        >
+          <span>
+            <strong>RUS</strong>
+            <small>Русский</small>
+          </span>
+          <span aria-hidden="true">RU</span>
+        </button>
+
+        <button
+          class="option"
+          type="button"
+          data-language="en"
+          aria-pressed="false"
+        >
+          <span>
+            <strong>EN</strong>
+            <small>English</small>
+          </span>
+          <span aria-hidden="true">EN</span>
+        </button>
+      </div>
+
+      <button
+        id="languageNext"
+        class="button"
+        type="button"
+        data-i18n="continue"
+      >Продолжить</button>
+    </section>
+
+    <section id="plan" class="card" data-screen hidden>
+      <h2 data-i18n="planTitle">Твой план</h2>
+      <p class="muted" data-i18n="planText">
+        Начни бесплатно. Дополнительные возможности появятся позже.
+      </p>
+
+      <div class="options">
+        <div class="option selected">
+          <span>
+            <strong>Free</strong>
+            <small data-i18n="freeText">Основные возможности</small>
+          </span>
+          <strong>$0</strong>
+        </div>
+
+        <div class="option unavailable" aria-disabled="true">
+          <span>
+            <strong>GO</strong>
+            <small data-i18n="goText">Больше возможностей</small>
+          </span>
+          <span class="badge" data-i18n="development">
+            В РАЗРАБОТКЕ
+          </span>
+        </div>
+      </div>
+
+      <button
+        id="saveButton"
+        class="button"
+        type="button"
+        data-net
+        data-i18n="save"
+      >Сохранить и войти</button>
+
+      <button
+        id="planBack"
+        class="button secondary"
+        type="button"
+        data-i18n="back"
+      >Назад</button>
+    </section>
+
+    <section id="done" class="card" data-screen hidden>
+      <div class="success" aria-hidden="true">✓</div>
+
+      <h2 id="greeting"></h2>
+
+      <p class="muted" data-i18n="savedText">
+        Настройки сохранены. При следующем открытии приложение узнает тебя.
+      </p>
+
+      <div class="details">
+        <div class="row">
+          <span data-i18n="languageLabel">Язык</span>
+          <strong id="savedLanguage"></strong>
+        </div>
+        <div class="row">
+          <span data-i18n="planLabel">План</span>
+          <strong>Free</strong>
+        </div>
+      </div>
+
+      <button
+        id="editButton"
+        class="button secondary"
+        type="button"
+        data-i18n="edit"
+      >Изменить настройки</button>
+    </section>
+
+    <footer>ASTROX · TELEGRAM COMPANION</footer>
   </main>
 
+  <dialog id="profile">
+    <h2 data-i18n="profile">Профиль</h2>
+
+    <div class="row">
+      <span data-i18n="name">Имя</span>
+      <strong id="profileName"></strong>
+    </div>
+
+    <div class="row">
+      <span>Username</span>
+      <strong id="profileUsername"></strong>
+    </div>
+
+    <div class="row">
+      <span>Telegram ID</span>
+      <strong id="profileId"></strong>
+    </div>
+
+    <button
+      id="closeProfile"
+      class="button"
+      type="button"
+      data-i18n="close"
+    >Закрыть</button>
+  </dialog>
+
   <script>
-    // Replace with the HTTPS origin of your published Replit API.
-    const API_ORIGIN = "https://YOUR-REPLIT-API-ORIGIN";
+    "use strict";
 
-    const webApp = window.Telegram && window.Telegram.WebApp;
-    const initData = webApp && webApp.initData ? webApp.initData : "";
-    const statusBox = document.getElementById("status");
-    const human = document.getElementById("human");
-    const captchaForm = document.getElementById("captchaForm");
-    const settings = document.getElementById("settings");
-    const answer = document.getElementById("answer");
+    const API_ORIGIN =
+      "https://telegram-mini-app-bot-and-setup.replit.app";
 
-    let captchaToken = "";
-    let language = "en";
+    const tg = window.Telegram?.WebApp;
+    const $ = id => document.getElementById(id);
+
+    let initData = "";
+    let language = "ru";
+    let user = null;
+    let preferences = null;
+    let challenge = null;
     let busy = false;
 
-    webApp?.ready();
-    webApp?.expand();
+    const texts = {
+      ru: {
+        welcome: "Добро пожаловать в AstroX",
+        intro: "Подтверди вход и настрой приложение под себя.",
+        loading: "Проверяем сессию",
+        loadingText: "Это займёт несколько секунд.",
+        openTelegram: "Открой через Telegram",
+        outsideText:
+          "Для безопасного входа запусти Mini App кнопкой в боте.",
+        connectionError: "Не удалось войти",
+        reopen:
+          "Если сессия истекла, закрой Mini App и открой снова через бота.",
+        retry: "Повторить",
+        humanTitle: "Начнём с проверки",
+        humanText:
+          "Подтверди, что ты человек, решив короткую задачу.",
+        notRobot: "Я не робот",
+        answerLabel: "Введи ответ",
+        verify: "Подтвердить",
+        safeLogin:
+          "Вход проверяется через Telegram. Код входа в твой аккаунт не нужен.",
+        languageTitle: "Выбери язык",
+        languageText: "Его можно будет изменить позже.",
+        continue: "Продолжить",
+        planTitle: "Твой план",
+        planText:
+          "Начни бесплатно. Дополнительные возможности появятся позже.",
+        freeText: "Основные возможности",
+        goText: "Больше возможностей",
+        development: "В РАЗРАБОТКЕ",
+        save: "Сохранить и войти",
+        back: "Назад",
+        savedText:
+          "Настройки сохранены. При следующем открытии приложение узнает тебя.",
+        languageLabel: "Язык",
+        planLabel: "План",
+        edit: "Изменить настройки",
+        profile: "Профиль",
+        name: "Имя",
+        close: "Закрыть",
+        hello: "Привет",
+        network:
+          "Не удалось связаться с API. Проверь интернет и доступность сервера.",
+        expired:
+          "Сессия Telegram истекла или недействительна. Открой Mini App заново через бота.",
+        limited:
+          "Слишком много запросов. Подожди минуту и попробуй снова.",
+        badCaptcha:
+          "Неверный ответ или срок капчи истёк. Нажми «Я не робот» ещё раз.",
+        timeout:
+          "Сервер не ответил вовремя. Попробуй ещё раз.",
+        unexpected: "Сервер вернул неожиданный ответ."
+      },
 
-    function setStatus(message, kind = "") {
-      statusBox.textContent = message;
-      statusBox.className = "status " + kind;
+      en: {
+        welcome: "Welcome to AstroX",
+        intro: "Verify your session and make the app yours.",
+        loading: "Checking your session",
+        loadingText: "This should only take a few seconds.",
+        openTelegram: "Open in Telegram",
+        outsideText:
+          "Launch this Mini App using the button in the bot to sign in securely.",
+        connectionError: "Could not sign in",
+        reopen:
+          "If your session expired, close the Mini App and open it again through the bot.",
+        retry: "Try again",
+        humanTitle: "A quick verification",
+        humanText:
+          "Confirm you are human by solving a short challenge.",
+        notRobot: "I'm not a robot",
+        answerLabel: "Enter your answer",
+        verify: "Verify",
+        safeLogin:
+          "Telegram verifies your session. Your Telegram account login code is never needed.",
+        languageTitle: "Choose your language",
+        languageText: "You can change it later.",
+        continue: "Continue",
+        planTitle: "Your plan",
+        planText:
+          "Start for free. More features are coming later.",
+        freeText: "The essentials",
+        goText: "More possibilities",
+        development: "IN DEVELOPMENT",
+        save: "Save and continue",
+        back: "Back",
+        savedText:
+          "Your preferences are saved. The app will recognize you next time.",
+        languageLabel: "Language",
+        planLabel: "Plan",
+        edit: "Edit preferences",
+        profile: "Profile",
+        name: "Name",
+        close: "Close",
+        hello: "Hello",
+        network:
+          "Could not reach the API. Check your connection and server availability.",
+        expired:
+          "Your Telegram session is invalid or expired. Reopen the Mini App through the bot.",
+        limited:
+          "Too many requests. Wait a minute and try again.",
+        badCaptcha:
+          "The answer is incorrect or the challenge expired. Tap “I'm not a robot” again.",
+        timeout:
+          "The server took too long to respond. Please try again.",
+        unexpected: "The server returned an unexpected response."
+      }
+    };
+
+    function translate() {
+      document.documentElement.lang = language;
+
+      document.querySelectorAll("[data-i18n]").forEach(element => {
+        const key = element.dataset.i18n;
+        if (texts[language][key]) {
+          element.textContent = texts[language][key];
+        }
+      });
+
+      document.querySelectorAll("[data-language]").forEach(button => {
+        const selected = button.dataset.language === language;
+        button.classList.toggle("selected", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
+
+      if (user) {
+        $("greeting").textContent =
+          `${texts[language].hello}, ${user.firstName}!`;
+      }
+
+      $("savedLanguage").textContent =
+        preferences?.language === "en" ? "English" : "Русский";
     }
 
-    async function api(path, body, method = "POST") {
-      if (API_ORIGIN.includes("YOUR-REPLIT-API-ORIGIN")) {
-        throw new Error("Set API_ORIGIN in this file to your published API address.");
-      }
-      const response = await fetch(API_ORIGIN.replace(/\/+$/, "") + path, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
+    function showScreen(id) {
+      document.querySelectorAll("[data-screen]").forEach(element => {
+        element.hidden = element.id !== id;
       });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || "Request failed. Please try again.");
+    }
+
+    function showError(message) {
+      $("error").textContent = message;
+      $("error").hidden = false;
+    }
+
+    function clearError() {
+      $("error").textContent = "";
+      $("error").hidden = true;
+    }
+
+    function setBusy(value) {
+      busy = value;
+
+      document.querySelectorAll("[data-net]").forEach(button => {
+        button.disabled = value;
+      });
+
+      document.querySelector("main").setAttribute(
+        "aria-busy",
+        String(value)
+      );
+    }
+
+    async function request(path, method, body = {}) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 15000);
+
+      let response;
+
+      try {
+        response = await fetch(`${API_ORIGIN}/api/telegram/${path}`, {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify(body),
+          signal: controller.signal
+        });
+      } catch (error) {
+        throw new Error(
+          error.name === "AbortError"
+            ? texts[language].timeout
+            : texts[language].network
+        );
+      } finally {
+        clearTimeout(timer);
+      }
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error(texts[language].expired);
+        }
+
+        if (response.status === 429) {
+          throw new Error(texts[language].limited);
+        }
+
+        if (path === "verify" && response.status === 400) {
+          throw new Error(texts[language].badCaptcha);
+        }
+
+        throw new Error(
+          data?.error || `${texts[language].unexpected} (${response.status})`
+        );
+      }
+
+      if (!data || typeof data !== "object") {
+        throw new Error(texts[language].unexpected);
+      }
+
       return data;
     }
 
-    function showPreferences(user, preferences) {
-      human.hidden = true;
-      settings.hidden = false;
-      document.getElementById("heading").textContent = "Make it yours.";
-      document.getElementById("intro").textContent = "Choose your language and keep the Free plan active.";
-      document.getElementById("userName").textContent = user.firstName || "AstroX user";
-
-      const avatar = document.getElementById("avatar");
-      if (user.photoUrl) {
-        const image = document.createElement("img");
-        image.src = user.photoUrl;
-        image.alt = "";
-        image.referrerPolicy = "no-referrer";
-        avatar.replaceChildren(image);
-      } else {
-        avatar.textContent = (user.firstName || "A").slice(0, 1).toUpperCase();
+    function acceptUser(data) {
+      if (
+        !data.user ||
+        typeof data.user.firstName !== "string" ||
+        typeof data.user.telegramId !== "string"
+      ) {
+        throw new Error(texts[language].unexpected);
       }
 
-      language = preferences?.language === "ru" ? "ru" : "en";
-      document.querySelectorAll("[data-language]").forEach(button => {
-        button.classList.toggle("active", button.dataset.language === language);
-      });
-      setStatus(preferences ? "Saved settings restored." : "", preferences ? "good" : "");
+      user = data.user;
+      preferences = data.preferences || null;
+
+      if (
+        preferences &&
+        (
+          !["ru", "en"].includes(preferences.language) ||
+          preferences.plan !== "free"
+        )
+      ) {
+        throw new Error(texts[language].unexpected);
+      }
+
+      updateProfile();
     }
+
+    function updateProfile() {
+      if (!user) return;
+
+      const button = $("profileButton");
+      const initial = user.firstName.trim().slice(0, 1).toUpperCase();
+
+      button.hidden = false;
+      button.textContent = initial;
+
+      if (user.photoUrl) {
+        try {
+          const url = new URL(user.photoUrl);
+
+          if (url.protocol === "https:") {
+            const image = new Image();
+            image.alt = "";
+            image.referrerPolicy = "no-referrer";
+
+            image.onerror = () => {
+              button.textContent = initial;
+            };
+
+            image.src = url.href;
+            button.replaceChildren(image);
+          }
+        } catch {
+          // Invalid photo URL: keep the initial.
+        }
+      }
+
+      $("profileName").textContent = user.firstName;
+      $("profileUsername").textContent =
+        user.username ? `@${user.username}` : "—";
+      $("profileId").textContent = user.telegramId;
+    }
+
+    function finishLogin() {
+      language = preferences.language;
+      translate();
+      updateProfile();
+      showScreen("done");
+    }
+
+    async function boot() {
+      if (busy) return;
+
+      clearError();
+      showScreen("loading");
+
+      initData = tg?.initData || "";
+
+      if (!initData) {
+        showScreen("outside");
+        return;
+      }
+
+      setBusy(true);
+
+      try {
+        const data = await request("session", "POST", { initData });
+
+        if (data.preferences) {
+          acceptUser(data);
+          finishLogin();
+        } else {
+          showScreen("verify");
+        }
+      } catch (error) {
+        showScreen("blocked");
+        showError(error.message);
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    $("captchaButton").addEventListener("click", async () => {
+      if (busy || !initData) return;
+
+      clearError();
+      setBusy(true);
+
+      try {
+        const data = await request("captcha", "POST");
+
+        if (
+          typeof data.token !== "string" ||
+          typeof data.question !== "string"
+        ) {
+          throw new Error(texts[language].unexpected);
+        }
+
+        challenge = data;
+        $("question").textContent = data.question;
+        $("answer").value = "";
+        $("captchaButton").hidden = true;
+        $("captchaForm").hidden = false;
+        $("answer").focus();
+      } catch (error) {
+        showError(error.message);
+      } finally {
+        setBusy(false);
+      }
+    });
+
+    $("answer").addEventListener("input", event => {
+      event.target.value = event.target.value
+        .replace(/[^0-9]/g, "")
+        .slice(0, 3);
+    });
+
+    $("captchaForm").addEventListener("submit", async event => {
+      event.preventDefault();
+
+      const answer = $("answer").value.trim();
+
+      if (busy || !challenge || !/^\d{1,3}$/.test(answer)) return;
+
+      clearError();
+      setBusy(true);
+
+      const token = challenge.token;
+      challenge = null;
+
+      try {
+        const data = await request("verify", "POST", {
+          initData,
+          captchaToken: token,
+          captchaAnswer: answer
+        });
+
+        acceptUser(data);
+
+        if (preferences) {
+          finishLogin();
+        } else {
+          translate();
+          showScreen("language");
+        }
+      } catch (error) {
+        $("captchaForm").hidden = true;
+        $("captchaButton").hidden = false;
+        $("answer").value = "";
+        showError(error.message);
+      } finally {
+        setBusy(false);
+      }
+    });
 
     document.querySelectorAll("[data-language]").forEach(button => {
       button.addEventListener("click", () => {
         language = button.dataset.language;
-        document.querySelectorAll("[data-language]").forEach(option =>
-          option.classList.toggle("active", option === button)
-        );
+        clearError();
+        translate();
       });
     });
 
-    document.getElementById("startCheck").addEventListener("click", async event => {
-      const button = event.currentTarget;
-      button.disabled = true;
-      setStatus("Preparing the human check…");
-      try {
-        const challenge = await api("/api/telegram/captcha", {});
-        captchaToken = challenge.token;
-        document.getElementById("question").textContent = challenge.question;
-        captchaForm.hidden = false;
-        answer.focus();
-        setStatus("");
-      } catch (error) {
-        setStatus(error.message, "error");
-      } finally {
-        button.disabled = false;
-      }
+    $("languageNext").addEventListener("click", () => {
+      clearError();
+      showScreen("plan");
     });
 
-    captchaForm.addEventListener("submit", async event => {
-      event.preventDefault();
-      if (busy || !captchaToken || !initData) return;
-      busy = true;
-      document.getElementById("verifyBtn").disabled = true;
-      setStatus("Checking your Telegram session…");
+    $("planBack").addEventListener("click", () => {
+      if (busy) return;
+      clearError();
+      showScreen("language");
+    });
+
+    $("saveButton").addEventListener("click", async () => {
+      if (busy || !user || !initData) return;
+
+      clearError();
+      setBusy(true);
+
       try {
-        const result = await api("/api/telegram/verify", {
+        const data = await request("preferences", "PUT", {
           initData,
-          captchaToken,
-          captchaAnswer: answer.value.trim()
+          language,
+          plan: "free"
         });
-        showPreferences(result.user, result.preferences);
+
+        if (
+          !["ru", "en"].includes(data.language) ||
+          data.plan !== "free"
+        ) {
+          throw new Error(texts[language].unexpected);
+        }
+
+        preferences = data;
+        finishLogin();
+
+        try {
+          tg?.HapticFeedback?.notificationOccurred("success");
+        } catch {
+          // Haptics are optional.
+        }
       } catch (error) {
-        setStatus(error.message, "error");
+        showError(error.message);
       } finally {
-        busy = false;
-        document.getElementById("verifyBtn").disabled = false;
+        setBusy(false);
       }
     });
 
-    document.getElementById("saveBtn").addEventListener("click", async event => {
-      const button = event.currentTarget;
-      button.disabled = true;
-      setStatus("Saving your preferences…");
-      try {
-        await api("/api/telegram/preferences", { initData, language, plan: "free" }, "PUT");
-        setStatus("Preferences saved. You’re all set!", "good");
-      } catch (error) {
-        setStatus(error.message, "error");
-      } finally {
-        button.disabled = false;
-      }
+    $("editButton").addEventListener("click", () => {
+      clearError();
+      showScreen("language");
     });
 
-    if (!initData) {
-      setStatus("Open this page from the AstroX bot inside Telegram.", "error");
-    } else {
-      api("/api/telegram/session", { initData })
-        .then(result => {
-          if (result.preferences) {
-            showPreferences(result.user, result.preferences);
-          } else {
-            human.hidden = false;
-            setStatus("Complete the quick check to continue.");
-          }
-        })
-        .catch(error => setStatus(error.message, "error"));
+    $("retryButton").addEventListener("click", boot);
+
+    $("profileButton").addEventListener("click", () => {
+      if (user) $("profile").showModal();
+    });
+
+    $("closeProfile").addEventListener("click", () => {
+      $("profile").close();
+    });
+
+    $("profile").addEventListener("click", event => {
+      if (event.target !== $("profile")) return;
+
+      const rect = $("profile").getBoundingClientRect();
+
+      const outside =
+        event.clientX < rect.left ||
+        event.clientX > rect.right ||
+        event.clientY < rect.top ||
+        event.clientY > rect.bottom;
+
+      if (outside) $("profile").close();
+    });
+
+    // Best-effort UI restriction, not protection against screenshots
+    // or viewing the source code.
+    function isEditable(target) {
+      return target instanceof Element && Boolean(
+        target.closest('input, textarea, [contenteditable="true"]')
+      );
     }
 
-    function isTextField(target) {
-      return target instanceof HTMLElement &&
-        Boolean(target.closest("input, textarea, [contenteditable='true']"));
-    }
-    document.addEventListener("copy", event => {
-      if (!isTextField(event.target)) event.preventDefault();
+    ["copy", "cut", "contextmenu", "selectstart"].forEach(type => {
+      document.addEventListener(type, event => {
+        if (!isEditable(event.target)) {
+          event.preventDefault();
+        }
+      });
     });
-    document.addEventListener("cut", event => {
-      if (!isTextField(event.target)) event.preventDefault();
-    });
-    document.addEventListener("contextmenu", event => {
-      if (!isTextField(event.target)) event.preventDefault();
-    });
+
     document.addEventListener("keydown", event => {
-      if (!isTextField(event.target) && (event.ctrlKey || event.metaKey) &&
-          ["c", "x"].includes(event.key.toLowerCase())) event.preventDefault();
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        ["c", "x"].includes(event.key.toLowerCase()) &&
+        !isEditable(event.target)
+      ) {
+        event.preventDefault();
+      }
     });
+
+    try {
+      tg?.ready();
+      tg?.expand();
+      tg?.setHeaderColor("#100a0d");
+      tg?.setBackgroundColor("#100a0d");
+    } catch {
+      // Unsupported optional Telegram UI methods do not block sign-in.
+    }
+
+    translate();
+    boot();
   </script>
 </body>
   </html>
