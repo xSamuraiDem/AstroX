@@ -15,389 +15,200 @@
   --red:#c1121f;--red2:#ff2e4d;--rose:#ff7a8f;--ember:#7a0a16;
   --text:#f4e8eb;--muted:#a4818a;--dim:#6b4f57;
   --line:#2a0e13;--line-hi:#4a1a22;
-  --glow:0 0 0 1px rgba(255,46,77,.25);
   --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0}
-body{
-  font-family:'Manrope',system-ui,sans-serif;color:var(--text);background:var(--bg);
-  font-size:14px;line-height:1.5;
-  overflow-x:hidden;-webkit-font-smoothing:antialiased;
-}
+body{font-family:'Manrope',system-ui,sans-serif;color:var(--text);background:var(--bg);font-size:14px;line-height:1.5;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
 #app{min-height:100dvh;display:flex;flex-direction:column;max-width:520px;margin:0 auto}
 
-/* ==== TOPBAR ==== */
-#topbar{
-  position:sticky;top:0;z-index:10;background:rgba(6,2,3,.92);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--line);
-  padding:calc(10px + var(--sat)) 14px 10px;
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-}
+/* TOPBAR */
+#topbar{position:sticky;top:0;z-index:10;background:rgba(6,2,3,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:calc(10px + var(--sat)) 14px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 #topbar[hidden]{display:none}
 .brand{display:flex;align-items:center;gap:8px}
-.brand .logo{
-  width:28px;height:28px;background:var(--red2);border:1px solid var(--red2);
-  display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-weight:800;
-  font-size:14px;color:#fff;
-}
-.brand .name{
-  font-family:'JetBrains Mono',monospace;font-weight:800;font-size:14px;letter-spacing:.06em;
-  color:var(--text);
-}
+.brand .logo{width:28px;height:28px;background:var(--red2);border:1px solid var(--red2);display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:14px;color:#fff}
+.brand .name{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:14px;letter-spacing:.06em;color:var(--text)}
 .brand .name b{color:var(--red2)}
-.online{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:5px 8px;background:var(--panel);border:1px solid var(--line);
-  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
-}
-.online .dot{
-  width:6px;height:6px;background:#4ade80;border-radius:0;
-  animation:blink 1.6s infinite;
-}
+.online{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;background:var(--panel);border:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)}
+.online .dot{width:6px;height:6px;background:#4ade80;border-radius:0;animation:blink 1.6s infinite}
 @keyframes blink{50%{opacity:.25}}
 .online b{color:var(--text);font-weight:700}
-.avatar-btn{
-  width:34px;height:34px;background:var(--panel);border:1px solid var(--line-hi);
-  display:grid;place-items:center;padding:0;cursor:pointer;
-  transition:border-color .15s;
-}
+.avatar-btn{width:34px;height:34px;background:var(--panel);border:1px solid var(--line-hi);display:grid;place-items:center;padding:0;cursor:pointer;transition:border-color .15s}
 .avatar-btn:hover{border-color:var(--red2)}
-.avatar{width:100%;height:100%;display:grid;place-items:center;object-fit:cover;
-  background:linear-gradient(135deg,var(--red),var(--ember));
-  font-family:'JetBrains Mono',monospace;font-weight:800;font-size:13px;color:#fff}
+.avatar{width:100%;height:100%;display:grid;place-items:center;object-fit:cover;background:linear-gradient(135deg,var(--red),var(--ember));font-family:'JetBrains Mono',monospace;font-weight:800;font-size:13px;color:#fff}
 .avatar.lg{font-size:24px}
 
-/* ==== SCREENS ==== */
+/* SCREENS */
 #screens{flex:1;display:flex;flex-direction:column;padding:14px;gap:12px}
 .screen{display:none;flex-direction:column;gap:12px;animation:fade .22s ease}
 .screen.active{display:flex}
 @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-/* ==== ПАНЕЛЬ (квадратная) ==== */
-.panel{
-  background:var(--panel);border:1px solid var(--line);
-  padding:14px;position:relative;
-}
-.panel + .panel{margin-top:0}
-.panel-title{
-  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
-  color:var(--dim);letter-spacing:.16em;text-transform:uppercase;
-  margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;
-}
+/* PANEL */
+.panel{background:var(--panel);border:1px solid var(--line);padding:14px;position:relative}
+.panel-title{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--dim);letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .panel-title::before{content:"";width:3px;height:10px;background:var(--red2);display:inline-block;margin-right:-4px}
 .panel-title::after{content:"";flex:1;height:1px;background:var(--line);margin-left:6px}
 
-/* ==== HERO ==== */
+/* HERO */
 .hero{padding:4px 0 8px}
-.hero .eyebrow{
-  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
-  color:var(--red2);letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px;
-}
-.hero h1{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:800;
-  line-height:1.15;letter-spacing:-.01em;margin:0 0 6px}
+.hero .eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--red2);letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px}
+.hero h1{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:800;line-height:1.15;letter-spacing:-.01em;margin:0 0 6px}
 .hero p{color:var(--muted);font-size:13px;line-height:1.5;margin:0}
 
-/* ==== STEPS ==== */
+/* STEPS */
 .steps{display:flex;gap:4px;margin:2px 0 4px}
-.steps i{
-  flex:1;height:2px;background:var(--line);
-  transition:background .3s;
-}
+.steps i{flex:1;height:2px;background:var(--line);transition:background .3s}
 .steps i.done{background:var(--line-hi)}
 .steps i.cur{background:var(--red2)}
 
-/* ==== BUTTON ==== */
-.btn{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  width:100%;padding:12px 14px;border:1px solid var(--red2);
-  background:var(--red2);color:#fff;font-family:'JetBrains Mono',monospace;
-  font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  cursor:pointer;transition:background .15s,border-color .15s,opacity .15s;
-}
+/* BUTTON */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px 14px;border:1px solid var(--red2);background:var(--red2);color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .15s,border-color .15s,opacity .15s}
 .btn:hover:not(:disabled){background:#ff455e;border-color:#ff455e}
 .btn:active:not(:disabled){background:var(--red);border-color:var(--red)}
 .btn:disabled{opacity:.35;cursor:not-allowed}
 .btn.ghost{background:transparent;color:var(--text);border-color:var(--line-hi)}
 .btn.ghost:hover:not(:disabled){background:var(--panel2);border-color:var(--red2)}
-.btn.link{
-  background:transparent;border:0;color:var(--rose);text-transform:none;
-  letter-spacing:0;font-size:12px;font-weight:600;padding:8px;
-}
+.btn.link{background:transparent;border:0;color:var(--rose);text-transform:none;letter-spacing:0;font-size:12px;font-weight:600;padding:8px}
 
-/* ==== CAPTCHA ==== */
-.check{
-  display:flex;align-items:center;gap:12px;padding:12px;
-  background:var(--panel2);border:1px solid var(--line-hi);cursor:pointer;
-  user-select:none;transition:border-color .15s;
-}
+/* CAPTCHA */
+.check{display:flex;align-items:center;gap:12px;padding:12px;background:var(--panel2);border:1px solid var(--line-hi);cursor:pointer;user-select:none;transition:border-color .15s}
 .check:hover{border-color:var(--red2)}
-.box{
-  width:24px;height:24px;background:transparent;border:1px solid var(--line-hi);
-  display:grid;place-items:center;flex:none;transition:all .2s;
-}
+.box{width:24px;height:24px;background:transparent;border:1px solid var(--line-hi);display:grid;place-items:center;flex:none;transition:all .2s}
 .check.loading .box{border-color:var(--red2);animation:blink .8s infinite}
 .check.ok .box{background:var(--red2);border-color:var(--red2)}
 .check.ok .box svg{display:block}
 .box svg{display:none;width:14px;height:14px}
 .check .lbl{font-size:13px;font-weight:600;flex:1}
-.check .brand{
-  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
-  color:var(--dim);letter-spacing:.14em;
-}
+.check .brand{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:var(--dim);letter-spacing:.14em}
 .challenge{margin-top:10px}
 .cap{display:flex;gap:8px;align-items:center}
-.cap canvas{
-  flex:1;height:64px;background:var(--panel2);border:1px solid var(--line-hi);display:block;
-}
-.iconbtn{
-  width:44px;height:44px;background:var(--panel2);border:1px solid var(--line-hi);
-  display:grid;place-items:center;flex:none;cursor:pointer;transition:border-color .15s;
-}
+.cap canvas{flex:1;height:64px;background:var(--panel2);border:1px solid var(--line-hi);display:block}
+.iconbtn{width:44px;height:44px;background:var(--panel2);border:1px solid var(--line-hi);display:grid;place-items:center;flex:none;cursor:pointer;transition:border-color .15s}
 .iconbtn:hover{border-color:var(--red2)}
 .iconbtn:active{transform:scale(.96)}
 .iconbtn svg{width:16px;height:16px}
-.field{
-  width:100%;padding:12px;background:var(--panel2);border:1px solid var(--line-hi);
-  font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800;
-  color:var(--text);letter-spacing:.3em;text-align:center;text-transform:uppercase;
-  outline:none;transition:border-color .15s;
-}
+.field{width:100%;padding:12px;background:var(--panel2);border:1px solid var(--line-hi);font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800;color:var(--text);letter-spacing:.3em;text-align:center;text-transform:uppercase;outline:none;transition:border-color .15s}
 .field::placeholder{color:var(--dim);letter-spacing:.3em}
 .field:focus{border-color:var(--red2)}
-.hint{
-  font-size:12px;color:var(--muted);text-align:center;min-height:16px;
-  margin-top:8px;font-weight:500;
-}
+.hint{font-size:12px;color:var(--muted);text-align:center;min-height:16px;margin-top:8px;font-weight:500}
 .hint.err{color:#ff5a6e}
 .hint.ok{color:#4ade80}
 
-/* ==== OTP ==== */
+/* OTP */
 .otp{display:flex;gap:6px;justify-content:center;margin:12px 0}
-.otp input{
-  flex:1;height:48px;background:var(--panel2);border:1px solid var(--line-hi);
-  text-align:center;font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:800;
-  color:var(--text);outline:none;transition:border-color .15s;padding:0;
-}
+.otp input{flex:1;height:48px;background:var(--panel2);border:1px solid var(--line-hi);text-align:center;font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:800;color:var(--text);outline:none;transition:border-color .15s;padding:0}
 .otp input:focus{border-color:var(--red2)}
 .otp input.filled{border-color:var(--line-hi);background:var(--panel)}
 .otp.ok input{border-color:#4ade80}
-.chat-tip{
-  display:flex;align-items:center;gap:10px;padding:10px 12px;
-  background:var(--panel2);border:1px solid var(--line);border-left:2px solid var(--red2);
-  font-size:12px;color:var(--muted);
-}
+.chat-tip{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--panel2);border:1px solid var(--line);border-left:2px solid var(--red2);font-size:12px;color:var(--muted)}
 .chat-tip .dot{width:6px;height:6px;background:var(--red2);flex:none;animation:blink 1.6s infinite}
 
-/* ==== CHOICE (язык, план) ==== */
+/* CHOICE & PLAN */
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.choice{
-  padding:14px;background:var(--panel);border:1px solid var(--line-hi);
-  text-align:left;cursor:pointer;transition:border-color .15s,background .15s;
-}
+.choice{padding:14px;background:var(--panel);border:1px solid var(--line-hi);text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
 .choice:hover{border-color:var(--red2)}
 .choice.sel{border-color:var(--red2);background:rgba(255,46,77,.06)}
-.choice .big{
-  font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:800;
-  line-height:1;color:var(--text);letter-spacing:-.02em;
-}
+.choice .big{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:800;line-height:1;color:var(--text);letter-spacing:-.02em}
 .choice .sub{font-size:11px;color:var(--muted);margin-top:6px;font-weight:600;letter-spacing:.04em}
 
-.plan{
-  padding:14px;background:var(--panel);border:1px solid var(--line-hi);
-  text-align:left;width:100%;cursor:pointer;transition:border-color .15s,background .15s;
-}
+.plan{padding:14px;background:var(--panel);border:1px solid var(--line-hi);text-align:left;width:100%;cursor:pointer;transition:border-color .15s,background .15s}
 .plan:hover{border-color:var(--red2)}
 .plan.sel{border-color:var(--red2);background:rgba(255,46,77,.06)}
-.plan.dev{opacity:.6;cursor:not-allowed}
-.plan.dev:hover{border-color:var(--line-hi)}
 .plan .head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
-.plan .name{
-  font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;
-  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-}
-.plan .price{
-  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
-  color:var(--red2);letter-spacing:.06em;
-}
+.plan .name{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.plan .price{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--red2);letter-spacing:.06em}
 .plan ul{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:6px}
 .plan li{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--muted);line-height:1.4}
 .plan li::before{content:"+";color:var(--red2);font-family:'JetBrains Mono',monospace;font-weight:800;flex:none}
-.badge{
-  display:inline-block;padding:2px 6px;font-family:'JetBrains Mono',monospace;
-  font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  background:rgba(255,46,77,.12);color:var(--rose);border:1px solid var(--line-hi);
-}
+.badge{display:inline-block;padding:2px 6px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,46,77,.12);color:var(--rose);border:1px solid var(--line-hi)}
 .badge.ok{background:rgba(74,222,128,.12);color:#4ade80;border-color:rgba(74,222,128,.3)}
 .badge.wait{background:var(--panel2);color:var(--muted);border-color:var(--line)}
 
-/* ==== BUSINESS ==== */
+/* MORE PLANS (details) */
+details.more-plans{margin-top:8px}
+details.more-plans summary{list-style:none;cursor:pointer;padding:10px 12px;background:var(--panel2);border:1px dashed var(--line-hi);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--muted);text-align:center;letter-spacing:.06em;text-transform:uppercase;transition:border-color .15s}
+details.more-plans summary::-webkit-details-marker{display:none}
+details.more-plans summary:hover{border-color:var(--red2);color:var(--text)}
+details.more-plans[open] summary{border-bottom:1px dashed var(--line-hi);margin-bottom:8px}
+.more-plans-content{display:grid;gap:8px}
+
+/* BUSINESS */
 .list{display:grid;gap:6px}
-.list .it{
-  display:flex;gap:10px;align-items:flex-start;padding:10px 12px;
-  background:var(--panel2);border:1px solid var(--line);font-size:12px;line-height:1.5;
-}
-.list .n{
-  width:20px;height:20px;flex:none;display:grid;place-items:center;
-  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;
-  background:var(--red2);color:#fff;
-}
-.status-pill{
-  display:inline-flex;align-items:center;gap:8px;padding:8px 10px;
-  background:var(--panel2);border:1px solid var(--line);
-  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
-  color:var(--muted);letter-spacing:.06em;text-transform:uppercase;
-}
+.list .it{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--panel2);border:1px solid var(--line);font-size:12px;line-height:1.5}
+.list .n{width:20px;height:20px;flex:none;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;background:var(--red2);color:#fff}
+.status-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;background:var(--panel2);border:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
 .status-pill .dot{width:6px;height:6px;background:var(--red2);animation:blink 1.6s infinite}
 .status-pill.ok{color:#4ade80;border-color:rgba(74,222,128,.3)}
 .status-pill.ok .dot{background:#4ade80;animation:none}
 
-/* ==== HOME ==== */
+/* HOME */
 .welcome{display:flex;align-items:center;gap:12px}
 .welcome .avatar-btn{width:44px;height:44px}
 .welcome .greet{flex:1}
-.welcome .greet .name{
-  font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:800;
-  line-height:1.2;color:var(--text);
-}
+.welcome .greet .name{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:800;line-height:1.2;color:var(--text)}
 .welcome .greet .sub{font-size:11px;color:var(--muted);margin-top:2px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.tile{
-  padding:12px;background:var(--panel);border:1px solid var(--line-hi);
-  text-align:left;cursor:pointer;transition:border-color .15s,background .15s;
-  display:flex;flex-direction:column;gap:8px;
-}
+.tile{padding:12px;background:var(--panel);border:1px solid var(--line-hi);text-align:left;cursor:pointer;transition:border-color .15s,background .15s;display:flex;flex-direction:column;gap:8px}
 .tile:hover{border-color:var(--red2);background:rgba(255,46,77,.03)}
 .tile:active{transform:scale(.99)}
-.tile .ic{
-  width:28px;height:28px;display:grid;place-items:center;
-  background:rgba(255,46,77,.12);border:1px solid var(--line-hi);
-  color:var(--red2);
-}
+.tile .ic{width:28px;height:28px;display:grid;place-items:center;background:rgba(255,46,77,.12);border:1px solid var(--line-hi);color:var(--red2)}
 .tile .ic svg{width:14px;height:14px}
-.tile b{
-  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
-  color:var(--text);letter-spacing:.02em;line-height:1.3;
-}
+.tile b{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--text);letter-spacing:.02em;line-height:1.3}
 .tile span{font-size:11px;color:var(--muted);line-height:1.4}
-.stat{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:8px 0;border-bottom:1px dashed var(--line);
-  font-size:12px;
-}
+.stat{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);font-size:12px}
 .stat:last-child{border-bottom:0}
 .stat .k{color:var(--muted);font-weight:600}
-.stat .v{
-  font-family:'JetBrains Mono',monospace;font-weight:700;
-  color:var(--text);font-size:12px;
-}
+.stat .v{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--text);font-size:12px}
 
-/* ==== LIMITS ==== */
+/* LIMITS */
 .limit-row{padding:10px 0;border-bottom:1px dashed var(--line)}
 .limit-row:last-child{border-bottom:0}
 .limit-row .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.limit-row .label{
-  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;
-  color:var(--dim);letter-spacing:.14em;text-transform:uppercase;
-}
-.limit-row .count{
-  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--text);
-}
+.limit-row .label{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--dim);letter-spacing:.14em;text-transform:uppercase}
+.limit-row .count{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--text)}
 .limit-row .count b{color:var(--red2)}
 .limit-bar{height:3px;background:var(--line);overflow:hidden}
-.limit-fill{
-  height:100%;background:var(--red2);transition:width .3s;
-}
-.reset-info{
-  padding:10px 12px;background:var(--panel2);border:1px solid var(--line);
-  border-left:2px solid var(--red2);
-  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
-  display:flex;justify-content:space-between;align-items:center;margin-top:10px;
-}
+.limit-fill{height:100%;background:var(--red2);transition:width .3s}
+.reset-info{padding:10px 12px;background:var(--panel2);border:1px solid var(--line);border-left:2px solid var(--red2);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;margin-top:10px}
 .reset-info b{color:var(--red2);font-size:12px}
 
-/* ==== HELP справка ==== */
-.cmd-row{
-  display:flex;gap:10px;align-items:flex-start;padding:10px 12px;
-  background:var(--panel2);border:1px solid var(--line);
-}
+/* HELP */
+.cmd-row{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--panel2);border:1px solid var(--line)}
 .cmd-row + .cmd-row{margin-top:6px}
-.cmd-code{
-  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;
-  color:var(--red2);background:rgba(255,46,77,.1);
-  padding:2px 6px;flex:none;letter-spacing:.02em;
-}
+.cmd-code{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;color:var(--red2);background:rgba(255,46,77,.1);padding:2px 6px;flex:none;letter-spacing:.02em}
 .cmd-desc{font-size:12px;color:var(--muted);line-height:1.5}
 .cmd-desc b{color:var(--text);font-weight:700}
 
-/* ==== PROFILE ==== */
+/* PROFILE */
 .pf-head{display:flex;flex-direction:column;align-items:center;gap:10px;padding:6px 0}
 .pf-ava{position:relative;width:72px;height:72px}
 .pf-ava .avatar-btn{width:72px;height:72px;background:var(--panel);border:1px solid var(--line-hi)}
-.pf-ava .cam{
-  position:absolute;right:-4px;bottom:-4px;width:26px;height:26px;
-  background:var(--red2);border:2px solid var(--bg);
-  display:grid;place-items:center;cursor:pointer;
-}
+.pf-ava .cam{position:absolute;right:-4px;bottom:-4px;width:26px;height:26px;background:var(--red2);border:2px solid var(--bg);display:grid;place-items:center;cursor:pointer}
 .pf-ava .cam:hover{background:#ff455e}
 .pf-ava .cam svg{width:12px;height:12px}
-label.lab{
-  display:block;font-family:'JetBrains Mono',monospace;font-size:10px;
-  font-weight:700;color:var(--dim);letter-spacing:.16em;text-transform:uppercase;
-  margin:12px 0 6px;
-}
-.inp{
-  width:100%;padding:10px 12px;background:var(--panel2);border:1px solid var(--line-hi);
-  font-family:'Manrope',sans-serif;font-size:13px;color:var(--text);outline:none;
-  resize:none;transition:border-color .15s;
-}
+label.lab{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--dim);letter-spacing:.16em;text-transform:uppercase;margin:12px 0 6px}
+.inp{width:100%;padding:10px 12px;background:var(--panel2);border:1px solid var(--line-hi);font-family:'Manrope',sans-serif;font-size:13px;color:var(--text);outline:none;resize:none;transition:border-color .15s}
 .inp:focus{border-color:var(--red2)}
-.counter{text-align:right;font-family:'JetBrains Mono',monospace;
-  font-size:10px;color:var(--dim);margin-top:4px}
+.counter{text-align:right;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);margin-top:4px}
 .seg{display:flex;border:1px solid var(--line-hi);background:var(--panel2)}
-.seg button{
-  flex:1;padding:8px;border:0;background:transparent;cursor:pointer;
-  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
-  letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
-  transition:all .15s;
-}
+.seg button{flex:1;padding:8px;border:0;background:transparent;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);transition:all .15s}
 .seg button.on{background:var(--red2);color:#fff}
 
-/* ==== SPLASH ==== */
+/* SPLASH */
 .splash{align-items:center;justify-content:center;text-align:center;min-height:60vh;gap:12px}
-.splash .mark{
-  width:64px;height:64px;background:var(--red2);border:1px solid var(--red2);
-  display:grid;place-items:center;
-  box-shadow:0 0 0 4px rgba(255,46,77,.1), 0 0 40px rgba(255,46,77,.3);
-}
-.splash .mark span{
-  font-family:'JetBrains Mono',monospace;font-weight:800;font-size:28px;color:#fff;
-}
-.splash h1{
-  font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:800;
-  color:var(--text);letter-spacing:.02em;
-}
+.splash .mark{width:64px;height:64px;background:var(--red2);border:1px solid var(--red2);display:grid;place-items:center;box-shadow:0 0 0 4px rgba(255,46,77,.1), 0 0 40px rgba(255,46,77,.3)}
+.splash .mark span{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:28px;color:#fff}
+.splash h1{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:800;color:var(--text);letter-spacing:.02em}
 .splash h1 b{color:var(--red2)}
 .splash p{font-size:12px;color:var(--muted)}
 
-/* ==== MISC ==== */
-.spinner{
-  width:14px;height:14px;border:2px solid rgba(255,255,255,.2);
-  border-top-color:#fff;border-radius:50%;
-  animation:spin .8s linear infinite;display:inline-block;
-}
+/* MISC */
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
-#toast{
-  position:fixed;left:14px;right:14px;bottom:calc(14px + var(--sab));
-  padding:10px 14px;background:rgba(20,6,9,.96);
-  border:1px solid var(--line-hi);border-left:2px solid var(--red2);
-  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);
-  text-align:center;opacity:0;transform:translateY(10px);
-  transition:all .25s;pointer-events:none;z-index:50;letter-spacing:.02em;
-}
+#toast{position:fixed;left:14px;right:14px;bottom:calc(14px + var(--sab));padding:10px 14px;background:rgba(20,6,9,.96);border:1px solid var(--line-hi);border-left:2px solid var(--red2);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);text-align:center;opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none;z-index:50;letter-spacing:.02em}
 #toast.show{opacity:1;transform:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
@@ -405,349 +216,99 @@ label.lab{
 <body>
 <div id="app">
   <header id="topbar" hidden>
-    <div class="brand">
-      <div class="logo">X</div>
-      <div class="name">ASTRO<b>X</b></div>
-    </div>
-    <div class="online">
-      <span class="dot"></span>
-      <span>ONLINE <b id="onlineCount">—</b></span>
-    </div>
-    <button class="avatar-btn" id="topAvatar">
-      <div class="avatar" data-avatar>A</div>
-    </button>
+    <div class="brand"><div class="logo">X</div><div class="name">ASTRO<b>X</b></div></div>
+    <div class="online"><span class="dot"></span><span>ONLINE <b id="onlineCount">—</b></span></div>
+    <button class="avatar-btn" id="topAvatar"><div class="avatar" data-avatar>A</div></button>
   </header>
 
   <main id="screens">
     <section class="screen splash active" data-screen="splash">
-      <div class="mark"><span>X</span></div>
-      <h1>ASTRO<b>X</b></h1>
-      <p class="mono">VERIFICATION SYSTEM</p>
-      <div class="mt" style="margin-top:16px"><span class="spinner"></span></div>
+      <div class="mark"><span>X</span></div><h1>ASTRO<b>X</b></h1><p class="mono">VERIFICATION SYSTEM</p><div class="mt" style="margin-top:16px"><span class="spinner"></span></div>
     </section>
-
     <section class="screen splash" data-screen="nostart">
-      <div class="mark"><span>X</span></div>
-      <h1>ASTRO<b>X</b></h1>
-      <p data-i18n="nostart_text"></p>
-      <button class="btn" data-action="open-bot" data-i18n="code_open_chat" style="max-width:240px"></button>
+      <div class="mark"><span>X</span></div><h1>ASTRO<b>X</b></h1><p data-i18n="nostart_text"></p><button class="btn" data-action="open-bot" data-i18n="code_open_chat" style="max-width:240px"></button>
     </section>
 
     <section class="screen" data-screen="captcha">
       <div class="steps" data-steps></div>
-      <div class="hero">
-        <div class="eyebrow" data-i18n="step_1"></div>
-        <h1 data-i18n="captcha_title"></h1>
-        <p data-i18n="captcha_sub"></p>
-      </div>
+      <div class="hero"><div class="eyebrow" data-i18n="step_1"></div><h1 data-i18n="captcha_title"></h1><p data-i18n="captcha_sub"></p></div>
       <div class="panel">
         <div class="panel-title" data-i18n="captcha_panel"></div>
-        <div class="check" id="capCheck" role="checkbox" aria-checked="false" tabindex="0">
-          <div class="box">
-            <svg viewBox="0 0 24 24" fill="none">
-              <path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="lbl" data-i18n="captcha_check"></div>
-          <div class="brand">ASTROX</div>
-        </div>
-        <div class="challenge" id="capChallenge" hidden>
-          <p class="small muted mono" style="margin:10px 0 8px;font-size:11px" data-i18n="captcha_enter"></p>
-          <div class="cap">
-            <canvas id="capCanvas" width="260" height="64"></canvas>
-            <button class="iconbtn" id="capRefresh">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#ff7a8f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/>
-              </svg>
-            </button>
-          </div>
-          <input class="field" id="capInput" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="•••••" style="margin-top:8px"/>
-          <div class="hint" id="capHint"></div>
-          <button class="btn" id="capSubmit" data-i18n="captcha_btn" style="margin-top:8px"></button>
-        </div>
+        <div class="check" id="capCheck" role="checkbox" aria-checked="false" tabindex="0"><div class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="lbl" data-i18n="captcha_check"></div><div class="brand">ASTROX</div></div>
+        <div class="challenge" id="capChallenge" hidden><p class="small muted mono" style="margin:10px 0 8px;font-size:11px" data-i18n="captcha_enter"></p><div class="cap"><canvas id="capCanvas" width="260" height="64"></canvas><button class="iconbtn" id="capRefresh"><svg viewBox="0 0 24 24" fill="none" stroke="#ff7a8f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg></button></div><input class="field" id="capInput" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="•••••" style="margin-top:8px"/><div class="hint" id="capHint"></div><button class="btn" id="capSubmit" data-i18n="captcha_btn" style="margin-top:8px"></button></div>
       </div>
     </section>
 
     <section class="screen" data-screen="code">
       <div class="steps" data-steps></div>
-      <div class="hero">
-        <div class="eyebrow" data-i18n="step_2"></div>
-        <h1 data-i18n="code_title"></h1>
-        <p data-i18n="code_sub"></p>
-      </div>
+      <div class="hero"><div class="eyebrow" data-i18n="step_2"></div><h1 data-i18n="code_title"></h1><p data-i18n="code_sub"></p></div>
       <div class="panel">
-        <div id="codeIdle">
-          <button class="btn" id="codeRequest" data-i18n="code_request"></button>
-        </div>
-        <div id="codeEntry" hidden>
-          <div class="chat-tip">
-            <span class="dot"></span>
-            <span class="mono" style="font-size:11px" id="codeSentTxt"></span>
-          </div>
-          <div class="otp" id="otp">
-            <input inputmode="numeric" pattern="[0-9]*" maxlength="1"/>
-            <input inputmode="numeric" pattern="[0-9]*" maxlength="1"/>
-            <input inputmode="numeric" pattern="[0-9]*" maxlength="1"/>
-            <input inputmode="numeric" pattern="[0-9]*" maxlength="1"/>
-            <input inputmode="numeric" pattern="[0-9]*" maxlength="1"/>
-            <input inputmode="numeric" pattern="[0-9]*" maxlength="1"/>
-          </div>
-          <div class="hint" id="codeHint"></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px">
-            <button class="btn ghost" id="codeResend" style="font-size:11px"></button>
-            <button class="btn ghost" data-action="open-bot" data-i18n="code_open_chat" style="font-size:11px"></button>
-          </div>
-        </div>
-        <div id="codeDone" hidden>
-          <div style="text-align:center;padding:16px 0">
-            <div style="width:56px;height:56px;background:var(--red2);display:inline-grid;place-items:center;margin-bottom:12px">
-              <svg viewBox="0 0 24 24" fill="none" width="28" height="28">
-                <path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <h2 style="font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--text)" data-i18n="code_ok"></h2>
-          </div>
-        </div>
+        <div id="codeIdle"><button class="btn" id="codeRequest" data-i18n="code_request"></button></div>
+        <div id="codeEntry" hidden><div class="chat-tip"><span class="dot"></span><span class="mono" style="font-size:11px" id="codeSentTxt"></span></div><div class="otp" id="otp"><input inputmode="numeric" pattern="[0-9]*" maxlength="1"/><input inputmode="numeric" pattern="[0-9]*" maxlength="1"/><input inputmode="numeric" pattern="[0-9]*" maxlength="1"/><input inputmode="numeric" pattern="[0-9]*" maxlength="1"/><input inputmode="numeric" pattern="[0-9]*" maxlength="1"/><input inputmode="numeric" pattern="[0-9]*" maxlength="1"/></div><div class="hint" id="codeHint"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px"><button class="btn ghost" id="codeResend" style="font-size:11px"></button><button class="btn ghost" data-action="open-bot" data-i18n="code_open_chat" style="font-size:11px"></button></div></div>
+        <div id="codeDone" hidden><div style="text-align:center;padding:16px 0"><div style="width:56px;height:56px;background:var(--red2);display:inline-grid;place-items:center;margin-bottom:12px"><svg viewBox="0 0 24 24" fill="none" width="28" height="28"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2 style="font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--text)" data-i18n="code_ok"></h2></div></div>
       </div>
     </section>
 
     <section class="screen" data-screen="lang">
       <div class="steps" data-steps></div>
-      <div class="hero">
-        <div class="eyebrow" data-i18n="step_3"></div>
-        <h1 data-i18n="lang_title"></h1>
-        <p data-i18n="lang_sub"></p>
-      </div>
-      <div class="grid2">
-        <button class="choice" data-lang="en">
-          <div class="big">EN</div>
-          <div class="sub">English</div>
-        </button>
-        <button class="choice" data-lang="ru">
-          <div class="big">RU</div>
-          <div class="sub">Русский</div>
-        </button>
-      </div>
+      <div class="hero"><div class="eyebrow" data-i18n="step_3"></div><h1 data-i18n="lang_title"></h1><p data-i18n="lang_sub"></p></div>
+      <div class="grid2"><button class="choice" data-lang="en"><div class="big">EN</div><div class="sub">English</div></button><button class="choice" data-lang="ru"><div class="big">RU</div><div class="sub">Русский</div></button></div>
       <button class="btn" id="langNext" data-i18n="continue" style="margin-top:10px"></button>
     </section>
 
     <section class="screen" data-screen="plan">
       <div class="steps" data-steps></div>
-      <div class="hero">
-        <div class="eyebrow" data-i18n="step_4"></div>
-        <h1 data-i18n="plan_title"></h1>
-        <p data-i18n="plan_sub"></p>
-      </div>
-      <button class="plan" data-plan="free">
-        <div class="head">
-          <div class="name">Free</div>
-          <div class="price" data-i18n="plan_free_price"></div>
+      <div class="hero"><div class="eyebrow" data-i18n="step_4"></div><h1 data-i18n="plan_title"></h1><p data-i18n="plan_sub"></p></div>
+      <button class="plan sel" data-plan="free"><div class="head"><div class="name">Free</div><div class="price" data-i18n="plan_free_price"></div></div><p style="font-size:11px;color:var(--muted);margin:6px 0" data-i18n="plan_free_desc"></p><ul><li data-i18n="plan_free_f1"></li><li data-i18n="plan_free_f2"></li><li data-i18n="plan_free_f3"></li></ul></button>
+      <button class="btn" id="planNext" data-i18n="plan_choose" style="margin-top:10px"></button>
+
+      <!-- MORE PLANS -->
+      <details class="more-plans">
+        <summary data-i18n="more_plans">More Plans</summary>
+        <div class="more-plans-content">
+          <button class="plan" data-plan="go">
+            <div class="head"><div class="name">GO <span class="badge" data-i18n="plan_dev"></span></div><div class="price" data-i18n="plan_go_price"></div></div>
+            <p style="font-size:11px;color:var(--muted);margin:6px 0" data-i18n="plan_go_desc"></p>
+            <ul><li data-i18n="plan_go_f1"></li><li data-i18n="plan_go_f2"></li><li data-i18n="plan_go_f3"></li></ul>
+          </button>
         </div>
-        <p style="font-size:11px;color:var(--muted);margin:6px 0" data-i18n="plan_free_desc"></p>
-        <ul>
-          <li data-i18n="plan_free_f1"></li>
-          <li data-i18n="plan_free_f2"></li>
-          <li data-i18n="plan_free_f3"></li>
-        </ul>
-      </button>
-      <button class="plan dev" data-plan="go">
-        <div class="head">
-          <div class="name">GO <span class="badge" data-i18n="plan_dev"></span></div>
-          <div class="price" data-i18n="plan_go_price"></div>
-        </div>
-        <p style="font-size:11px;color:var(--muted);margin:6px 0" data-i18n="plan_go_desc"></p>
-        <ul>
-          <li data-i18n="plan_go_f1"></li>
-          <li data-i18n="plan_go_f2"></li>
-          <li data-i18n="plan_go_f3"></li>
-        </ul>
-      </button>
-      <button class="btn" id="planNext" disabled data-i18n="plan_choose" style="margin-top:10px"></button>
+      </details>
     </section>
 
     <section class="screen" data-screen="business">
       <div class="steps" data-steps></div>
-      <div class="hero">
-        <div class="eyebrow" data-i18n="step_5"></div>
-        <h1 data-i18n="biz_title"></h1>
-        <p data-i18n="biz_sub"></p>
-      </div>
-      <div class="panel">
-        <div class="status-pill" id="bizPill">
-          <span class="dot"></span><span data-i18n="biz_wait"></span>
-        </div>
-        <div class="list" style="margin-top:10px">
-          <div class="it"><div class="n">1</div><div data-i18n="biz_step1"></div></div>
-          <div class="it"><div class="n">2</div><div data-i18n="biz_step2"></div></div>
-          <div class="it"><div class="n">3</div><div id="bizStep3"></div></div>
-        </div>
-        <p style="font-size:11px;color:var(--muted);margin:10px 0" data-i18n="biz_note"></p>
-        <button class="btn" id="bizCheck" data-i18n="biz_check"></button>
-        <button class="btn link" data-action="open-bot" data-i18n="code_open_chat" style="margin-top:4px"></button>
-      </div>
+      <div class="hero"><div class="eyebrow" data-i18n="step_5"></div><h1 data-i18n="biz_title"></h1><p data-i18n="biz_sub"></p></div>
+      <div class="panel"><div class="status-pill" id="bizPill"><span class="dot"></span><span data-i18n="biz_wait"></span></div><div class="list" style="margin-top:10px"><div class="it"><div class="n">1</div><div data-i18n="biz_step1"></div></div><div class="it"><div class="n">2</div><div data-i18n="biz_step2"></div></div><div class="it"><div class="n">3</div><div id="bizStep3"></div></div></div><p style="font-size:11px;color:var(--muted);margin:10px 0" data-i18n="biz_note"></p><button class="btn" id="bizCheck" data-i18n="biz_check"></button><button class="btn link" data-action="open-bot" data-i18n="code_open_chat" style="margin-top:4px"></button></div>
     </section>
 
     <section class="screen" data-screen="home">
-      <div class="panel">
-        <div class="welcome">
-          <button class="avatar-btn" data-action="profile">
-            <div class="avatar lg" data-avatar>A</div>
-          </button>
-          <div class="greet">
-            <div class="name" id="homeHello"></div>
-            <div class="sub" data-i18n="home_sub"></div>
-          </div>
-        </div>
-        <div class="chips">
-          <span class="badge" id="homePlan"></span>
-          <span class="badge ok" data-i18n="st_verified"></span>
-          <span class="badge" id="homeBiz"></span>
-        </div>
-      </div>
+      <div class="panel"><div class="welcome"><button class="avatar-btn" data-action="profile"><div class="avatar lg" data-avatar>A</div></button><div class="greet"><div class="name" id="homeHello"></div><div class="sub" data-i18n="home_sub"></div></div></div><div class="chips"><span class="badge" id="homePlan"></span><span class="badge ok" data-i18n="st_verified"></span><span class="badge" id="homeBiz"></span></div></div>
       <div class="tiles">
-        <button class="tile" data-action="profile">
-          <div class="ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>
-            </svg>
-          </div>
-          <div><b data-i18n="tile_profile"></b><span data-i18n="tile_profile_s"></span></div>
-        </button>
-        <button class="tile" data-action="goto-limits">
-          <div class="ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/>
-            </svg>
-          </div>
-          <div><b data-i18n="tile_limits"></b><span id="tileLimitsS"></span></div>
-        </button>
-        <button class="tile" data-action="goto-help">
-          <div class="ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="9"/><path d="M12 8v.01M11 12h1v4h1"/>
-            </svg>
-          </div>
-          <div><b data-i18n="tile_help"></b><span data-i18n="tile_help_s"></span></div>
-        </button>
-        <button class="tile" data-action="open-bot">
-          <div class="ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 12a8 8 0 0 1-11.6 7.2L4 21l1.8-5.4A8 8 0 1 1 21 12z"/>
-            </svg>
-          </div>
-          <div><b data-i18n="tile_support"></b><span data-i18n="tile_support_s"></span></div>
-        </button>
+        <button class="tile" data-action="profile"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div><div><b data-i18n="tile_profile"></b><span data-i18n="tile_profile_s"></span></div></button>
+        <button class="tile" data-action="goto-limits"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/></svg></div><div><b data-i18n="tile_limits"></b><span id="tileLimitsS"></span></div></button>
+        <button class="tile" data-action="goto-help"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M11 12h1v4h1"/></svg></div><div><b data-i18n="tile_help"></b><span data-i18n="tile_help_s"></span></div></button>
+        <button class="tile" data-action="open-bot"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.2L4 21l1.8-5.4A8 8 0 1 1 21 12z"/></svg></div><div><b data-i18n="tile_support"></b><span data-i18n="tile_support_s"></span></div></button>
       </div>
-      <div class="panel">
-        <div class="panel-title" data-i18n="home_account"></div>
-        <div class="stat"><span class="k">ID</span><span class="v" id="homeId"></span></div>
-        <div class="stat"><span class="k" data-i18n="home_member"></span><span class="v" id="homeSince"></span></div>
-        <div class="stat"><span class="k" data-i18n="home_security"></span><span class="v" data-i18n="home_security_v"></span></div>
-      </div>
+      <div class="panel"><div class="panel-title" data-i18n="home_account"></div><div class="stat"><span class="k">ID</span><span class="v" id="homeId"></span></div><div class="stat"><span class="k" data-i18n="home_member"></span><span class="v" id="homeSince"></span></div><div class="stat"><span class="k" data-i18n="home_security"></span><span class="v" data-i18n="home_security_v"></span></div></div>
     </section>
 
     <section class="screen" data-screen="limits">
-      <div class="hero">
-        <div class="eyebrow" data-i18n="limits_eyebrow"></div>
-        <h1 data-i18n="limits_title"></h1>
-        <p data-i18n="limits_sub"></p>
-      </div>
-      <div class="panel">
-        <div class="panel-title">
-          <span data-i18n="limits_plan"></span>
-          <span class="badge" id="limitsPlan"></span>
-        </div>
-        <div class="limit-row">
-          <div class="top">
-            <div class="label" data-i18n="limits_day"></div>
-            <div class="count"><b id="dayUsed">0</b> / <span id="dayLimit">100</span></div>
-          </div>
-          <div class="limit-bar"><div class="limit-fill" id="dayFill" style="width:0%"></div></div>
-        </div>
-        <div class="limit-row">
-          <div class="top">
-            <div class="label" data-i18n="limits_week"></div>
-            <div class="count"><b id="weekUsed">0</b> / <span id="weekLimit">700</span></div>
-          </div>
-          <div class="limit-bar"><div class="limit-fill" id="weekFill" style="width:0%"></div></div>
-        </div>
-        <div class="limit-row">
-          <div class="top">
-            <div class="label" data-i18n="limits_month"></div>
-            <div class="count"><b id="monthUsed">0</b> / <span id="monthLimit">3000</span></div>
-          </div>
-          <div class="limit-bar"><div class="limit-fill" id="monthFill" style="width:0%"></div></div>
-        </div>
-        <div class="reset-info">
-          <span data-i18n="limits_reset"></span>
-          <b class="mono" id="resetTimer">00:00:00</b>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-title" data-i18n="limits_cmds_title"></div>
-        <div class="cmd-row">
-          <span class="cmd-code">!help</span>
-          <div class="cmd-desc" data-i18n="limits_cmd_help"></div>
-        </div>
-      </div>
+      <div class="hero"><div class="eyebrow" data-i18n="limits_eyebrow"></div><h1 data-i18n="limits_title"></h1><p data-i18n="limits_sub"></p></div>
+      <div class="panel"><div class="panel-title"><span data-i18n="limits_plan"></span><span class="badge" id="limitsPlan"></span></div><div class="limit-row"><div class="top"><div class="label" data-i18n="limits_day"></div><div class="count"><b id="dayUsed">0</b> / <span id="dayLimit">100</span></div></div><div class="limit-bar"><div class="limit-fill" id="dayFill" style="width:0%"></div></div></div><div class="limit-row"><div class="top"><div class="label" data-i18n="limits_week"></div><div class="count"><b id="weekUsed">0</b> / <span id="weekLimit">700</span></div></div><div class="limit-bar"><div class="limit-fill" id="weekFill" style="width:0%"></div></div></div><div class="limit-row"><div class="top"><div class="label" data-i18n="limits_month"></div><div class="count"><b id="monthUsed">0</b> / <span id="monthLimit">3000</span></div></div><div class="limit-bar"><div class="limit-fill" id="monthFill" style="width:0%"></div></div></div><div class="reset-info"><span data-i18n="limits_reset"></span><b class="mono" id="resetTimer">00:00:00</b></div></div>
+      <div class="panel"><div class="panel-title" data-i18n="limits_cmds_title"></div><div class="cmd-row"><span class="cmd-code">!help</span><div class="cmd-desc" data-i18n="limits_cmd_help"></div></div></div>
       <button class="btn ghost" data-action="home" data-i18n="back"></button>
     </section>
 
     <section class="screen" data-screen="help">
-      <div class="hero">
-        <div class="eyebrow" data-i18n="help_eyebrow"></div>
-        <h1 data-i18n="help_title"></h1>
-        <p data-i18n="help_sub"></p>
-      </div>
-      <div class="panel">
-        <div class="panel-title">COMMANDS</div>
-        <div class="cmd-row"><span class="cmd-code">/start</span><div class="cmd-desc" data-i18n="help_cmd_start"></div></div>
-        <div class="cmd-row"><span class="cmd-code">/profile</span><div class="cmd-desc" data-i18n="help_cmd_profile"></div></div>
-        <div class="cmd-row"><span class="cmd-code">/lang</span><div class="cmd-desc" data-i18n="help_cmd_lang"></div></div>
-        <div class="cmd-row"><span class="cmd-code">/status</span><div class="cmd-desc" data-i18n="help_cmd_status"></div></div>
-        <div class="cmd-row"><span class="cmd-code">/limits</span><div class="cmd-desc" data-i18n="help_cmd_limits"></div></div>
-        <div class="cmd-row"><span class="cmd-code">!help</span><div class="cmd-desc" data-i18n="help_cmd_bang"></div></div>
-      </div>
+      <div class="hero"><div class="eyebrow" data-i18n="help_eyebrow"></div><h1 data-i18n="help_title"></h1><p data-i18n="help_sub"></p></div>
+      <div class="panel"><div class="panel-title">COMMANDS</div><div class="cmd-row"><span class="cmd-code">/start</span><div class="cmd-desc" data-i18n="help_cmd_start"></div></div><div class="cmd-row"><span class="cmd-code">/profile</span><div class="cmd-desc" data-i18n="help_cmd_profile"></div></div><div class="cmd-row"><span class="cmd-code">/lang</span><div class="cmd-desc" data-i18n="help_cmd_lang"></div></div><div class="cmd-row"><span class="cmd-code">/status</span><div class="cmd-desc" data-i18n="help_cmd_status"></div></div><div class="cmd-row"><span class="cmd-code">/limits</span><div class="cmd-desc" data-i18n="help_cmd_limits"></div></div><div class="cmd-row"><span class="cmd-code">!help</span><div class="cmd-desc" data-i18n="help_cmd_bang"></div></div></div>
       <button class="btn ghost" data-action="home" data-i18n="back"></button>
     </section>
 
     <section class="screen" data-screen="profile">
-      <div class="pf-head">
-        <div class="pf-ava">
-          <button class="avatar-btn" id="pfAvaBtn">
-            <div class="avatar lg" data-avatar>A</div>
-          </button>
-          <button class="cam" id="pfCam">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>
-            </svg>
-          </button>
-          <input type="file" id="pfFile" accept="image/*" class="sr"/>
-        </div>
-        <button class="btn link" id="pfResetAva" data-i18n="prof_reset_avatar"></button>
-      </div>
-      <div class="panel">
-        <div class="panel-title" data-i18n="prof_edit"></div>
-        <label class="lab" for="pfName" style="margin-top:0" data-i18n="prof_name"></label>
-        <input class="inp" id="pfName" maxlength="40"/>
-        <label class="lab" for="pfBio" data-i18n="prof_bio"></label>
-        <textarea class="inp" id="pfBio" rows="2" maxlength="200"></textarea>
-        <div class="counter"><span id="pfBioCount">0</span>/200</div>
-        <label class="lab" data-i18n="prof_lang"></label>
-        <div class="seg" id="pfSeg">
-          <button data-lang="ru">RU</button>
-          <button data-lang="en">EN</button>
-        </div>
-        <button class="btn" id="pfSave" data-i18n="prof_save" style="margin-top:12px"></button>
-      </div>
-      <div class="panel">
-        <div class="panel-title">ACCOUNT</div>
-        <div class="stat"><span class="k">Username</span><span class="v" id="pfUsername"></span></div>
-        <div class="stat"><span class="k">ID</span><span class="v" id="pfId"></span></div>
-        <div class="stat"><span class="k" data-i18n="prof_plan"></span><span class="v" id="pfPlan"></span></div>
-        <div class="stat"><span class="k" data-i18n="prof_since"></span><span class="v" id="pfSince"></span></div>
-        <div class="stat"><span class="k">Business</span><span class="v" id="pfBiz"></span></div>
-      </div>
+      <div class="pf-head"><div class="pf-ava"><button class="avatar-btn" id="pfAvaBtn"><div class="avatar lg" data-avatar>A</div></button><button class="cam" id="pfCam"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button><input type="file" id="pfFile" accept="image/*" class="sr"/></div><button class="btn link" id="pfResetAva" data-i18n="prof_reset_avatar"></button></div>
+      <div class="panel"><div class="panel-title" data-i18n="prof_edit"></div><label class="lab" for="pfName" style="margin-top:0" data-i18n="prof_name"></label><input class="inp" id="pfName" maxlength="40"/><label class="lab" for="pfBio" data-i18n="prof_bio"></label><textarea class="inp" id="pfBio" rows="2" maxlength="200"></textarea><div class="counter"><span id="pfBioCount">0</span>/200</div><label class="lab" data-i18n="prof_lang"></label><div class="seg" id="pfSeg"><button data-lang="ru">RU</button><button data-lang="en">EN</button></div><button class="btn" id="pfSave" data-i18n="prof_save" style="margin-top:12px"></button></div>
+      <div class="panel"><div class="panel-title">ACCOUNT</div><div class="stat"><span class="k">Username</span><span class="v" id="pfUsername"></span></div><div class="stat"><span class="k">ID</span><span class="v" id="pfId"></span></div><div class="stat"><span class="k" data-i18n="prof_plan"></span><span class="v" id="pfPlan"></span></div><div class="stat"><span class="k" data-i18n="prof_since"></span><span class="v" id="pfSince"></span></div><div class="stat"><span class="k">Business</span><span class="v" id="pfBiz"></span></div></div>
       <button class="btn ghost" data-action="home" data-i18n="back"></button>
     </section>
   </main>
@@ -769,120 +330,14 @@ const firebaseConfig = {
   measurementId: "G-2TPM73FMDH",
 };
 const CFG = { captchaLen:5, captchaTtlMin:10, botTimeoutMs:25000, resendSec:60, demoCode:"123456" };
-const PLAN_LIMITS = { free:{day:100,week:700,month:3000}, go:{day:1000,week:7000,month:30000} };
+const PLAN_LIMITS = { free:{day:100,week:700,month:3000}, go:{day:150,week:1050,month:4500} };
 
 const I18N = {
   ru: {
-    tag:"Защищённый вход в Telegram", continue:"Продолжить", back:"Назад",
-    demo_banner:"Демо-режим",
-    nostart_text:"Открой чат с ботом и отправь /start",
-    step_1:"Шаг 1 / 5", step_2:"Шаг 2 / 5", step_3:"Шаг 3 / 5", step_4:"Шаг 4 / 5", step_5:"Шаг 5 / 5",
-    captcha_panel:"ПРОВЕРКА", captcha_title:"Не робот?", captcha_sub:"Подтверди, что ты человек.",
-    captcha_check:"Я не робот", captcha_enter:"СИМВОЛЫ С КАРТИНКИ",
-    captcha_btn:"Проверить", captcha_wrong:"Неверно", captcha_ok:"Проверка пройдена", captcha_wait:"Подожди {s} с",
-    code_title:"Код входа", code_sub:"Запроси код в боте.",
-    code_request:"Запросить код", code_sending:"Отправка...", code_sent:"Код отправлен",
-    code_resend:"Через {s} с", code_resend_now:"Отправить ещё",
-    code_checking:"Проверка...", code_wrong:"Неверный код. Осталось: {n}",
-    code_expired:"Истёк", code_locked:"Слишком много попыток",
-    code_cooldown:"Подожди {s} с", code_limit:"Лимит кодов",
-    code_timeout:"Бот не ответил", code_bad_auth:"Сессия устарела",
-    code_blocked:"Разблокируй бота", code_too_new:"Аккаунт новый",
-    code_ok:"ВХОД ПОДТВЕРЖДЁН", code_open_chat:"Открыть бота",
-    lang_title:"Язык", lang_sub:"Выбери язык интерфейса.",
-    plan_title:"Тариф", plan_sub:"Free доступен, GO — скоро.",
-    plan_free_price:"0 ₽", plan_go_price:"СКОРО",
-    plan_free_desc:"100 / день · 700 / неделя · 3000 / месяц",
-    plan_go_desc:"Расширенные лимиты",
-    plan_dev:"DEV", plan_choose:"Выбрать", plan_soon:"GO в разработке",
-    plan_free_f1:"Кабинет", plan_free_f2:"!help", plan_free_f3:"Защищённый вход",
-    plan_go_f1:"Всё из Free", plan_go_f2:"Больше запросов", plan_go_f3:"Ранний доступ",
-    biz_title:"Активация", biz_sub:"Подключи Telegram Business.",
-    biz_wait:"ОЖИДАНИЕ", biz_step1:"Настройки → Telegram Business",
-    biz_step2:"Чат-боты", biz_step3:"@{bot} — подтверди доступ",
-    biz_note:"Нужен Telegram Premium.", biz_check:"Я подключил — проверить",
-    biz_not_yet:"Нет подключения", biz_done:"Business подключён",
-    home_hello:"Привет, {name}", home_sub:"Личный кабинет",
-    home_account:"АККАУНТ", home_member:"Создан", home_security:"Защита", home_security_v:"Активна",
-    st_verified:"VERIFIED", st_biz_on:"BUSINESS", st_biz_off:"BUSINESS —",
-    tile_profile:"Профиль", tile_profile_s:"Имя · аватар",
-    tile_limits:"Лимиты", tile_limits_s:"День · Неделя · Месяц",
-    tile_help:"Справка", tile_help_s:"Команды бота",
-    tile_support:"Поддержка", tile_support_s:"Чат с ботом",
-    prof_edit:"РЕДАКТИРОВАНИЕ",
-    prof_name:"Имя", prof_bio:"О себе", prof_bio_ph:"Пара слов…",
-    prof_lang:"Язык", prof_plan:"Тариф", prof_since:"С нами с",
-    prof_save:"Сохранить", prof_saved:"Сохранено",
-    prof_reset_avatar:"Вернуть аватар Telegram",
-    plan_free:"Free", plan_go:"GO", yes:"Да", no:"Нет",
-    demo_code:"Демо: 123456", saving:"Сохраняем...", error:"Ошибка",
-    limits_eyebrow:"ЛИМИТЫ", limits_title:"Запросы", limits_sub:"Текущее использование",
-    limits_plan:"ТАРИФ", limits_day:"ДЕНЬ", limits_week:"НЕДЕЛЯ", limits_month:"МЕСЯЦ",
-    limits_reset:"СБРОС ЧЕРЕЗ", limits_cmds_title:"СПИСЫВАЕТ ЗАПРОС",
-    limits_cmd_help:"<b>Справочник</b> — списывает 1 запрос.",
-    help_eyebrow:"СПРАВКА", help_title:"Команды", help_sub:"Что делает каждая",
-    help_cmd_start:"Главное меню",
-    help_cmd_profile:"Профиль",
-    help_cmd_lang:"Сменить язык",
-    help_cmd_status:"Статус доступа",
-    help_cmd_limits:"Лимиты по периодам",
-    help_cmd_bang:"<b>Справочник</b> — списывает 1 запрос.",
+    tag:"Защищённый вход в Telegram", continue:"Продолжить", back:"Назад", demo_banner:"Демо-режим", nostart_text:"Открой чат с ботом и отправь /start", step_1:"Шаг 1 / 5", step_2:"Шаг 2 / 5", step_3:"Шаг 3 / 5", step_4:"Шаг 4 / 5", step_5:"Шаг 5 / 5", captcha_panel:"ПРОВЕРКА", captcha_title:"Не робот?", captcha_sub:"Подтверди, что ты человек.", captcha_check:"Я не робот", captcha_enter:"СИМВОЛЫ С КАРТИНКИ", captcha_btn:"Проверить", captcha_wrong:"Неверно", captcha_ok:"Проверка пройдена", captcha_wait:"Подожди {s} с", code_title:"Код входа", code_sub:"Запроси код в боте.", code_request:"Запросить код", code_sending:"Отправка...", code_sent:"Код отправлен", code_resend:"Через {s} с", code_resend_now:"Отправить ещё", code_checking:"Проверка...", code_wrong:"Неверный код. Осталось: {n}", code_expired:"Истёк", code_locked:"Слишком много попыток", code_cooldown:"Подожди {s} с", code_limit:"Лимит кодов", code_timeout:"Бот не ответил", code_bad_auth:"Сессия устарела", code_blocked:"Разблокируй бота", code_too_new:"Аккаунт новый", code_ok:"ВХОД ПОДТВЕРЖДЁН", code_open_chat:"Открыть бота", lang_title:"Язык", lang_sub:"Выбери язык интерфейса.", plan_title:"Тариф", plan_sub:"Free доступен, GO — 150 ⭐/мес.", plan_free_price:"0 ₽", plan_go_price:"150 ⭐", plan_free_desc:"100 / день · 700 / неделя · 3000 / месяц", plan_go_desc:"150 / день · 1050 / неделя · 4500 / месяц", plan_dev:"DEV", plan_choose:"Выбрать", plan_soon:"GO доступен в More Plans", plan_free_f1:"Кабинет", plan_free_f2:"!help", plan_free_f3:"Защищённый вход", plan_go_f1:"Всё из Free", plan_go_f2:"Больше запросов", plan_go_f3:"Ранний доступ", more_plans:"More Plans", biz_title:"Активация", biz_sub:"Подключи Telegram Business.", biz_wait:"ОЖИДАНИЕ", biz_step1:"Настройки → Telegram Business", biz_step2:"Чат-боты", biz_step3:"@{bot} — подтверди доступ", biz_note:"Нужен Telegram Premium.", biz_check:"Я подключил — проверить", biz_not_yet:"Нет подключения", biz_done:"Business подключён", home_hello:"Привет, {name}", home_sub:"Личный кабинет", home_account:"АККАУНТ", home_member:"Создан", home_security:"Защита", home_security_v:"Активна", st_verified:"VERIFIED", st_biz_on:"BUSINESS", st_biz_off:"BUSINESS —", tile_profile:"Профиль", tile_profile_s:"Имя · аватар", tile_limits:"Лимиты", tile_limits_s:"День · Неделя · Месяц", tile_help:"Справка", tile_help_s:"Команды бота", tile_support:"Поддержка", tile_support_s:"Чат с ботом", prof_edit:"РЕДАКТИРОВАНИЕ", prof_name:"Имя", prof_bio:"О себе", prof_bio_ph:"Пара слов…", prof_lang:"Язык", prof_plan:"Тариф", prof_since:"С нами с", prof_save:"Сохранить", prof_saved:"Сохранено", prof_reset_avatar:"Вернуть аватар Telegram", plan_free:"Free", plan_go:"GO", yes:"Да", no:"Нет", demo_code:"Демо: 123456", saving:"Сохраняем...", error:"Ошибка", limits_eyebrow:"ЛИМИТЫ", limits_title:"Запросы", limits_sub:"Текущее использование", limits_plan:"ТАРИФ", limits_day:"ДЕНЬ", limits_week:"НЕДЕЛЯ", limits_month:"МЕСЯЦ", limits_reset:"СБРОС ЧЕРЕЗ", limits_cmds_title:"СПИСЫВАЕТ ЗАПРОС", limits_cmd_help:"<b>Справочник</b> — списывает 1 запрос.", help_eyebrow:"СПРАВКА", help_title:"Команды", help_sub:"Что делает каждая", help_cmd_start:"Главное меню", help_cmd_profile:"Профиль", help_cmd_lang:"Сменить язык", help_cmd_status:"Статус доступа", help_cmd_limits:"Лимиты по периодам", help_cmd_bang:"<b>Справочник</b> — списывает 1 запрос.", payment_success:"Оплата прошла! GO активирован.", payment_fail:"Оплата не прошла."
   },
   en: {
-    tag:"Secure sign-in for Telegram", continue:"Continue", back:"Back",
-    demo_banner:"Demo mode",
-    nostart_text:"Open the bot chat and send /start",
-    step_1:"Step 1 / 5", step_2:"Step 2 / 5", step_3:"Step 3 / 5", step_4:"Step 4 / 5", step_5:"Step 5 / 5",
-    captcha_panel:"VERIFICATION", captcha_title:"Not a robot?", captcha_sub:"Confirm you are human.",
-    captcha_check:"I'm not a robot", captcha_enter:"CHARACTERS FROM IMAGE",
-    captcha_btn:"Verify", captcha_wrong:"Wrong", captcha_ok:"Passed", captcha_wait:"Wait {s}s",
-    code_title:"Sign-in code", code_sub:"Request a code in the bot.",
-    code_request:"Request code", code_sending:"Sending...", code_sent:"Code sent",
-    code_resend:"In {s}s", code_resend_now:"Send again",
-    code_checking:"Checking...", code_wrong:"Wrong. Left: {n}",
-    code_expired:"Expired", code_locked:"Too many attempts",
-    code_cooldown:"Wait {s}s", code_limit:"Limit reached",
-    code_timeout:"Bot not responding", code_bad_auth:"Session expired",
-    code_blocked:"Unblock the bot", code_too_new:"Account too new",
-    code_ok:"SIGN-IN CONFIRMED", code_open_chat:"Open bot",
-    lang_title:"Language", lang_sub:"Choose interface language.",
-    plan_title:"Plan", plan_sub:"Free is available, GO — soon.",
-    plan_free_price:"$0", plan_go_price:"SOON",
-    plan_free_desc:"100/day · 700/week · 3000/month",
-    plan_go_desc:"Extended limits",
-    plan_dev:"DEV", plan_choose:"Choose", plan_soon:"GO in development",
-    plan_free_f1:"Dashboard", plan_free_f2:"!help", plan_free_f3:"Secure sign-in",
-    plan_go_f1:"All from Free", plan_go_f2:"More requests", plan_go_f3:"Early access",
-    biz_title:"Activation", biz_sub:"Connect Telegram Business.",
-    biz_wait:"WAITING", biz_step1:"Settings → Telegram Business",
-    biz_step2:"Chatbots", biz_step3:"@{bot} — confirm access",
-    biz_note:"Telegram Premium required.", biz_check:"Check",
-    biz_not_yet:"No connection", biz_done:"Business connected",
-    home_hello:"Hi, {name}", home_sub:"Personal dashboard",
-    home_account:"ACCOUNT", home_member:"Created", home_security:"Protection", home_security_v:"Active",
-    st_verified:"VERIFIED", st_biz_on:"BUSINESS", st_biz_off:"BUSINESS —",
-    tile_profile:"Profile", tile_profile_s:"Name · avatar",
-    tile_limits:"Limits", tile_limits_s:"Day · Week · Month",
-    tile_help:"Handbook", tile_help_s:"Bot commands",
-    tile_support:"Support", tile_support_s:"Bot chat",
-    prof_edit:"EDIT",
-    prof_name:"Name", prof_bio:"About", prof_bio_ph:"A few words…",
-    prof_lang:"Language", prof_plan:"Plan", prof_since:"Member since",
-    prof_save:"Save", prof_saved:"Saved",
-    prof_reset_avatar:"Use Telegram avatar",
-    plan_free:"Free", plan_go:"GO", yes:"Yes", no:"No",
-    demo_code:"Demo: 123456", saving:"Saving...", error:"Error",
-    limits_eyebrow:"LIMITS", limits_title:"Requests", limits_sub:"Current usage",
-    limits_plan:"PLAN", limits_day:"DAY", limits_week:"WEEK", limits_month:"MONTH",
-    limits_reset:"RESET IN", limits_cmds_title:"COSTS A REQUEST",
-    limits_cmd_help:"<b>Handbook</b> — costs 1 request.",
-    help_eyebrow:"REFERENCE", help_title:"Commands", help_sub:"What each does",
-    help_cmd_start:"Main menu",
-    help_cmd_profile:"Profile",
-    help_cmd_lang:"Change language",
-    help_cmd_status:"Access status",
-    help_cmd_limits:"Period limits",
-    help_cmd_bang:"<b>Handbook</b> — costs 1 request.",
+    tag:"Secure sign-in for Telegram", continue:"Continue", back:"Back", demo_banner:"Demo mode", nostart_text:"Open the bot chat and send /start", step_1:"Step 1 / 5", step_2:"Step 2 / 5", step_3:"Step 3 / 5", step_4:"Step 4 / 5", step_5:"Step 5 / 5", captcha_panel:"VERIFICATION", captcha_title:"Not a robot?", captcha_sub:"Confirm you are human.", captcha_check:"I'm not a robot", captcha_enter:"CHARACTERS FROM IMAGE", captcha_btn:"Verify", captcha_wrong:"Wrong", captcha_ok:"Passed", captcha_wait:"Wait {s}s", code_title:"Sign-in code", code_sub:"Request a code in the bot.", code_request:"Request code", code_sending:"Sending...", code_sent:"Code sent", code_resend:"In {s}s", code_resend_now:"Send again", code_checking:"Checking...", code_wrong:"Wrong. Left: {n}", code_expired:"Expired", code_locked:"Too many attempts", code_cooldown:"Wait {s}s", code_limit:"Limit reached", code_timeout:"Bot not responding", code_bad_auth:"Session expired", code_blocked:"Unblock the bot", code_too_new:"Account too new", code_ok:"SIGN-IN CONFIRMED", code_open_chat:"Open bot", lang_title:"Language", lang_sub:"Choose interface language.", plan_title:"Plan", plan_sub:"Free available, GO — 150 ⭐/mo.", plan_free_price:"$0", plan_go_price:"150 ⭐", plan_free_desc:"100/day · 700/week · 3000/month", plan_go_desc:"150/day · 1050/week · 4500/month", plan_dev:"DEV", plan_choose:"Choose", plan_soon:"GO is in More Plans", plan_free_f1:"Dashboard", plan_free_f2:"!help", plan_free_f3:"Secure sign-in", plan_go_f1:"All from Free", plan_go_f2:"More requests", plan_go_f3:"Early access", more_plans:"More Plans", biz_title:"Activation", biz_sub:"Connect Telegram Business.", biz_wait:"WAITING", biz_step1:"Settings → Telegram Business", biz_step2:"Chatbots", biz_step3:"@{bot} — confirm access", biz_note:"Telegram Premium required.", biz_check:"Check", biz_not_yet:"No connection", biz_done:"Business connected", home_hello:"Hi, {name}", home_sub:"Personal dashboard", home_account:"ACCOUNT", home_member:"Created", home_security:"Protection", home_security_v:"Active", st_verified:"VERIFIED", st_biz_on:"BUSINESS", st_biz_off:"BUSINESS —", tile_profile:"Profile", tile_profile_s:"Name · avatar", tile_limits:"Limits", tile_limits_s:"Day · Week · Month", tile_help:"Handbook", tile_help_s:"Bot commands", tile_support:"Support", tile_support_s:"Bot chat", prof_edit:"EDIT", prof_name:"Name", prof_bio:"About", prof_bio_ph:"A few words…", prof_lang:"Language", prof_plan:"Plan", prof_since:"Member since", prof_save:"Save", prof_saved:"Saved", prof_reset_avatar:"Use Telegram avatar", plan_free:"Free", plan_go:"GO", yes:"Yes", no:"No", demo_code:"Demo: 123456", saving:"Saving...", error:"Error", limits_eyebrow:"LIMITS", limits_title:"Requests", limits_sub:"Current usage", limits_plan:"PLAN", limits_day:"DAY", limits_week:"WEEK", limits_month:"MONTH", limits_reset:"RESET IN", limits_cmds_title:"COSTS A REQUEST", limits_cmd_help:"<b>Handbook</b> — costs 1 request.", help_eyebrow:"REFERENCE", help_title:"Commands", help_sub:"What each does", help_cmd_start:"Main menu", help_cmd_profile:"Profile", help_cmd_lang:"Change language", help_cmd_status:"Access status", help_cmd_limits:"Period limits", help_cmd_bang:"<b>Handbook</b> — costs 1 request.", payment_success:"Payment successful! GO activated.", payment_fail:"Payment failed."
   }
 };
 
@@ -901,47 +356,21 @@ let captchaCode = "", captchaFails = 0, captchaLockUntil = 0, resendTimer = null
 let selectedLang = lang, selectedPlan = null, db = null, limitsCache = null;
 let resetTimerHandle = null;
 
-if (tg) {
-  try {
-    tg.ready(); tg.expand();
-    tg.setHeaderColor("#060203"); tg.setBackgroundColor("#060203");
-    tg.disableVerticalSwipes?.();
-  } catch {}
-}
-try {
-  const app = initializeApp(firebaseConfig);
-  db = getDatabase(app);
-} catch(e){ console.warn("Firebase init failed", e); }
+if (tg) { try { tg.ready(); tg.expand(); tg.setHeaderColor("#060203"); tg.setBackgroundColor("#060203"); tg.disableVerticalSwipes?.(); } catch {} }
+try { const app = initializeApp(firebaseConfig); db = getDatabase(app); } catch(e){ console.warn("Firebase init failed", e); }
 
-const haptic = (type="light") => {
-  try {
-    (type==="success"||type==="error")
-      ? tg?.HapticFeedback?.notificationOccurred(type)
-      : tg?.HapticFeedback?.impactOccurred(type);
-  } catch {}
-};
+const haptic = (type="light") => { try { (type==="success"||type==="error") ? tg?.HapticFeedback?.notificationOccurred(type) : tg?.HapticFeedback?.impactOccurred(type); } catch {} };
 const t = (k,p={}) => ((I18N[lang]||I18N.en)[k] ?? I18N.en[k] ?? k).replace(/\{(\w+)\}/g,(_,n)=>p[n] ?? "");
 const fmtDate = (ms) => ms ? new Date(ms).toLocaleDateString(lang==="ru"?"ru-RU":"en-GB",{day:"2-digit",month:"short",year:"numeric"}) : "—";
 const planName = (p) => p==="go" ? t("plan_go") : p==="free" ? t("plan_free") : "—";
 const userRef = () => ref(db, "users/" + uid);
 
 let toastTimer;
-function toast(msg){
-  const el = $("#toast");
-  el.textContent = msg;
-  el.classList.add("show");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>el.classList.remove("show"), 2400);
-}
+function toast(msg){ const el = $("#toast"); el.textContent = msg; el.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(()=>el.classList.remove("show"), 2400); }
 
 function applyI18n(){
   document.documentElement.lang = lang;
-  $$("[data-i18n]").forEach(el => {
-    const key = el.dataset.i18n;
-    const html = t(key);
-    if (html.includes("<b>") || html.includes("<i>")) el.innerHTML = html;
-    else el.textContent = html;
-  });
+  $$("[data-i18n]").forEach(el => { const key = el.dataset.i18n; const html = t(key); if (html.includes("<b>") || html.includes("<i>")) el.innerHTML = html; else el.textContent = html; });
   $("#pfBio").placeholder = t("prof_bio_ph");
   $("#bizStep3").textContent = t("biz_step3", { bot: meta.username || "bot" });
   $("#codeResend").textContent = t("code_resend_now");
@@ -950,23 +379,12 @@ function applyI18n(){
 }
 
 const STEP_ORDER = ["captcha","code","lang","plan","business"];
-function renderSteps(){
-  const idx = STEP_ORDER.indexOf(current);
-  $$("[data-steps]").forEach(c => {
-    c.innerHTML = STEP_ORDER.map((s,i) =>
-      `<i class="${i<idx?'done':i===idx?'cur':''}"></i>`).join("");
-  });
-}
+function renderSteps(){ const idx = STEP_ORDER.indexOf(current); $$("[data-steps]").forEach(c => { c.innerHTML = STEP_ORDER.map((s,i) => `<i class="${i<idx?'done':i===idx?'cur':''}"></i>`).join(""); }); }
 const enter = {
   captcha(){ resetCaptcha(); },
   code(){ $("#codeIdle").hidden=false; $("#codeEntry").hidden=true; $("#codeDone").hidden=true; },
-  lang(){ selectedLang = rec?.lang || lang;
-    $$("[data-lang].choice").forEach(b => b.classList.toggle("sel", b.dataset.lang===selectedLang)); },
-  plan(){
-    selectedPlan = rec?.plan || null;
-    $$("[data-plan]").forEach(b => b.classList.toggle("sel", b.dataset.plan===selectedPlan));
-    $("#planNext").disabled = !selectedPlan;
-  },
+  lang(){ selectedLang = rec?.lang || lang; $$("[data-lang].choice").forEach(b => b.classList.toggle("sel", b.dataset.lang===selectedLang)); },
+  plan(){ selectedPlan = rec?.plan || null; $$("[data-plan]").forEach(b => b.classList.toggle("sel", b.dataset.plan===selectedPlan)); $("#planNext").disabled = !selectedPlan; },
   business(){ $("#bizPill").classList.toggle("ok", !!rec?.business_connected); },
   home(){ renderUser(); },
   limits(){ renderLimits(); loadLimits(); startResetTimer(); },
@@ -981,519 +399,119 @@ function showScreen(name){
   $("#topbar").hidden = !top;
   document.body.classList.toggle("has-top", top);
   window.scrollTo(0,0);
-  renderSteps();
-  enter[name]?.();
+  renderSteps(); enter[name]?.();
   try { ["profile","limits","help"].includes(name) ? tg?.BackButton?.show() : tg?.BackButton?.hide(); } catch {}
 }
 try { tg?.BackButton?.onClick(() => showScreen("home")); } catch {}
 
-function captchaFresh(){
-  const ts = +sessionStorage.getItem("astrox:captcha:"+uid) || 0;
-  return Date.now() - ts < CFG.captchaTtlMin*60*1000;
-}
-function resolveStep(r){
-  if (!r?.verified) return captchaFresh() ? "code" : "captcha";
-  if (!r.lang_chosen) return "lang";
-  if (!r.plan) return "plan";
-  const requireBiz = meta.require_business !== false;
-  if (requireBiz && !r.business_connected) return "business";
-  return "home";
-}
+function captchaFresh(){ const ts = +sessionStorage.getItem("astrox:captcha:"+uid) || 0; return Date.now() - ts < CFG.captchaTtlMin*60*1000; }
+function resolveStep(r){ if (!r?.verified) return captchaFresh() ? "code" : "captcha"; if (!r.lang_chosen) return "lang"; if (!r.plan) return "plan"; const requireBiz = meta.require_business !== false; if (requireBiz && !r.business_connected) return "business"; return "home"; }
 function route(){ showScreen(resolveStep(rec)); }
 
-function cacheRec(v){
-  try {
-    localStorage.setItem(LS_KEY, JSON.stringify({
-      verified:v.verified, lang:v.lang, lang_chosen:v.lang_chosen, plan:v.plan,
-      business_connected:v.business_connected, profile:v.profile||{},
-      created_at:v.created_at, username:v.username, first_name:v.first_name,
-    }));
-  } catch {}
-}
+function cacheRec(v){ try { localStorage.setItem(LS_KEY, JSON.stringify({ verified:v.verified, lang:v.lang, lang_chosen:v.lang_chosen, plan:v.plan, business_connected:v.business_connected, profile:v.profile||{}, created_at:v.created_at, username:v.username, first_name:v.first_name })); } catch {} }
 function handleRecord(v){
-  const prev = rec;
-  rec = v;
+  const prev = rec; rec = v;
   if (!v){ booted=true; showScreen("nostart"); return; }
   cacheRec(v);
   if (v.lang && v.lang!==lang){ lang=v.lang; applyI18n(); }
   if (pending && v.auth && v.auth.nonce===pending.nonce) onAuthResult(v.auth);
-  if (prev && current==="business" && v.business_connected){
-    haptic("success"); toast(t("biz_done")); route(); return;
-  }
+  if (prev && current==="business" && v.business_connected){ haptic("success"); toast(t("biz_done")); route(); return; }
   if (!booted){ booted=true; route(); }
   else if (["home","profile","limits"].includes(current)) renderUser();
 }
-async function saveUser(patch){
-  if (DEMO){
-    rec = { ...(rec||{}), ...patch };
-    if (patch.profile) rec.profile = { ...(rec.profile||{}), ...patch.profile };
-    handleRecord({ ...rec }); return;
-  }
-  await update(userRef(), patch);
-}
-async function sendCommand(kind, extra={}){
-  const nonce = crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+Math.random().toString(16).slice(2);
-  clearTimeout(pending?.timer);
-  pending = { nonce, kind, timer:setTimeout(()=>onAuthResult({nonce,status:"timeout"}), CFG.botTimeoutMs) };
-  await push(ref(db, "inbox/"+uid), { type:kind, nonce, initData:tg?.initData||"", ts:Date.now(), ...extra });
-  return nonce;
-}
+async function saveUser(patch){ if (DEMO){ rec = { ...(rec||{}), ...patch }; if (patch.profile) rec.profile = { ...(rec.profile||{}), ...patch.profile }; handleRecord({ ...rec }); return; } await update(userRef(), patch); }
+async function sendCommand(kind, extra={}){ const nonce = crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+Math.random().toString(16).slice(2); clearTimeout(pending?.timer); pending = { nonce, kind, timer:setTimeout(()=>onAuthResult({nonce,status:"timeout"}), CFG.botTimeoutMs) }; await push(ref(db, "inbox/"+uid), { type:kind, nonce, initData:tg?.initData||"", ts:Date.now(), ...extra }); return nonce; }
 
-// ============ ONLINE
-async function loadOnline(){
-  if (!db) return;
-  try {
-    const snap = await get(ref(db, "meta/online"));
-    const data = snap.val();
-    if (data) $("#onlineCount").textContent = data.count ?? "0";
-    onValue(ref(db, "meta/online"), s => {
-      const v = s.val();
-      if (v) $("#onlineCount").textContent = v.count ?? "0";
-    });
-  } catch(e){ console.warn(e); }
-}
+async function loadOnline(){ if (!db) return; try { const snap = await get(ref(db, "meta/online")); const data = snap.val(); if (data) $("#onlineCount").textContent = data.count ?? "0"; onValue(ref(db, "meta/online"), s => { const v = s.val(); if (v) $("#onlineCount").textContent = v.count ?? "0"; }); } catch(e){ console.warn(e); } }
 
-// ============ CAPTCHA
 const CH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const rnd = (a,b) => a + Math.random()*(b-a);
 function drawCaptcha(){
   captchaCode = Array.from({length:CFG.captchaLen}, () => CH[Math.floor(Math.random()*CH.length)]).join("");
-  const c = $("#capCanvas"), dpr = window.devicePixelRatio||1, W=260, H=64;
-  c.width = W*dpr; c.height = H*dpr;
-  const x = c.getContext("2d");
-  x.setTransform(dpr,0,0,dpr,0,0);
-  x.fillStyle = "#140609"; x.fillRect(0,0,W,H);
-  for (let i=0;i<4;i++){
-    x.strokeStyle = `rgba(255,46,77,${rnd(.15,.35)})`;
-    x.lineWidth = rnd(1,1.6);
-    x.beginPath();
-    x.moveTo(rnd(0,W), rnd(0,H));
-    x.lineTo(rnd(0,W), rnd(0,H));
-    x.stroke();
-  }
+  const c = $("#capCanvas"), dpr = window.devicePixelRatio||1, W=260, H=64; c.width = W*dpr; c.height = H*dpr;
+  const x = c.getContext("2d"); x.setTransform(dpr,0,0,dpr,0,0); x.fillStyle = "#140609"; x.fillRect(0,0,W,H);
+  for (let i=0;i<4;i++){ x.strokeStyle = `rgba(255,46,77,${rnd(.15,.35)})`; x.lineWidth = rnd(1,1.6); x.beginPath(); x.moveTo(rnd(0,W), rnd(0,H)); x.lineTo(rnd(0,W), rnd(0,H)); x.stroke(); }
   const colors = ["#f4e8eb","#ff2e4d","#ff7a8f"];
-  [...captchaCode].forEach((ch,i) => {
-    x.save();
-    x.translate(30 + i*48 + rnd(-3,3), 42 + rnd(-5,5));
-    x.rotate(rnd(-.3,.3));
-    x.font = `800 ${(28+rnd(0,6))|0}px "JetBrains Mono", monospace`;
-    x.textAlign = "center"; x.textBaseline = "middle";
-    x.fillStyle = colors[Math.floor(rnd(0,colors.length))];
-    x.fillText(ch,0,0);
-    x.restore();
-  });
-  $("#capInput").value = "";
-  setHint("#capHint","");
+  [...captchaCode].forEach((ch,i) => { x.save(); x.translate(30 + i*48 + rnd(-3,3), 42 + rnd(-5,5)); x.rotate(rnd(-.3,.3)); x.font = `800 ${(28+rnd(0,6))|0}px "JetBrains Mono", monospace`; x.textAlign = "center"; x.textBaseline = "middle"; x.fillStyle = colors[Math.floor(rnd(0,colors.length))]; x.fillText(ch,0,0); x.restore(); });
+  $("#capInput").value = ""; setHint("#capHint","");
 }
-function setHint(sel,msg,cls=""){
-  const el = $(sel); el.textContent = msg; el.className = "hint "+cls;
-}
-function resetCaptcha(){
-  const chk = $("#capCheck");
-  chk.className = "check"; chk.setAttribute("aria-checked","false");
-  $("#capChallenge").hidden = true;
-}
-$("#capCheck").addEventListener("click", startCaptcha);
-$("#capCheck").addEventListener("keydown", e => { if (e.key==="Enter"||e.key===" ") startCaptcha(); });
-function startCaptcha(){
-  const chk = $("#capCheck");
-  if (chk.classList.contains("loading")||chk.classList.contains("ok")) return;
-  haptic("light");
-  chk.classList.add("loading");
-  setTimeout(() => {
-    chk.classList.remove("loading");
-    $("#capChallenge").hidden = false;
-    drawCaptcha();
-    setTimeout(()=>$("#capInput").focus(), 100);
-  }, 600);
-}
-$("#capRefresh").addEventListener("click", () => { haptic("light"); drawCaptcha(); });
-$("#capInput").addEventListener("keydown", e => { if (e.key==="Enter") verifyCaptcha(); });
-$("#capSubmit").addEventListener("click", verifyCaptcha);
+function setHint(sel,msg,cls=""){ const el = $(sel); el.textContent = msg; el.className = "hint "+cls; }
+function resetCaptcha(){ const chk = $("#capCheck"); chk.className = "check"; chk.setAttribute("aria-checked","false"); $("#capChallenge").hidden = true; }
+$("#capCheck").addEventListener("click", startCaptcha); $("#capCheck").addEventListener("keydown", e => { if (e.key==="Enter"||e.key===" ") startCaptcha(); });
+function startCaptcha(){ const chk = $("#capCheck"); if (chk.classList.contains("loading")||chk.classList.contains("ok")) return; haptic("light"); chk.classList.add("loading"); setTimeout(() => { chk.classList.remove("loading"); $("#capChallenge").hidden = false; drawCaptcha(); setTimeout(()=>$("#capInput").focus(), 100); }, 600); }
+$("#capRefresh").addEventListener("click", () => { haptic("light"); drawCaptcha(); }); $("#capInput").addEventListener("keydown", e => { if (e.key==="Enter") verifyCaptcha(); }); $("#capSubmit").addEventListener("click", verifyCaptcha);
 function verifyCaptcha(){
-  const now = Date.now();
-  if (now < captchaLockUntil){
-    setHint("#capHint", t("captcha_wait",{s:Math.ceil((captchaLockUntil-now)/1000)}), "err");
-    return;
-  }
-  const v = $("#capInput").value.trim().toUpperCase();
-  if (v.length !== CFG.captchaLen || v !== captchaCode){
-    captchaFails++; haptic("error");
-    $("#capInput").classList.add("shake");
-    setTimeout(()=>$("#capInput").classList.remove("shake"), 500);
-    if (captchaFails % 3 === 0) captchaLockUntil = now + 10000;
-    drawCaptcha();
-    setHint("#capHint", t("captcha_wrong"), "err");
-    return;
-  }
-  haptic("success");
-  const chk = $("#capCheck");
-  chk.classList.add("ok"); chk.setAttribute("aria-checked","true");
-  setHint("#capHint", t("captcha_ok"), "ok");
-  sessionStorage.setItem("astrox:captcha:"+uid, String(Date.now()));
-  setTimeout(()=>showScreen("code"), 600);
+  const now = Date.now(); if (now < captchaLockUntil){ setHint("#capHint", t("captcha_wait",{s:Math.ceil((captchaLockUntil-now)/1000)}), "err"); return; }
+  const v = $("#capInput").value.trim().toUpperCase(); if (v.length !== CFG.captchaLen || v !== captchaCode){ captchaFails++; haptic("error"); $("#capInput").classList.add("shake"); setTimeout(()=>$("#capInput").classList.remove("shake"), 500); if (captchaFails % 3 === 0) captchaLockUntil = now + 10000; drawCaptcha(); setHint("#capHint", t("captcha_wrong"), "err"); return; }
+  haptic("success"); const chk = $("#capCheck"); chk.classList.add("ok"); chk.setAttribute("aria-checked","true"); setHint("#capHint", t("captcha_ok"), "ok"); sessionStorage.setItem("astrox:captcha:"+uid, String(Date.now())); setTimeout(()=>showScreen("code"), 600);
 }
 
-// ============ OTP
 const otpInputs = $$("#otp input");
 otpInputs.forEach((inp,i) => {
-  inp.addEventListener("input", () => {
-    inp.value = inp.value.replace(/\D/g,"").slice(-1);
-    inp.classList.toggle("filled", !!inp.value);
-    if (inp.value && i<5) otpInputs[i+1].focus();
-    maybeSubmitCode();
-  });
-  inp.addEventListener("keydown", e => {
-    if (e.key==="Backspace" && !inp.value && i>0){
-      otpInputs[i-1].value = ""; otpInputs[i-1].classList.remove("filled");
-      otpInputs[i-1].focus();
-    }
-  });
-  inp.addEventListener("paste", e => {
-    const txt = (e.clipboardData.getData("text")||"").replace(/\D/g,"").slice(0,6);
-    if (!txt) return;
-    e.preventDefault();
-    [...txt].forEach((d,j) => { otpInputs[j].value = d; otpInputs[j].classList.add("filled"); });
-    otpInputs[Math.min(txt.length,5)].focus();
-    maybeSubmitCode();
-  });
+  inp.addEventListener("input", () => { inp.value = inp.value.replace(/\D/g,"").slice(-1); inp.classList.toggle("filled", !!inp.value); if (inp.value && i<5) otpInputs[i+1].focus(); maybeSubmitCode(); });
+  inp.addEventListener("keydown", e => { if (e.key==="Backspace" && !inp.value && i>0){ otpInputs[i-1].value = ""; otpInputs[i-1].classList.remove("filled"); otpInputs[i-1].focus(); } });
+  inp.addEventListener("paste", e => { const txt = (e.clipboardData.getData("text")||"").replace(/\D/g,"").slice(0,6); if (!txt) return; e.preventDefault(); [...txt].forEach((d,j) => { otpInputs[j].value = d; otpInputs[j].classList.add("filled"); }); otpInputs[Math.min(txt.length,5)].focus(); maybeSubmitCode(); });
 });
 const otpValue = () => otpInputs.map(i=>i.value).join("");
-function clearOtp(focus=true){
-  otpInputs.forEach(i => { i.value=""; i.classList.remove("filled"); });
-  $("#otp").classList.remove("ok");
-  if (focus) otpInputs[0].focus();
-}
+function clearOtp(focus=true){ otpInputs.forEach(i => { i.value=""; i.classList.remove("filled"); }); $("#otp").classList.remove("ok"); if (focus) otpInputs[0].focus(); }
 function lockOtp(l){ otpInputs.forEach(i => i.disabled = l); }
 
-$("#codeRequest").addEventListener("click", requestCode);
-$("#codeResend").addEventListener("click", requestCode);
-async function requestCode(){
-  haptic("medium");
-  $("#codeIdle").hidden = true;
-  $("#codeEntry").hidden = false;
-  $("#codeSentTxt").textContent = t("code_sending");
-  setHint("#codeHint","");
-  clearOtp(false);
-  lockOtp(true);
-  startResend(CFG.resendSec);
-  if (DEMO){
-    setTimeout(() => {
-      $("#codeSentTxt").textContent = t("code_sent");
-      toast(t("demo_code"));
-      lockOtp(false); otpInputs[0].focus();
-    }, 500);
-    return;
-  }
-  try { await sendCommand("request_code"); }
-  catch(e){ console.error(e); setHint("#codeHint", t("error"), "err"); lockOtp(false); }
-}
-function startResend(sec){
-  clearInterval(resendTimer);
-  const btn = $("#codeResend");
-  let left = sec;
-  const tick = () => {
-    if (left <= 0){ clearInterval(resendTimer); btn.disabled = false; btn.textContent = t("code_resend_now"); }
-    else { btn.disabled = true; btn.textContent = t("code_resend",{s:left}); left--; }
-  };
-  tick(); resendTimer = setInterval(tick, 1000);
-}
-async function maybeSubmitCode(){
-  const code = otpValue();
-  if (code.length!==6 || pending?.kind==="verify_code") return;
-  haptic("light");
-  lockOtp(true);
-  setHint("#codeHint", t("code_checking"));
-  if (DEMO){
-    setTimeout(() => {
-      if (code === CFG.demoCode) onAuthResult({nonce:"demo",status:"ok"}, true);
-      else onAuthResult({nonce:"demo",status:"wrong",attempts_left:4}, true);
-    }, 500);
-    return;
-  }
-  try { await sendCommand("verify_code",{code}); }
-  catch(e){ console.error(e); setHint("#codeHint", t("error"), "err"); lockOtp(false); }
-}
+$("#codeRequest").addEventListener("click", requestCode); $("#codeResend").addEventListener("click", requestCode);
+async function requestCode(){ haptic("medium"); $("#codeIdle").hidden = true; $("#codeEntry").hidden = false; $("#codeSentTxt").textContent = t("code_sending"); setHint("#codeHint",""); clearOtp(false); lockOtp(true); startResend(CFG.resendSec); if (DEMO){ setTimeout(() => { $("#codeSentTxt").textContent = t("code_sent"); toast(t("demo_code")); lockOtp(false); otpInputs[0].focus(); }, 500); return; } try { await sendCommand("request_code"); } catch(e){ console.error(e); setHint("#codeHint", t("error"), "err"); lockOtp(false); } }
+function startResend(sec){ clearInterval(resendTimer); const btn = $("#codeResend"); let left = sec; const tick = () => { if (left <= 0){ clearInterval(resendTimer); btn.disabled = false; btn.textContent = t("code_resend_now"); } else { btn.disabled = true; btn.textContent = t("code_resend",{s:left}); left--; } }; tick(); resendTimer = setInterval(tick, 1000); }
+async function maybeSubmitCode(){ const code = otpValue(); if (code.length!==6 || pending?.kind==="verify_code") return; haptic("light"); lockOtp(true); setHint("#codeHint", t("code_checking")); if (DEMO){ setTimeout(() => { if (code === CFG.demoCode) onAuthResult({nonce:"demo",status:"ok"}, true); else onAuthResult({nonce:"demo",status:"wrong",attempts_left:4}, true); }, 500); return; } try { await sendCommand("verify_code",{code}); } catch(e){ console.error(e); setHint("#codeHint", t("error"), "err"); lockOtp(false); } }
 function onAuthResult(a, force=false){
   if (!force && (!pending || a.nonce!==pending.nonce)) return;
-  clearTimeout(pending?.timer);
-  const kind = pending?.kind;
-  pending = null;
-  const S = a.status;
+  clearTimeout(pending?.timer); const kind = pending?.kind; pending = null; const S = a.status;
   if (S==="sent"){ $("#codeSentTxt").textContent = t("code_sent"); lockOtp(false); otpInputs[0].focus(); return; }
-  if (S==="ok"){
-    haptic("success");
-    $("#otp").classList.add("ok");
-    setHint("#codeHint", t("code_ok"), "ok");
-    if (DEMO) rec = { ...(rec||{}), verified:true };
-    setTimeout(()=>{ $("#codeEntry").hidden = true; $("#codeDone").hidden = false; }, 300);
-    setTimeout(()=>route(), 1200);
-    return;
-  }
-  const map = {
-    wrong:()=>t("code_wrong",{n:a.attempts_left??0}),
-    expired:()=>t("code_expired"),
-    locked:()=>t("code_locked"),
-    cooldown:()=>t("code_cooldown",{s:a.retry_in??60}),
-    limit:()=>t("code_limit"),
-    timeout:()=>t("code_timeout"),
-    bad_auth:()=>t("code_bad_auth"),
-    blocked:()=>t("code_blocked"),
-    too_new:()=>t("code_too_new"),
-  };
-  haptic("error");
-  setHint("#codeHint", (map[S]||(()=>t("error")))(), "err");
-  if (S==="cooldown") startResend(a.retry_in??60);
-  if (kind==="request_code" && S!=="cooldown"){ $("#codeSentTxt").textContent = t("code_sub"); }
-  lockOtp(false);
-  clearOtp(S==="wrong");
+  if (S==="ok"){ haptic("success"); $("#otp").classList.add("ok"); setHint("#codeHint", t("code_ok"), "ok"); if (DEMO) rec = { ...(rec||{}), verified:true }; setTimeout(()=>{ $("#codeEntry").hidden = true; $("#codeDone").hidden = false; }, 300); setTimeout(()=>route(), 1200); return; }
+  const map = { wrong:()=>t("code_wrong",{n:a.attempts_left??0}), expired:()=>t("code_expired"), locked:()=>t("code_locked"), cooldown:()=>t("code_cooldown",{s:a.retry_in??60}), limit:()=>t("code_limit"), timeout:()=>t("code_timeout"), bad_auth:()=>t("code_bad_auth"), blocked:()=>t("code_blocked"), too_new:()=>t("code_too_new") };
+  haptic("error"); setHint("#codeHint", (map[S]||(()=>t("error")))(), "err"); if (S==="cooldown") startResend(a.retry_in??60); if (kind==="request_code" && S!=="cooldown"){ $("#codeSentTxt").textContent = t("code_sub"); } lockOtp(false); clearOtp(S==="wrong");
 }
 
-$$("[data-lang].choice").forEach(b => b.addEventListener("click", () => {
-  haptic("light");
-  selectedLang = b.dataset.lang;
-  $$("[data-lang].choice").forEach(x => x.classList.toggle("sel", x===b));
-  if (lang !== selectedLang){ lang = selectedLang; applyI18n(); }
-}));
-$("#langNext").addEventListener("click", async () => {
-  haptic("medium");
-  try {
-    await saveUser({ lang:selectedLang, lang_chosen:true });
-    if (DEMO || current!=="lang") return;
-    if (rec.plan) showScreen(rec.business_connected || meta.require_business===false ? "home" : "business");
-    else showScreen("plan");
-  } catch(e){ console.error(e); toast(t("error")); }
-});
+$$("[data-lang].choice").forEach(b => b.addEventListener("click", () => { haptic("light"); selectedLang = b.dataset.lang; $$("[data-lang].choice").forEach(x => x.classList.toggle("sel", x===b)); if (lang !== selectedLang){ lang = selectedLang; applyI18n(); } }));
+$("#langNext").addEventListener("click", async () => { haptic("medium"); try { await saveUser({ lang:selectedLang, lang_chosen:true }); if (DEMO || current!=="lang") return; if (rec.plan) showScreen(rec.business_connected || meta.require_business===false ? "home" : "business"); else showScreen("plan"); } catch(e){ console.error(e); toast(t("error")); } });
 
 $$("[data-plan]").forEach(b => b.addEventListener("click", () => {
   if (b.dataset.plan==="go"){ haptic("medium"); toast(t("plan_soon")); return; }
-  haptic("light");
-  selectedPlan = b.dataset.plan;
-  $$("[data-plan]").forEach(x => x.classList.toggle("sel", x===b));
-  $("#planNext").disabled = false;
+  haptic("light"); selectedPlan = b.dataset.plan; $$("[data-plan]").forEach(x => x.classList.toggle("sel", x===b)); $("#planNext").disabled = false;
 }));
-$("#planNext").addEventListener("click", async () => {
-  haptic("medium");
-  if (!selectedPlan) return;
-  try {
-    await saveUser({ plan:selectedPlan, plan_chosen_at:Date.now() });
-    if (!DEMO) route();
-  } catch(e){ console.error(e); toast(t("error")); }
-});
+$("#planNext").addEventListener("click", async () => { haptic("medium"); if (!selectedPlan) return; try { await saveUser({ plan:selectedPlan, plan_chosen_at:Date.now() }); if (!DEMO) route(); } catch(e){ console.error(e); toast(t("error")); } });
 
-$("#bizCheck").addEventListener("click", async () => {
-  haptic("light");
-  if (DEMO){ toast(t("biz_done")); await saveUser({ business_connected:true }); return; }
-  try {
-    const snap = await get(ref(db, "users/"+uid+"/business_connected"));
-    if (snap.val()){
-      haptic("success"); toast(t("biz_done"));
-      rec = { ...rec, business_connected:true };
-      route();
-    } else { haptic("error"); toast(t("biz_not_yet")); }
-  } catch(e){ console.error(e); toast(t("error")); }
-});
+$("#bizCheck").addEventListener("click", async () => { haptic("light"); if (DEMO){ toast(t("biz_done")); await saveUser({ business_connected:true }); return; } try { const snap = await get(ref(db, "users/"+uid+"/business_connected")); if (snap.val()){ haptic("success"); toast(t("biz_done")); rec = { ...rec, business_connected:true }; route(); } else { haptic("error"); toast(t("biz_not_yet")); } } catch(e){ console.error(e); toast(t("error")); } });
 
-// ============ LIMITS
-function periodKeys(){
-  const now = new Date();
-  const day = now.toISOString().slice(0,10);
-  const year = now.getUTCFullYear();
-  const start = new Date(Date.UTC(year,0,1));
-  const week = Math.floor((now - start)/604800000/1000);
-  const weekKey = `${year}-W${String(week).padStart(2,"0")}`;
-  const monthKey = now.toISOString().slice(0,7);
-  return { day, week: weekKey, month: monthKey };
-}
-async function loadLimits(){
-  if (!rec) return;
-  const plan = rec.plan || "free";
-  const lim = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
-  const keys = periodKeys();
-  let data = {};
-  if (!DEMO && db) {
-    try {
-      const snap = await get(ref(db, "limits/"+uid));
-      data = snap.val() || {};
-    } catch(e){ console.warn(e); }
-  }
-  const dayUsed = (data.day||{})[keys.day] || 0;
-  const weekUsed = (data.week||{})[keys.week] || 0;
-  const monthUsed = (data.month||{})[keys.month] || 0;
-  limitsCache = { plan, dayUsed, weekUsed, monthUsed, ...lim };
-  renderLimits(limitsCache);
-}
-function renderLimits(lim){
-  if (!lim) lim = { plan:rec?.plan||"free", dayUsed:0, weekUsed:0, monthUsed:0, ...(PLAN_LIMITS[rec?.plan||"free"]||PLAN_LIMITS.free) };
-  $("#limitsPlan").textContent = planName(lim.plan);
-  $("#dayUsed").textContent = lim.dayUsed; $("#dayLimit").textContent = lim.day;
-  $("#weekUsed").textContent = lim.weekUsed; $("#weekLimit").textContent = lim.week;
-  $("#monthUsed").textContent = lim.monthUsed; $("#monthLimit").textContent = lim.month;
-  $("#dayFill").style.width = Math.min(100, lim.dayUsed/lim.day*100) + "%";
-  $("#weekFill").style.width = Math.min(100, lim.weekUsed/lim.week*100) + "%";
-  $("#monthFill").style.width = Math.min(100, lim.monthUsed/lim.month*100) + "%";
-  $("#tileLimitsS").textContent = `${lim.dayUsed}/${lim.day}`;
-}
-function updateResetTimer(){
-  const now = new Date();
-  const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()+1));
-  const diff = tomorrow - now;
-  if (diff <= 0){ $("#resetTimer").textContent = "00:00:00"; return; }
-  const h = String(Math.floor(diff/3600000)).padStart(2,"0");
-  const m = String(Math.floor((diff%3600000)/60000)).padStart(2,"0");
-  const s = String(Math.floor((diff%60000)/1000)).padStart(2,"0");
-  $("#resetTimer").textContent = `${h}:${m}:${s}`;
-}
-function startResetTimer(){
-  clearInterval(resetTimerHandle);
-  updateResetTimer();
-  resetTimerHandle = setInterval(updateResetTimer, 1000);
-}
+function periodKeys(){ const now = new Date(); const day = now.toISOString().slice(0,10); const year = now.getUTCFullYear(); const start = new Date(Date.UTC(year,0,1)); const week = Math.floor((now - start)/604800000/1000); const weekKey = `${year}-W${String(week).padStart(2,"0")}`; const monthKey = now.toISOString().slice(0,7); return { day, week: weekKey, month: monthKey }; }
+async function loadLimits(){ if (!rec) return; const plan = rec.plan || "free"; const lim = PLAN_LIMITS[plan] || PLAN_LIMITS.free; const keys = periodKeys(); let data = {}; if (!DEMO && db) { try { const snap = await get(ref(db, "limits/"+uid)); data = snap.val() || {}; } catch(e){ console.warn(e); } } const dayUsed = (data.day||{})[keys.day] || 0; const weekUsed = (data.week||{})[keys.week] || 0; const monthUsed = (data.month||{})[keys.month] || 0; limitsCache = { plan, dayUsed, weekUsed, monthUsed, ...lim }; renderLimits(limitsCache); }
+function renderLimits(lim){ if (!lim) lim = { plan:rec?.plan||"free", dayUsed:0, weekUsed:0, monthUsed:0, ...(PLAN_LIMITS[rec?.plan||"free"]||PLAN_LIMITS.free) }; $("#limitsPlan").textContent = planName(lim.plan); $("#dayUsed").textContent = lim.dayUsed; $("#dayLimit").textContent = lim.day; $("#weekUsed").textContent = lim.weekUsed; $("#weekLimit").textContent = lim.week; $("#monthUsed").textContent = lim.monthUsed; $("#monthLimit").textContent = lim.month; $("#dayFill").style.width = Math.min(100, lim.dayUsed/lim.day*100) + "%"; $("#weekFill").style.width = Math.min(100, lim.weekUsed/lim.week*100) + "%"; $("#monthFill").style.width = Math.min(100, lim.monthUsed/lim.month*100) + "%"; $("#tileLimitsS").textContent = `${lim.dayUsed}/${lim.day}`; }
+function updateResetTimer(){ const now = new Date(); const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()+1)); const diff = tomorrow - now; if (diff <= 0){ $("#resetTimer").textContent = "00:00:00"; return; } const h = String(Math.floor(diff/3600000)).padStart(2,"0"); const m = String(Math.floor((diff%3600000)/60000)).padStart(2,"0"); const s = String(Math.floor((diff%60000)/1000)).padStart(2,"0"); $("#resetTimer").textContent = `${h}:${m}:${s}`; }
+function startResetTimer(){ clearInterval(resetTimerHandle); updateResetTimer(); resetTimerHandle = setInterval(updateResetTimer, 1000); }
 
-// ============ PROFILE
-function initials(){
-  const n = (rec?.profile?.display_name || me.first_name || "A").trim();
-  return n.slice(0,1).toUpperCase();
-}
+function initials(){ const n = (rec?.profile?.display_name || me.first_name || "A").trim(); return n.slice(0,1).toUpperCase(); }
 function avatarSrc(){ return rec?.profile?.avatar || me.photo_url || ""; }
-function renderAvatars(){
-  const src = avatarSrc();
-  $$("[data-avatar]").forEach(el => {
-    if (src){ el.innerHTML = `<img class="avatar" src="${src}" alt="">`; el.style.background = "none"; }
-    else { el.textContent = initials(); el.style.background = "linear-gradient(135deg,#c1121f,#7a0a16)"; }
-  });
-}
+function renderAvatars(){ const src = avatarSrc(); $$("[data-avatar]").forEach(el => { if (src){ el.innerHTML = `<img class="avatar" src="${src}" alt="">`; el.style.background = "none"; } else { el.textContent = initials(); el.style.background = "linear-gradient(135deg,#c1121f,#7a0a16)"; } }); }
 function renderUser(){
-  renderAvatars();
-  const name = rec?.profile?.display_name || me.first_name || "";
-  $("#homeHello").textContent = t("home_hello",{name});
-  $("#homePlan").textContent = planName(rec?.plan);
-  const biz = !!rec?.business_connected;
-  const hb = $("#homeBiz");
-  hb.textContent = biz ? t("st_biz_on") : t("st_biz_off");
-  hb.className = "badge " + (biz ? "ok" : "wait");
-  $("#homeId").textContent = uid;
-  $("#homeSince").textContent = fmtDate(rec?.created_at);
-  $("#pfUsername").textContent = (rec?.username || me.username) ? "@" + (rec?.username||me.username) : "—";
-  $("#pfId").textContent = uid;
-  $("#pfPlan").textContent = planName(rec?.plan);
-  $("#pfSince").textContent = fmtDate(rec?.created_at);
-  $("#pfBiz").textContent = biz ? t("yes") : t("no");
-  $$("#pfSeg button").forEach(b => b.classList.toggle("on", b.dataset.lang===lang));
+  renderAvatars(); const name = rec?.profile?.display_name || me.first_name || ""; $("#homeHello").textContent = t("home_hello",{name}); $("#homePlan").textContent = planName(rec?.plan); const biz = !!rec?.business_connected; const hb = $("#homeBiz"); hb.textContent = biz ? t("st_biz_on") : t("st_biz_off"); hb.className = "badge " + (biz ? "ok" : "wait"); $("#homeId").textContent = uid; $("#homeSince").textContent = fmtDate(rec?.created_at); $("#pfUsername").textContent = (rec?.username || me.username) ? "@" + (rec?.username||me.username) : "—"; $("#pfId").textContent = uid; $("#pfPlan").textContent = planName(rec?.plan); $("#pfSince").textContent = fmtDate(rec?.created_at); $("#pfBiz").textContent = biz ? t("yes") : t("no"); $$("#pfSeg button").forEach(b => b.classList.toggle("on", b.dataset.lang===lang));
 }
-function fillProfile(){
-  $("#pfName").value = rec?.profile?.display_name || me.first_name || "";
-  $("#pfBio").value = rec?.profile?.bio || "";
-  $("#pfBioCount").textContent = $("#pfBio").value.length;
-}
+function fillProfile(){ $("#pfName").value = rec?.profile?.display_name || me.first_name || ""; $("#pfBio").value = rec?.profile?.bio || ""; $("#pfBioCount").textContent = $("#pfBio").value.length; }
 $("#pfBio").addEventListener("input", () => { $("#pfBioCount").textContent = $("#pfBio").value.length; });
-$("#pfSeg").addEventListener("click", async (e) => {
-  const b = e.target.closest("button");
-  if (!b || b.dataset.lang===lang) return;
-  haptic("light");
-  lang = b.dataset.lang; applyI18n();
-  try { await saveUser({ lang, lang_chosen:true }); } catch { toast(t("error")); }
-});
-$("#pfSave").addEventListener("click", async () => {
-  haptic("medium");
-  const btn = $("#pfSave");
-  btn.disabled = true; btn.textContent = t("saving");
-  try {
-    const display_name = $("#pfName").value.trim().slice(0,40) || me.first_name || "";
-    const bio = $("#pfBio").value.trim().slice(0,200);
-    if (DEMO) await saveUser({ profile:{display_name,bio} });
-    else await update(ref(db,"users/"+uid+"/profile"), { display_name, bio, updated_at:Date.now() });
-    haptic("success"); toast(t("prof_saved"));
-  } catch(e){ console.error(e); toast(t("error")); }
-  btn.disabled = false; btn.textContent = t("prof_save");
-});
-$("#pfCam").addEventListener("click", () => $("#pfFile").click());
-$("#pfAvaBtn").addEventListener("click", () => $("#pfFile").click());
-$("#pfFile").addEventListener("change", async (e) => {
-  const f = e.target.files?.[0]; e.target.value = "";
-  if (!f) return;
-  if (f.size > 8*1024*1024){ toast(t("error")); return; }
-  try {
-    const dataUrl = await resizeImage(f, 256);
-    if (DEMO) await saveUser({ profile:{avatar:dataUrl} });
-    else await update(ref(db,"users/"+uid+"/profile"), { avatar:dataUrl });
-    haptic("success"); toast(t("prof_saved"));
-  } catch(err){ console.error(err); toast(t("error")); }
-});
-$("#pfResetAva").addEventListener("click", async () => {
-  haptic("light");
-  try {
-    if (DEMO){ rec.profile = { ...(rec.profile||{}), avatar:"" }; renderAvatars(); }
-    else await update(ref(db,"users/"+uid+"/profile"), { avatar:null });
-    toast(t("prof_saved"));
-  } catch { toast(t("error")); }
-});
-function resizeImage(file, size){
-  return new Promise((res, rej) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      const c = document.createElement("canvas");
-      c.width = c.height = size;
-      const x = c.getContext("2d");
-      const s = Math.min(img.width, img.height);
-      x.drawImage(img, (img.width-s)/2, (img.height-s)/2, s, s, 0, 0, size, size);
-      URL.revokeObjectURL(url);
-      res(c.toDataURL("image/jpeg", 0.82));
-    };
-    img.onerror = rej;
-    img.src = url;
-  });
-}
+$("#pfSeg").addEventListener("click", async (e) => { const b = e.target.closest("button"); if (!b || b.dataset.lang===lang) return; haptic("light"); lang = b.dataset.lang; applyI18n(); try { await saveUser({ lang, lang_chosen:true }); } catch { toast(t("error")); } });
+$("#pfSave").addEventListener("click", async () => { haptic("medium"); const btn = $("#pfSave"); btn.disabled = true; btn.textContent = t("saving"); try { const display_name = $("#pfName").value.trim().slice(0,40) || me.first_name || ""; const bio = $("#pfBio").value.trim().slice(0,200); if (DEMO) await saveUser({ profile:{display_name,bio} }); else await update(ref(db,"users/"+uid+"/profile"), { display_name, bio, updated_at:Date.now() }); haptic("success"); toast(t("prof_saved")); } catch(e){ console.error(e); toast(t("error")); } btn.disabled = false; btn.textContent = t("prof_save"); });
+$("#pfCam").addEventListener("click", () => $("#pfFile").click()); $("#pfAvaBtn").addEventListener("click", () => $("#pfFile").click());
+$("#pfFile").addEventListener("change", async (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (!f) return; if (f.size > 8*1024*1024){ toast(t("error")); return; } try { const dataUrl = await resizeImage(f, 256); if (DEMO) await saveUser({ profile:{avatar:dataUrl} }); else await update(ref(db,"users/"+uid+"/profile"), { avatar:dataUrl }); haptic("success"); toast(t("prof_saved")); } catch(err){ console.error(err); toast(t("error")); } });
+$("#pfResetAva").addEventListener("click", async () => { haptic("light"); try { if (DEMO){ rec.profile = { ...(rec.profile||{}), avatar:"" }; renderAvatars(); } else await update(ref(db,"users/"+uid+"/profile"), { avatar:null }); toast(t("prof_saved")); } catch { toast(t("error")); } });
+function resizeImage(file, size){ return new Promise((res, rej) => { const img = new Image(); const url = URL.createObjectURL(file); img.onload = () => { const c = document.createElement("canvas"); c.width = c.height = size; const x = c.getContext("2d"); const s = Math.min(img.width, img.height); x.drawImage(img, (img.width-s)/2, (img.height-s)/2, s, s, 0, 0, size, size); URL.revokeObjectURL(url); res(c.toDataURL("image/jpeg", 0.82)); }; img.onerror = rej; img.src = url; }); }
 
-document.addEventListener("click", (e) => {
-  const el = e.target.closest("[data-action]");
-  if (!el) return;
-  const a = el.dataset.action;
-  haptic("light");
-  if (a==="open-bot"){
-    const u = "https://t.me/" + (meta.username || "");
-    if (!meta.username) return toast(t("error"));
-    tg?.openTelegramLink ? tg.openTelegramLink(u) : window.open(u,"_blank");
-  }
-  if (a==="profile") showScreen("profile");
-  if (a==="home") showScreen("home");
-  if (a==="goto-limits") showScreen("limits");
-  if (a==="goto-help") showScreen("help");
-});
-$("#topAvatar").addEventListener("click", () => {
-  haptic("light");
-  showScreen(current==="profile" ? "home" : "profile");
-});
+document.addEventListener("click", (e) => { const el = e.target.closest("[data-action]"); if (!el) return; const a = el.dataset.action; haptic("light"); if (a==="open-bot"){ const u = "https://t.me/" + (meta.username || ""); if (!meta.username) return toast(t("error")); tg?.openTelegramLink ? tg.openTelegramLink(u) : window.open(u,"_blank"); } if (a==="profile") showScreen("profile"); if (a==="home") showScreen("home"); if (a==="goto-limits") showScreen("limits"); if (a==="goto-help") showScreen("help"); });
+$("#topAvatar").addEventListener("click", () => { haptic("light"); showScreen(current==="profile" ? "home" : "profile"); });
 
 async function boot(){
-  applyI18n();
-  showScreen("splash");
+  applyI18n(); showScreen("splash");
   try { if (db) meta = (await get(ref(db,"meta/bot"))).val() || {}; } catch(e){ console.warn("meta", e); }
-  applyI18n();
-  loadOnline();
-  if (DEMO){
-    rec = { verified:false, lang, lang_chosen:false, plan:null, business_connected:false, profile:{}, created_at:Date.now() };
-    booted = true;
-    const want = new URLSearchParams(location.search).get("screen");
-    if (want && enter[want]){
-      rec = { ...rec, verified:true, lang_chosen:true, plan:"free", business_connected: want==="home"||want==="profile"||want==="limits"||want==="help" };
-      showScreen(want);
-      if (want==="limits") loadLimits();
-      return;
-    }
-    route();
-    return;
-  }
-  try {
-    const cached = JSON.parse(localStorage.getItem(LS_KEY) || "null");
-    if (cached){ rec = cached; if (cached.lang){ lang = cached.lang; applyI18n(); } }
-  } catch {}
+  applyI18n(); loadOnline();
+  if (DEMO){ rec = { verified:false, lang, lang_chosen:false, plan:null, business_connected:false, profile:{}, created_at:Date.now() }; booted = true; const want = new URLSearchParams(location.search).get("screen"); if (want && enter[want]){ rec = { ...rec, verified:true, lang_chosen:true, plan:"free", business_connected: want==="home"||want==="profile"||want==="limits"||want==="help" }; showScreen(want); if (want==="limits") loadLimits(); return; } route(); return; }
+  try { const cached = JSON.parse(localStorage.getItem(LS_KEY) || "null"); if (cached){ rec = cached; if (cached.lang){ lang = cached.lang; applyI18n(); } } } catch {}
   if (!db){ showScreen("nostart"); return; }
-  onValue(userRef(), snap => handleRecord(snap.val()), err => {
-    console.error(err); toast(t("error"));
-    if (!booted){ booted = true; route(); }
-  });
+  onValue(userRef(), snap => handleRecord(snap.val()), err => { console.error(err); toast(t("error")); if (!booted){ booted = true; route(); } });
 }
 boot();
 </script>
