@@ -10,27 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
-/* ============================================================ RESET / TOKENS */
 :root{
-  --bg:#080204;
-  --bg2:#120509;
-  --red:#c1121f;
-  --red2:#ff2e4d;
-  --rose:#ff7a8f;
-  --ember:#7a0a16;
-  --deep:#3d0410;
-  --text:#f8ecf0;
-  --muted:#b6929b;
-  --dim:#6f525b;
-  --line:rgba(255,90,110,.16);
-  --line-strong:rgba(255,90,110,.34);
-  --glass:rgba(255,255,255,.05);
-  --glass2:rgba(255,255,255,.02);
+  --bg:#080204;--bg2:#120509;--red:#c1121f;--red2:#ff2e4d;--rose:#ff7a8f;
+  --ember:#7a0a16;--deep:#3d0410;--text:#f8ecf0;--muted:#b6929b;--dim:#6f525b;
+  --line:rgba(255,90,110,.16);--line-strong:rgba(255,90,110,.34);
+  --glass:rgba(255,255,255,.05);--glass2:rgba(255,255,255,.02);
   --glow:0 14px 44px rgba(255,46,77,.28);
-  --glow-strong:0 0 0 1px rgba(255,46,77,.4), 0 18px 44px rgba(255,46,77,.4);
-  --r:24px;
-  --sat:env(safe-area-inset-top,0px);
-  --sab:env(safe-area-inset-bottom,0px);
+  --r:24px;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0}
@@ -38,73 +24,49 @@ body{
   font-family:Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;
   color:var(--text);
   background:
-    radial-gradient(1100px 620px at 50% -12%, rgba(193,18,31,.42), transparent 62%),
-    radial-gradient(700px 480px at 108% 108%, rgba(122,10,22,.35), transparent 60%),
-    radial-gradient(500px 400px at -10% 70%, rgba(255,46,77,.1), transparent 60%),
+    radial-gradient(1100px 620px at 50% -12%,rgba(193,18,31,.42),transparent 62%),
+    radial-gradient(700px 480px at 108% 108%,rgba(122,10,22,.35),transparent 60%),
+    radial-gradient(500px 400px at -10% 70%,rgba(255,46,77,.1),transparent 60%),
     var(--bg);
-  overflow-x:hidden;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
 }
 #stars{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.95}
 #app{position:relative;z-index:1;min-height:100dvh;display:flex;flex-direction:column}
-
 h1,h2,h3,.display{font-family:Unbounded,Manrope,sans-serif;letter-spacing:-.015em;margin:0}
 h1{font-size:26px;font-weight:800;line-height:1.15}
 h2{font-size:20px;font-weight:700}
 p{margin:0;line-height:1.55}
-.muted{color:var(--muted)}
-.small{font-size:13px}
+.muted{color:var(--muted)}.small{font-size:13px}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 input,textarea{font:inherit;color:inherit}
 
-/* ============================================================ TOPBAR */
-#topbar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:calc(14px + var(--sat)) 20px 10px;
-  position:relative;z-index:3;
-}
+#topbar{display:flex;align-items:center;justify-content:space-between;
+  padding:calc(14px + var(--sat)) 20px 10px;position:relative;z-index:3}
 #topbar[hidden]{display:none}
 .logo{display:flex;align-items:center;gap:11px}
-.logo .mark{
-  width:36px;height:36px;border-radius:13px;display:grid;place-items:center;position:relative;
+.logo .mark{width:36px;height:36px;border-radius:13px;display:grid;place-items:center;position:relative;
   background:linear-gradient(140deg,#ff2e4d,#8a0d1a);
-  box-shadow:0 8px 22px rgba(255,46,77,.42), inset 0 1px 0 rgba(255,255,255,.2);
-}
-.logo .mark::after{
-  content:"";position:absolute;inset:-7px;border-radius:50%;
-  border:1.5px solid rgba(255,122,143,.35);
-  border-right-color:transparent;border-left-color:transparent;
-  animation:spin 6s linear infinite;
-}
+  box-shadow:0 8px 22px rgba(255,46,77,.42),inset 0 1px 0 rgba(255,255,255,.2)}
+.logo .mark::after{content:"";position:absolute;inset:-7px;border-radius:50%;
+  border:1.5px solid rgba(255,122,143,.35);border-right-color:transparent;border-left-color:transparent;
+  animation:spin 6s linear infinite}
 .logo .mark svg{width:20px;height:20px;filter:drop-shadow(0 0 6px rgba(255,255,255,.6))}
 .logo .word{font-family:Unbounded;font-weight:800;font-size:17px;letter-spacing:.02em}
-.logo .word b{
-  background:linear-gradient(90deg,#ff2e4d,#ff8fa3);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.avatar-btn{
-  width:44px;height:44px;border-radius:50%;padding:2px;
+.logo .word b{background:linear-gradient(90deg,#ff2e4d,#ff8fa3);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.avatar-btn{width:44px;height:44px;border-radius:50%;padding:2px;
   background:linear-gradient(140deg,#ff2e4d,#5a0810);
-  box-shadow:0 8px 22px rgba(255,46,77,.35);
-  transition:transform .18s, box-shadow .22s;
-}
+  box-shadow:0 8px 22px rgba(255,46,77,.35);transition:transform .18s}
 .avatar-btn:active{transform:scale(.92)}
-.avatar{
-  width:100%;height:100%;border-radius:50%;object-fit:cover;
+.avatar{width:100%;height:100%;border-radius:50%;object-fit:cover;
   background:#1f0a0f;display:grid;place-items:center;
-  font-family:Unbounded;font-weight:700;color:#fff;
-  border:2px solid var(--bg);
-}
+  font-family:Unbounded;font-weight:700;color:#fff;border:2px solid var(--bg)}
 .avatar.lg{font-size:32px}
 
-/* ============================================================ SCREENS */
 #screens{flex:1;display:flex;flex-direction:column}
-.screen{
-  display:none;flex:1;flex-direction:column;
+.screen{display:none;flex:1;flex-direction:column;
   padding:calc(22px + var(--sat)) 20px calc(28px + var(--sab));
-  max-width:540px;width:100%;margin:0 auto;
-}
+  max-width:540px;width:100%;margin:0 auto}
 .screen.active{display:flex;animation:rise .45s cubic-bezier(.2,.75,.2,1)}
 .has-top .screen.active{padding-top:10px}
 @keyframes rise{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
@@ -114,355 +76,235 @@ input,textarea{font:inherit;color:inherit}
 @keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
 .shake{animation:shake .5s}
 
-/* ============================================================ HERO */
 .hero{margin:6px 0 22px}
-.hero .eyebrow{
-  display:inline-flex;align-items:center;gap:8px;
+.hero .eyebrow{display:inline-flex;align-items:center;gap:8px;
   font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--rose);margin-bottom:14px;
-}
-.hero .eyebrow::before{
-  content:"";width:22px;height:2px;
-  background:linear-gradient(90deg,#ff2e4d,transparent);
-  border-radius:2px;
-}
+  color:var(--rose);margin-bottom:14px}
+.hero .eyebrow::before{content:"";width:22px;height:2px;
+  background:linear-gradient(90deg,#ff2e4d,transparent);border-radius:2px}
 .hero p{margin-top:10px;color:var(--muted);font-size:15px;line-height:1.55}
 
-/* ============================================================ STEPS */
 .steps{display:flex;gap:6px;margin-bottom:20px}
-.steps i{
-  flex:1;height:3px;border-radius:3px;
-  background:rgba(255,255,255,.08);position:relative;overflow:hidden;
-  transition:background .3s;
-}
+.steps i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.08);
+  position:relative;overflow:hidden;transition:background .3s}
 .steps i.done{background:rgba(255,46,77,.55)}
 .steps i.cur{background:linear-gradient(90deg,#ff2e4d,#ff8fa3);box-shadow:0 0 14px rgba(255,46,77,.6)}
 
-/* ============================================================ CARD */
-.card{
-  background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
-  border:1px solid var(--line);
-  border-radius:var(--r);
-  padding:22px;
-  backdrop-filter:blur(18px) saturate(140%);
-  -webkit-backdrop-filter:blur(18px) saturate(140%);
-  box-shadow:0 26px 64px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06);
-  position:relative;overflow:hidden;
-}
+.card{background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+  border:1px solid var(--line);border-radius:var(--r);padding:22px;
+  backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);
+  box-shadow:0 26px 64px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06);
+  position:relative;overflow:hidden}
 .card + .card{margin-top:14px}
-.card::before{
-  content:"";position:absolute;inset:0 0 auto 0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,122,143,.5),transparent);
-}
+.card::before{content:"";position:absolute;inset:0 0 auto 0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,122,143,.5),transparent)}
 
-/* ============================================================ BTN */
-.btn{
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  width:100%;padding:16px 18px;border-radius:16px;
-  font-weight:700;font-size:15px;letter-spacing:.01em;
-  transition:transform .15s, opacity .2s, box-shadow .2s;
-  position:relative;overflow:hidden;
-}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:16px 18px;border-radius:16px;font-weight:700;font-size:15px;
+  letter-spacing:.01em;transition:transform .15s,opacity .2s,box-shadow .2s;
+  position:relative;overflow:hidden}
 .btn:active{transform:scale(.975)}
 .btn[disabled]{opacity:.45;pointer-events:none}
-.btn.primary{
-  color:#fff;
-  background:linear-gradient(135deg,#ff2e4d 0%,#c1121f 55%,#8a0d1a 100%);
-  box-shadow:var(--glow);
-}
-.btn.primary::after{
-  content:"";position:absolute;inset:0;
+.btn.primary{color:#fff;background:linear-gradient(135deg,#ff2e4d 0%,#c1121f 55%,#8a0d1a 100%);
+  box-shadow:var(--glow)}
+.btn.primary::after{content:"";position:absolute;inset:0;
   background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.22) 50%,transparent 70%);
-  transform:translateX(-120%);transition:transform .6s;
-}
+  transform:translateX(-120%);transition:transform .6s}
 .btn.primary:hover::after{transform:translateX(120%)}
-.btn.ghost{
-  background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--text);
-}
-.btn.ghost:hover{background:rgba(255,255,255,.08);border-color:var(--line-strong)}
+.btn.ghost{background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--text)}
 .btn.link{padding:10px;color:var(--rose);font-weight:600;font-size:14px}
 .row{display:flex;gap:10px}
 .mt{margin-top:14px}.mt2{margin-top:22px}
-.spinner{
-  width:18px;height:18px;border-radius:50%;
+.spinner{width:18px;height:18px;border-radius:50%;
   border:2.5px solid rgba(255,255,255,.25);border-top-color:#fff;
-  animation:spin .8s linear infinite;display:inline-block;
-}
+  animation:spin .8s linear infinite;display:inline-block}
 
-/* ============================================================ CAPTCHA */
-.check{
-  display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;
+.check{display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;
   background:rgba(0,0,0,.25);border:1px solid var(--line);
-  cursor:pointer;user-select:none;transition:border-color .2s, background .2s;
-}
+  cursor:pointer;user-select:none;transition:border-color .2s,background .2s}
 .check:hover{border-color:var(--line-strong);background:rgba(0,0,0,.32)}
-.box{
-  width:32px;height:32px;border-radius:10px;
-  border:2px solid rgba(255,122,143,.5);
-  display:grid;place-items:center;flex:none;transition:all .25s;
-  background:rgba(255,46,77,.06);
-}
+.box{width:32px;height:32px;border-radius:10px;border:2px solid rgba(255,122,143,.5);
+  display:grid;place-items:center;flex:none;transition:all .25s;background:rgba(255,46,77,.06)}
 .check.loading .box{border-color:transparent;background:none}
-.check.loading .box::after{
-  content:"";width:22px;height:22px;border-radius:50%;
-  border:2.5px solid rgba(255,122,143,.25);border-top-color:#ff2e4d;
-  animation:spin .7s linear infinite;
-}
+.check.loading .box::after{content:"";width:22px;height:22px;border-radius:50%;
+  border:2.5px solid rgba(255,122,143,.25);border-top-color:#ff2e4d;animation:spin .7s linear infinite}
 .check.ok .box{background:linear-gradient(135deg,#ff2e4d,#b3101f);border-color:transparent}
 .check.ok .box svg{display:block;animation:pop .35s}
 .box svg{display:none;width:16px;height:16px}
 .check .lbl{font-weight:700;flex:1;font-size:15px}
-.check .brand{
-  font-family:Unbounded;font-size:10px;font-weight:700;
-  letter-spacing:.16em;color:var(--dim);
-}
+.check .brand{font-family:Unbounded;font-size:10px;font-weight:700;
+  letter-spacing:.16em;color:var(--dim)}
 .challenge{margin-top:16px}
 .cap{display:flex;gap:10px;align-items:center}
-.cap canvas{
-  width:100%;max-width:260px;height:88px;border-radius:16px;
-  border:1px solid var(--line);display:block;
-  box-shadow:inset 0 0 30px rgba(255,46,77,.08);
-}
-.iconbtn{
-  width:46px;height:46px;border-radius:14px;
-  background:rgba(255,255,255,.05);border:1px solid var(--line);
-  display:grid;place-items:center;flex:none;transition:transform .3s, background .2s;
-}
+.cap canvas{width:100%;max-width:260px;height:88px;border-radius:16px;
+  border:1px solid var(--line);display:block;box-shadow:inset 0 0 30px rgba(255,46,77,.08)}
+.iconbtn{width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.05);
+  border:1px solid var(--line);display:grid;place-items:center;flex:none;
+  transition:transform .3s,background .2s}
 .iconbtn:hover{background:rgba(255,255,255,.09)}
 .iconbtn:active{transform:rotate(180deg) scale(.95)}
 .iconbtn svg{width:18px;height:18px}
-.field{
-  width:100%;padding:15px 16px;border-radius:14px;
-  background:rgba(0,0,0,.3);border:1px solid var(--line);
-  outline:none;font-size:16px;letter-spacing:.32em;
+.field{width:100%;padding:15px 16px;border-radius:14px;background:rgba(0,0,0,.3);
+  border:1px solid var(--line);outline:none;font-size:16px;letter-spacing:.32em;
   text-transform:uppercase;text-align:center;font-weight:800;
-  transition:border-color .2s, box-shadow .2s;
-  font-family:Unbounded;
-}
+  transition:border-color .2s,box-shadow .2s;font-family:Unbounded}
 .field::placeholder{letter-spacing:.32em;color:var(--dim)}
 .field:focus{border-color:#ff2e4d;box-shadow:0 0 0 4px rgba(255,46,77,.15)}
-.hint{min-height:20px;margin-top:10px;font-size:13px;color:var(--muted);text-align:center;transition:color .2s;font-weight:600}
-.hint.err{color:#ff6b7f}
-.hint.ok{color:#7ee2a1}
+.hint{min-height:20px;margin-top:10px;font-size:13px;color:var(--muted);
+  text-align:center;transition:color .2s;font-weight:600}
+.hint.err{color:#ff6b7f}.hint.ok{color:#7ee2a1}
 
-/* ============================================================ OTP */
 .otp{display:flex;gap:8px;justify-content:center;margin:20px 0 8px}
-.otp input{
-  width:46px;height:60px;border-radius:14px;text-align:center;
+.otp input{width:46px;height:60px;border-radius:14px;text-align:center;
   font-size:26px;font-weight:700;font-family:Unbounded;
-  background:rgba(0,0,0,.32);border:1px solid var(--line);outline:none;
-  caret-color:#ff2e4d;
-  transition:border-color .2s, box-shadow .2s, transform .15s;
-}
-.otp input:focus{
-  border-color:#ff2e4d;box-shadow:0 0 0 4px rgba(255,46,77,.15);
-  transform:translateY(-2px);
-}
+  background:rgba(0,0,0,.32);border:1px solid var(--line);outline:none;caret-color:#ff2e4d;
+  transition:border-color .2s,box-shadow .2s,transform .15s}
+.otp input:focus{border-color:#ff2e4d;box-shadow:0 0 0 4px rgba(255,46,77,.15);transform:translateY(-2px)}
 .otp input.filled{border-color:rgba(255,122,143,.45)}
 .otp.ok input{border-color:#4fd389;box-shadow:0 0 0 4px rgba(79,211,137,.15)}
-.chat-tip{
-  display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;
-  background:rgba(255,46,77,.08);border:1px dashed rgba(255,122,143,.35);
-}
-.chat-tip .dot{
-  width:10px;height:10px;border-radius:50%;background:#ff2e4d;
-  animation:pulse 1.8s infinite;flex:none;
-}
+.chat-tip{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;
+  background:rgba(255,46,77,.08);border:1px dashed rgba(255,122,143,.35)}
+.chat-tip .dot{width:10px;height:10px;border-radius:50%;background:#ff2e4d;
+  animation:pulse 1.8s infinite;flex:none}
 
-/* ============================================================ CHOICE */
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.choice{
-  padding:24px 18px;border-radius:22px;
+.choice{padding:24px 18px;border-radius:22px;
   background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
-  border:1px solid var(--line);text-align:left;
-  position:relative;overflow:hidden;
-  transition:transform .15s, border-color .2s, box-shadow .2s;
-}
+  border:1px solid var(--line);text-align:left;position:relative;overflow:hidden;
+  transition:transform .15s,border-color .2s,box-shadow .2s}
 .choice:active{transform:scale(.97)}
-.choice.sel{border-color:#ff2e4d;box-shadow:0 0 0 1px #ff2e4d inset, var(--glow)}
-.choice .big{
-  font-family:Unbounded;font-size:36px;font-weight:800;
+.choice.sel{border-color:#ff2e4d;box-shadow:0 0 0 1px #ff2e4d inset,var(--glow)}
+.choice .big{font-family:Unbounded;font-size:36px;font-weight:800;
   background:linear-gradient(90deg,#fff,#ffb3c0);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-  line-height:1;
-}
+  -webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
 .choice .sub{margin-top:10px;color:var(--muted);font-size:13px;font-weight:700;letter-spacing:.02em}
-.choice .corner{
-  position:absolute;right:-26px;top:-26px;width:90px;height:90px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,46,77,.35),transparent 70%);
-}
+.choice .corner{position:absolute;right:-26px;top:-26px;width:90px;height:90px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,46,77,.35),transparent 70%)}
 
-/* ============================================================ PLANS */
-.plan{
-  padding:22px;border-radius:22px;border:1px solid var(--line);
+.plan{padding:22px;border-radius:22px;border:1px solid var(--line);
   background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
   position:relative;overflow:hidden;text-align:left;width:100%;
-  transition:transform .15s, border-color .2s, box-shadow .2s;
-}
+  transition:transform .15s,border-color .2s,box-shadow .2s}
 .plan + .plan{margin-top:12px}
-.plan.sel{border-color:#ff2e4d;box-shadow:0 0 0 1px #ff2e4d inset, var(--glow)}
+.plan.sel{border-color:#ff2e4d;box-shadow:0 0 0 1px #ff2e4d inset,var(--glow)}
 .plan.dev{opacity:.75}
 .plan .head{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.plan .name{font-family:Unbounded;font-size:22px;font-weight:800;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.plan .name{font-family:Unbounded;font-size:22px;font-weight:800;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .plan .price{font-family:Unbounded;font-size:14px;color:var(--rose)}
-.plan ul{
-  margin:16px 0 0;padding:0;list-style:none;display:grid;gap:9px;
-}
+.plan ul{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:9px}
 .plan li{display:flex;gap:10px;align-items:center;font-size:14px;color:var(--muted);line-height:1.4}
 .plan li svg{width:16px;height:16px;flex:none;color:var(--rose)}
-.badge{
-  display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;
   font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  background:rgba(255,46,77,.14);color:var(--rose);
-  border:1px solid rgba(255,122,143,.3);
-}
+  background:rgba(255,46,77,.14);color:var(--rose);border:1px solid rgba(255,122,143,.3)}
 .badge.ok{background:rgba(79,211,137,.12);color:#7ee2a1;border-color:rgba(79,211,137,.3)}
 .badge.wait{background:rgba(255,255,255,.06);color:var(--muted);border-color:var(--line)}
 
-/* ============================================================ BUSINESS */
 .list{display:grid;gap:10px;margin-top:16px}
-.list .it{
-  display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:14px;
-  background:rgba(0,0,0,.22);border:1px solid var(--line);
-  font-size:14px;line-height:1.5;
-}
-.list .n{
-  width:28px;height:28px;border-radius:9px;flex:none;display:grid;place-items:center;
+.list .it{display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:14px;
+  background:rgba(0,0,0,.22);border:1px solid var(--line);font-size:14px;line-height:1.5}
+.list .n{width:28px;height:28px;border-radius:9px;flex:none;display:grid;place-items:center;
   font-family:Unbounded;font-size:12px;font-weight:800;
-  background:linear-gradient(135deg,#ff2e4d,#8a0d1a);
-  box-shadow:0 4px 12px rgba(255,46,77,.35);
-}
-.status-pill{
-  display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:999px;
-  background:rgba(0,0,0,.3);border:1px solid var(--line);
-  font-size:13px;font-weight:700;
-}
+  background:linear-gradient(135deg,#ff2e4d,#8a0d1a);box-shadow:0 4px 12px rgba(255,46,77,.35)}
+.status-pill{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;
+  border-radius:999px;background:rgba(0,0,0,.3);border:1px solid var(--line);
+  font-size:13px;font-weight:700}
 .status-pill .dot{width:9px;height:9px;border-radius:50%;background:#ff2e4d;animation:pulse 1.6s infinite}
 .status-pill.ok .dot{background:#4fd389;animation:none}
 
-/* ============================================================ HOME */
 .welcome{display:flex;align-items:center;gap:16px}
 .welcome .avatar-btn{width:64px;height:64px}
 .welcome h2{font-size:22px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
-.tiles{
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;
-}
-.tile{
-  padding:18px 16px;border-radius:20px;
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.tile{padding:18px 16px;border-radius:20px;
   background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
-  border:1px solid var(--line);text-align:left;
-  display:flex;flex-direction:column;gap:12px;
-  transition:transform .15s, border-color .2s;
-}
+  border:1px solid var(--line);text-align:left;display:flex;flex-direction:column;gap:12px;
+  transition:transform .15s,border-color .2s}
 .tile:active{transform:scale(.97)}
 .tile:hover{border-color:var(--line-strong)}
-.tile .ic{
-  width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
-  background:rgba(255,46,77,.14);color:var(--rose);
-}
+.tile .ic{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
+  background:rgba(255,46,77,.14);color:var(--rose)}
 .tile .ic svg{width:20px;height:20px}
 .tile b{font-size:15px;font-weight:700}
 .tile span{font-size:12px;color:var(--muted);line-height:1.4}
-.stat{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:14px 0;border-top:1px solid rgba(255,255,255,.06);
-}
+.stat{display:flex;justify-content:space-between;align-items:center;
+  padding:14px 0;border-top:1px solid rgba(255,255,255,.06)}
 .stat:first-child{border-top:0;padding-top:0}
 .stat .k{color:var(--muted);font-size:13px;font-weight:600}
 .stat .v{font-weight:700;font-size:14px}
-.orbit{
-  position:absolute;right:-50px;top:-50px;width:160px;height:160px;border-radius:50%;
-  border:1px solid rgba(255,122,143,.18);pointer-events:none;
-}
-.orbit::after{
-  content:"";position:absolute;width:8px;height:8px;border-radius:50%;
+.orbit{position:absolute;right:-50px;top:-50px;width:160px;height:160px;border-radius:50%;
+  border:1px solid rgba(255,122,143,.18);pointer-events:none}
+.orbit::after{content:"";position:absolute;width:8px;height:8px;border-radius:50%;
   background:#ff2e4d;top:50%;left:-4px;box-shadow:0 0 14px #ff2e4d;
-  animation:orbit 7s linear infinite;transform-origin:84px 0;
-}
+  animation:orbit 7s linear infinite;transform-origin:84px 0}
 @keyframes orbit{to{transform:rotate(360deg)}}
 
-/* ============================================================ PROFILE */
+/* Limits */
+.limit-bar{height:8px;border-radius:8px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:8px}
+.limit-fill{height:100%;background:linear-gradient(90deg,#ff2e4d,#ff8fa3);border-radius:8px;transition:width .5s}
+.limit-row{padding:14px 0;border-top:1px solid rgba(255,255,255,.06)}
+.limit-row:first-child{border-top:0;padding-top:0}
+.limit-row .top{display:flex;justify-content:space-between;align-items:center}
+.limit-row .label{font-size:13px;color:var(--muted);font-weight:600}
+.limit-row .count{font-size:14px;font-weight:800}
+.limit-row .count b{color:var(--rose);font-family:Unbounded}
+
+/* Help справочник */
+.cmd-row{display:flex;gap:14px;padding:14px;border-radius:14px;
+  background:rgba(0,0,0,.22);border:1px solid var(--line);align-items:flex-start}
+.cmd-row + .cmd-row{margin-top:10px}
+.cmd-code{font-family:'Fira Code','SF Mono',monospace;font-weight:800;color:var(--rose);
+  background:rgba(255,46,77,.12);padding:4px 10px;border-radius:8px;font-size:13px;flex:none}
+.cmd-desc{font-size:13px;color:var(--muted);line-height:1.5}
+.cmd-desc b{color:var(--text)}
+
 .pf-head{display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:8px}
 .pf-ava{position:relative;width:110px;height:110px}
 .pf-ava .avatar-btn{width:110px;height:110px;padding:3px}
-.pf-ava .cam{
-  position:absolute;right:-2px;bottom:-2px;width:38px;height:38px;border-radius:50%;
-  background:linear-gradient(135deg,#ff2e4d,#8a0d1a);
-  display:grid;place-items:center;border:3px solid var(--bg);
-  box-shadow:var(--glow);transition:transform .2s;
-}
+.pf-ava .cam{position:absolute;right:-2px;bottom:-2px;width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,#ff2e4d,#8a0d1a);display:grid;place-items:center;
+  border:3px solid var(--bg);box-shadow:var(--glow);transition:transform .2s}
 .pf-ava .cam:active{transform:scale(.92)}
 .pf-ava .cam svg{width:16px;height:16px}
-label.lab{
-  display:block;font-size:11px;font-weight:800;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--dim);margin:18px 0 8px;
-}
-.inp{
-  width:100%;padding:14px 16px;border-radius:14px;
-  background:rgba(0,0,0,.3);border:1px solid var(--line);
-  outline:none;font-size:15px;
-  transition:border-color .2s, box-shadow .2s;resize:none;
-}
+label.lab{display:block;font-size:11px;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--dim);margin:18px 0 8px}
+.inp{width:100%;padding:14px 16px;border-radius:14px;background:rgba(0,0,0,.3);
+  border:1px solid var(--line);outline:none;font-size:15px;
+  transition:border-color .2s,box-shadow .2s;resize:none}
 .inp:focus{border-color:#ff2e4d;box-shadow:0 0 0 4px rgba(255,46,77,.15)}
 .counter{text-align:right;font-size:11px;color:var(--dim);margin-top:6px;font-weight:600}
-.seg{
-  display:flex;padding:4px;border-radius:14px;
-  background:rgba(0,0,0,.3);border:1px solid var(--line);
-}
-.seg button{
-  flex:1;padding:11px;border-radius:11px;font-weight:700;font-size:13px;
-  color:var(--muted);transition:all .2s;
-}
-.seg button.on{
-  background:linear-gradient(135deg,#ff2e4d,#b3101f);color:#fff;
-  box-shadow:0 8px 20px rgba(255,46,77,.32);
-}
+.seg{display:flex;padding:4px;border-radius:14px;background:rgba(0,0,0,.3);border:1px solid var(--line)}
+.seg button{flex:1;padding:11px;border-radius:11px;font-weight:700;font-size:13px;
+  color:var(--muted);transition:all .2s}
+.seg button.on{background:linear-gradient(135deg,#ff2e4d,#b3101f);color:#fff;
+  box-shadow:0 8px 20px rgba(255,46,77,.32)}
 
-/* ============================================================ SPLASH */
 .splash{align-items:center;justify-content:center;text-align:center}
-.splash .mark{
-  width:92px;height:92px;border-radius:28px;
-  background:linear-gradient(140deg,#ff2e4d,#8a0d1a);
-  display:grid;place-items:center;box-shadow:var(--glow);
-  position:relative;margin-bottom:24px;
-}
+.splash .mark{width:92px;height:92px;border-radius:28px;
+  background:linear-gradient(140deg,#ff2e4d,#8a0d1a);display:grid;place-items:center;
+  box-shadow:var(--glow);position:relative;margin-bottom:24px}
 .splash .mark svg{width:50px;height:50px;filter:drop-shadow(0 0 10px rgba(255,255,255,.55))}
-.splash .mark::after{
-  content:"";position:absolute;inset:-16px;border-radius:50%;
-  border:1.5px solid rgba(255,122,143,.35);
-  border-right-color:transparent;border-left-color:transparent;
-  animation:spin 5s linear infinite;
-}
+.splash .mark::after{content:"";position:absolute;inset:-16px;border-radius:50%;
+  border:1.5px solid rgba(255,122,143,.35);border-right-color:transparent;border-left-color:transparent;
+  animation:spin 5s linear infinite}
 .splash h1{font-size:36px;letter-spacing:.02em}
-.splash h1 b{
-  background:linear-gradient(90deg,#ff2e4d,#ff8fa3);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
+.splash h1 b{background:linear-gradient(90deg,#ff2e4d,#ff8fa3);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
 
-/* ============================================================ MISC */
-.banner{
-  position:sticky;top:0;z-index:5;margin:0 0 12px;padding:10px 14px;border-radius:12px;
+.banner{position:sticky;top:0;z-index:5;margin:0 0 12px;padding:10px 14px;border-radius:12px;
   background:rgba(255,46,77,.14);border:1px solid rgba(255,122,143,.35);
-  font-size:12px;font-weight:700;color:var(--rose);text-align:center;
-}
-#toast{
-  position:fixed;left:50%;bottom:calc(24px + var(--sab));
-  transform:translate(-50%,20px);opacity:0;z-index:50;
-  padding:12px 18px;border-radius:14px;
-  background:rgba(30,8,12,.94);border:1px solid var(--line);
-  backdrop-filter:blur(12px);font-size:14px;font-weight:600;
-  max-width:90vw;text-align:center;transition:all .3s;
-  pointer-events:none;box-shadow:0 16px 40px rgba(0,0,0,.55);
-}
+  font-size:12px;font-weight:700;color:var(--rose);text-align:center}
+#toast{position:fixed;left:50%;bottom:calc(24px + var(--sab));
+  transform:translate(-50%,20px);opacity:0;z-index:50;padding:12px 18px;border-radius:14px;
+  background:rgba(30,8,12,.94);border:1px solid var(--line);backdrop-filter:blur(12px);
+  font-size:14px;font-weight:600;max-width:90vw;text-align:center;transition:all .3s;
+  pointer-events:none;box-shadow:0 16px 40px rgba(0,0,0,.55)}
 #toast.show{opacity:1;transform:translate(-50%,0)}
-.check-ok{
-  width:76px;height:76px;border-radius:50%;margin:12px auto;
-  display:grid;place-items:center;
-  background:linear-gradient(135deg,#4fd389,#1f8a4c);
-  box-shadow:0 14px 44px rgba(79,211,137,.4);
-  animation:pop .5s;
-}
+.check-ok{width:76px;height:76px;border-radius:50%;margin:12px auto;display:grid;place-items:center;
+  background:linear-gradient(135deg,#4fd389,#1f8a4c);box-shadow:0 14px 44px rgba(79,211,137,.4);
+  animation:pop .5s}
 .check-ok svg{width:36px;height:36px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
@@ -485,7 +327,6 @@ label.lab{
   </header>
 
   <main id="screens">
-    <!-- Splash -->
     <section class="screen splash" data-screen="splash">
       <div class="mark">
         <svg viewBox="0 0 24 24" fill="none">
@@ -497,7 +338,6 @@ label.lab{
       <div class="mt2"><span class="spinner"></span></div>
     </section>
 
-    <!-- No /start -->
     <section class="screen splash" data-screen="nostart">
       <div class="mark">
         <svg viewBox="0 0 24 24" fill="none">
@@ -509,7 +349,6 @@ label.lab{
       <button class="btn primary mt2" data-action="open-bot" data-i18n="code_open_chat"></button>
     </section>
 
-    <!-- Captcha -->
     <section class="screen" data-screen="captcha">
       <div class="steps" data-steps></div>
       <div class="hero">
@@ -545,7 +384,6 @@ label.lab{
       <p class="small muted mt2" style="text-align:center" data-i18n="captcha_foot"></p>
     </section>
 
-    <!-- Code -->
     <section class="screen" data-screen="code">
       <div class="steps" data-steps></div>
       <div class="hero">
@@ -555,21 +393,19 @@ label.lab{
       </div>
       <div class="card">
         <div id="codeIdle">
-          <button class="btn primary" id="codeRequest">
-            <span data-i18n="code_request"></span>
-          </button>
+          <button class="btn primary" id="codeRequest"><span data-i18n="code_request"></span></button>
         </div>
         <div id="codeEntry" hidden>
           <div class="chat-tip">
             <span class="dot"></span><span class="small" id="codeSentTxt"></span>
           </div>
           <div class="otp" id="otp">
-            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="1"/>
-            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="2"/>
-            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="3"/>
-            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="4"/>
-            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="5"/>
-            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="6"/>
+            <input inputmode="numeric" pattern="[0-9]*" maxlength="1"/>
+            <input inputmode="numeric" pattern="[0-9]*" maxlength="1"/>
+            <input inputmode="numeric" pattern="[0-9]*" maxlength="1"/>
+            <input inputmode="numeric" pattern="[0-9]*" maxlength="1"/>
+            <input inputmode="numeric" pattern="[0-9]*" maxlength="1"/>
+            <input inputmode="numeric" pattern="[0-9]*" maxlength="1"/>
           </div>
           <div class="hint" id="codeHint"></div>
           <div class="row mt">
@@ -588,7 +424,6 @@ label.lab{
       </div>
     </section>
 
-    <!-- Language -->
     <section class="screen" data-screen="lang">
       <div class="steps" data-steps></div>
       <div class="hero">
@@ -611,7 +446,6 @@ label.lab{
       <button class="btn primary mt2" id="langNext" data-i18n="continue"></button>
     </section>
 
-    <!-- Plan -->
     <section class="screen" data-screen="plan">
       <div class="steps" data-steps></div>
       <div class="hero">
@@ -619,7 +453,7 @@ label.lab{
         <h1 data-i18n="plan_title"></h1>
         <p data-i18n="plan_sub"></p>
       </div>
-      <button class="plan sel" data-plan="free">
+      <button class="plan" data-plan="free">
         <div class="head">
           <div class="name">Free</div>
           <div class="price" data-i18n="plan_free_price"></div>
@@ -643,12 +477,11 @@ label.lab{
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span data-i18n="plan_go_f3"></span></li>
         </ul>
       </button>
-      <button class="btn primary mt2" id="planNext">
-        <span data-i18n="plan_choose"></span>&nbsp;Free
+      <button class="btn primary mt2" id="planNext" disabled>
+        <span data-i18n="plan_choose"></span>
       </button>
     </section>
 
-    <!-- Business -->
     <section class="screen" data-screen="business">
       <div class="steps" data-steps></div>
       <div class="hero">
@@ -671,7 +504,6 @@ label.lab{
       </div>
     </section>
 
-    <!-- Home -->
     <section class="screen" data-screen="home">
       <div class="card">
         <div class="orbit"></div>
@@ -699,21 +531,21 @@ label.lab{
           </div>
           <div><b data-i18n="tile_profile"></b><br/><span data-i18n="tile_profile_s"></span></div>
         </button>
-        <button class="tile" data-action="goto-lang">
-          <div class="ic">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/>
-            </svg>
-          </div>
-          <div><b data-i18n="tile_lang"></b><br/><span id="tileLangS"></span></div>
-        </button>
-        <button class="tile" data-action="goto-plan">
+        <button class="tile" data-action="goto-limits">
           <div class="ic">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"/>
+              <path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/>
             </svg>
           </div>
-          <div><b data-i18n="tile_plan"></b><br/><span id="tilePlanS"></span></div>
+          <div><b data-i18n="tile_limits"></b><br/><span id="tileLimitsS"></span></div>
+        </button>
+        <button class="tile" data-action="goto-help">
+          <div class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/><path d="M12 8v.01M11 12h1v4h1"/>
+            </svg>
+          </div>
+          <div><b data-i18n="tile_help"></b><br/><span data-i18n="tile_help_s"></span></div>
         </button>
         <button class="tile" data-action="open-bot">
           <div class="ic">
@@ -731,7 +563,84 @@ label.lab{
       </div>
     </section>
 
-    <!-- Profile -->
+    <section class="screen" data-screen="limits">
+      <div class="hero">
+        <div class="eyebrow" data-i18n="limits_eyebrow"></div>
+        <h1 data-i18n="limits_title"></h1>
+        <p data-i18n="limits_sub"></p>
+      </div>
+      <div class="card">
+        <div class="stat" style="border:0;padding:0;margin-bottom:6px">
+          <span class="k" data-i18n="limits_plan"></span>
+          <span class="v"><span class="badge" id="limitsPlan"></span></span>
+        </div>
+        <div class="limit-row">
+          <div class="top">
+            <div class="label" data-i18n="limits_day"></div>
+            <div class="count"><b id="dayUsed">0</b> / <span id="dayLimit">100</span></div>
+          </div>
+          <div class="limit-bar"><div class="limit-fill" id="dayFill" style="width:0%"></div></div>
+        </div>
+        <div class="limit-row">
+          <div class="top">
+            <div class="label" data-i18n="limits_week"></div>
+            <div class="count"><b id="weekUsed">0</b> / <span id="weekLimit">700</span></div>
+          </div>
+          <div class="limit-bar"><div class="limit-fill" id="weekFill" style="width:0%"></div></div>
+        </div>
+        <div class="limit-row">
+          <div class="top">
+            <div class="label" data-i18n="limits_month"></div>
+            <div class="count"><b id="monthUsed">0</b> / <span id="monthLimit">3000</span></div>
+          </div>
+          <div class="limit-bar"><div class="limit-fill" id="monthFill" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15px;margin-bottom:12px" data-i18n="limits_cmds_title"></h3>
+        <div class="cmd-row">
+          <span class="cmd-code">!help</span>
+          <div class="cmd-desc" data-i18n="limits_cmd_help"></div>
+        </div>
+      </div>
+      <button class="btn ghost mt" data-action="home" data-i18n="back"></button>
+    </section>
+
+    <section class="screen" data-screen="help">
+      <div class="hero">
+        <div class="eyebrow" data-i18n="help_eyebrow"></div>
+        <h1 data-i18n="help_title"></h1>
+        <p data-i18n="help_sub"></p>
+      </div>
+      <div class="card">
+        <div class="cmd-row">
+          <span class="cmd-code">/start</span>
+          <div class="cmd-desc" data-i18n="help_cmd_start"></div>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-code">/profile</span>
+          <div class="cmd-desc" data-i18n="help_cmd_profile"></div>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-code">/lang</span>
+          <div class="cmd-desc" data-i18n="help_cmd_lang"></div>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-code">/status</span>
+          <div class="cmd-desc" data-i18n="help_cmd_status"></div>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-code">/limits</span>
+          <div class="cmd-desc" data-i18n="help_cmd_limits"></div>
+        </div>
+        <div class="cmd-row">
+          <span class="cmd-code">!help</span>
+          <div class="cmd-desc" data-i18n="help_cmd_bang"></div>
+        </div>
+      </div>
+      <button class="btn ghost mt" data-action="home" data-i18n="back"></button>
+    </section>
+
     <section class="screen" data-screen="profile">
       <div class="pf-head">
         <div class="pf-ava">
@@ -777,7 +686,6 @@ label.lab{
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getDatabase, ref, get, update, push, onValue } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-/* ============================================================ CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyC9bFmAi81u8wgR4t59ytgACJGj8gJBYKw",
   authDomain: "ttew-61e15.firebaseapp.com",
@@ -789,120 +697,129 @@ const firebaseConfig = {
   measurementId: "G-2TPM73FMDH",
 };
 const CFG = { captchaLen:5, captchaTtlMin:10, botTimeoutMs:25000, resendSec:60, demoCode:"123456" };
+const PLAN_LIMITS = { free:{day:100,week:700,month:3000}, go:{day:1000,week:7000,month:30000} };
 
-/* ============================================================ I18N */
 const I18N = {
   ru: {
     tag:"Защищённый вход в Telegram", continue:"Продолжить", back:"Назад",
-    demo_banner:"Демо-режим: открой приложение через бота в Telegram, чтобы войти по-настоящему",
+    demo_banner:"Демо-режим: открой приложение через бота в Telegram",
     nostart_title:"Сначала нажми /start",
-    nostart_text:"Открой чат с ботом, отправь /start и вернись сюда кнопкой «Открыть AstroX».",
+    nostart_text:"Открой чат с ботом, отправь /start и вернись сюда.",
     step_1:"Шаг 1 из 5", step_2:"Шаг 2 из 5", step_3:"Шаг 3 из 5", step_4:"Шаг 4 из 5", step_5:"Шаг 5 из 5",
-    captcha_title:"Проверка", captcha_sub:"Подтверди, что ты человек — это займёт пару секунд.",
+    captcha_title:"Проверка", captcha_sub:"Подтверди, что ты человек.",
     captcha_check:"Я не робот", captcha_enter:"Введи символы с картинки",
     captcha_btn:"Проверить", captcha_wrong:"Не совпало — попробуй ещё раз",
     captcha_ok:"Проверка пройдена", captcha_wait:"Подожди {s} с",
-    captcha_foot:"AstroX защищён от ботов: капча, проверка возраста аккаунта и лимит скорости.",
-    code_title:"Код входа", code_sub:"Запроси код — бот пришлёт 6 цифр в чат. Код живёт 5 минут.",
+    captcha_foot:"AstroX защищён от ботов.",
+    code_title:"Код входа", code_sub:"Запроси код — бот пришлёт 6 цифр в чат.",
     code_request:"Запросить код", code_sending:"Отправляем запрос боту…",
     code_sent:"Код отправлен в чат с ботом. Введи его здесь.",
     code_resend:"Ещё раз через {s} с", code_resend_now:"Отправить ещё раз",
-    code_checking:"Проверяем…", code_wrong:"Неверный код. Осталось попыток: {n}",
-    code_expired:"Код истёк — запроси новый",
-    code_locked:"Слишком много попыток. Запроси новый код через минуту",
-    code_cooldown:"Подожди {s} с перед новым запросом",
-    code_limit:"Лимит кодов на час исчерпан. Попробуй позже",
-    code_timeout:"Бот не ответил. Проверь, что он запущен, и попробуй снова",
-    code_bad_auth:"Сессия устарела — закрой и открой приложение заново",
-    code_blocked:"Разблокируй бота, чтобы получить код",
-    code_too_new:"Аккаунт слишком новый для AstroX",
-    code_ok:"Вход подтверждён", code_open_chat:"Открыть чат с ботом",
-    lang_title:"Язык", lang_sub:"Выбери язык интерфейса. Его можно сменить в профиле.",
-    plan_title:"Тариф", plan_sub:"Начни с Free — GO откроется, когда будет готов.",
+    code_checking:"Проверяем…", code_wrong:"Неверный код. Осталось: {n}",
+    code_expired:"Код истёк", code_locked:"Слишком много попыток",
+    code_cooldown:"Подожди {s} с", code_limit:"Лимит кодов исчерпан",
+    code_timeout:"Бот не ответил", code_bad_auth:"Сессия устарела",
+    code_blocked:"Разблокируй бота", code_too_new:"Аккаунт слишком новый",
+    code_ok:"Вход подтверждён", code_open_chat:"Открыть бота",
+    lang_title:"Язык", lang_sub:"Выбери язык интерфейса.",
+    plan_title:"Тариф", plan_sub:"Начни с Free — GO скоро.",
     plan_free_price:"0 ₽", plan_go_price:"скоро",
-    plan_free_desc:"Базовый доступ ко всем функциям AstroX.",
-    plan_go_desc:"Расширенные возможности и приоритет.",
-    plan_dev:"В разработке", plan_choose:"Выбрать", plan_soon:"GO ещё в разработке — скоро откроем",
-    plan_free_f1:"Личный кабинет", plan_free_f2:"Защищённый вход", plan_free_f3:"Профиль и аватар",
-    plan_go_f1:"Всё из Free", plan_go_f2:"Приоритетная поддержка", plan_go_f3:"Ранний доступ к новому",
-    biz_title:"Активация", biz_sub:"Подключи бота через Telegram Business — это открывает доступ.",
-    biz_wait:"Ожидаем подключения…", biz_ok:"Business подключён",
-    biz_step1:"Открой Настройки → Telegram Business",
-    biz_step2:"Раздел «Чат-боты»",
-    biz_step3:"Выбери @{bot} и подтверди доступ",
-    biz_note:"Нужен Telegram Premium. Бот напишет тебе сразу, как подключение пройдёт.",
-    biz_check:"Я подключил — проверить", biz_not_yet:"Пока не вижу подключения",
-    biz_done:"Business подключён — доступ открыт",
+    plan_free_desc:"100 запросов в день · 700 в неделю · 3000 в месяц",
+    plan_go_desc:"Расширенные лимиты — скоро",
+    plan_dev:"В разработке", plan_choose:"Выбрать", plan_soon:"GO ещё в разработке",
+    plan_free_f1:"Кабинет и профиль", plan_free_f2:"Справочник !help", plan_free_f3:"Защищённый вход",
+    plan_go_f1:"Всё из Free", plan_go_f2:"Больше запросов", plan_go_f3:"Ранний доступ",
+    biz_title:"Активация", biz_sub:"Подключи Telegram Business.",
+    biz_wait:"Ожидаем подключения…", biz_step1:"Открой Настройки → Telegram Business",
+    biz_step2:"Раздел «Чат-боты»", biz_step3:"Выбери @{bot} и подтверди доступ",
+    biz_note:"Нужен Telegram Premium.", biz_check:"Я подключил — проверить",
+    biz_not_yet:"Пока не вижу подключения", biz_done:"Business подключён",
     home_hello:"Привет, {name}", home_sub:"Твой кабинет AstroX готов",
     home_member:"В AstroX с", home_security:"Защита", home_security_v:"Активна",
     st_verified:"Подтверждён", st_biz_on:"Business ✓", st_biz_off:"Business —",
     tile_profile:"Профиль", tile_profile_s:"Имя, описание, аватар",
-    tile_lang:"Язык", tile_plan:"Тариф", tile_support:"Поддержка", tile_support_s:"Чат с ботом",
+    tile_limits:"Лимиты", tile_limits_s:"День · Неделя · Месяц",
+    tile_help:"Справочник", tile_help_s:"Команды бота",
+    tile_support:"Поддержка", tile_support_s:"Чат с ботом",
     prof_name:"Имя", prof_bio:"О себе", prof_bio_ph:"Пара слов о себе…",
     prof_lang:"Язык", prof_plan:"Тариф", prof_since:"С нами с",
     prof_save:"Сохранить", prof_saved:"Сохранено",
     prof_reset_avatar:"Вернуть аватар из Telegram", prof_ava_big:"Файл слишком большой (до 8 МБ)",
     plan_free:"Free", plan_go:"GO", yes:"Да", no:"Нет",
-    demo_code:"Демо: введи код 123456",
-    saving:"Сохраняем…", error:"Что-то пошло не так. Попробуй ещё раз",
+    demo_code:"Демо: введи 123456", saving:"Сохраняем…", error:"Что-то пошло не так",
+    limits_eyebrow:"Статистика", limits_title:"Лимиты запросов", limits_sub:"Твои лимиты по тарифу",
+    limits_plan:"Тариф", limits_day:"📅 Сегодня", limits_week:"🗓 На этой неделе", limits_month:"📆 В этом месяце",
+    limits_cmds_title:"Команды, которые тратят запросы",
+    limits_cmd_help:"<b>Справочник</b> — выводит список возможностей AstroX. Списывает <b>1 запрос</b>.",
+    help_eyebrow:"Справка", help_title:"Команды", help_sub:"Что делает каждая команда",
+    help_cmd_start:"Главное меню и кнопка запуска",
+    help_cmd_profile:"Профиль и статистика аккаунта",
+    help_cmd_lang:"Сменить язык интерфейса",
+    help_cmd_status:"Статус доступа: верификация и Business",
+    help_cmd_limits:"Лимиты по дню, неделе и месяцу",
+    help_cmd_bang:"<b>Справочник</b> — выводит справку. Списывает <b>1 запрос</b> из лимита.",
   },
   en: {
     tag:"Secure sign-in for Telegram", continue:"Continue", back:"Back",
-    demo_banner:"Demo mode: open the app from the bot inside Telegram to sign in for real",
+    demo_banner:"Demo mode: open the app from the bot in Telegram",
     nostart_title:"Press /start first",
-    nostart_text:"Open the bot chat, send /start and come back with the “Open AstroX” button.",
+    nostart_text:"Open the bot chat, send /start and come back.",
     step_1:"Step 1 of 5", step_2:"Step 2 of 5", step_3:"Step 3 of 5", step_4:"Step 4 of 5", step_5:"Step 5 of 5",
-    captcha_title:"Verification", captcha_sub:"Confirm you are human — it only takes a few seconds.",
-    captcha_check:"I’m not a robot", captcha_enter:"Type the characters from the image",
+    captcha_title:"Verification", captcha_sub:"Confirm you are human.",
+    captcha_check:"I'm not a robot", captcha_enter:"Type the characters",
     captcha_btn:"Verify", captcha_wrong:"No match — try again",
     captcha_ok:"Verification passed", captcha_wait:"Wait {s}s",
-    captcha_foot:"AstroX is bot-proof: captcha, account-age check and rate limiting.",
-    code_title:"Sign-in code", code_sub:"Request a code — the bot sends 6 digits to your chat. Valid for 5 minutes.",
-    code_request:"Request code", code_sending:"Sending request to the bot…",
-    code_sent:"Code sent to the bot chat. Enter it here.",
+    captcha_foot:"AstroX is bot-proof.",
+    code_title:"Sign-in code", code_sub:"Request a code — the bot sends 6 digits.",
+    code_request:"Request code", code_sending:"Sending request…",
+    code_sent:"Code sent. Enter it here.",
     code_resend:"Resend in {s}s", code_resend_now:"Send again",
-    code_checking:"Checking…", code_wrong:"Wrong code. Attempts left: {n}",
-    code_expired:"Code expired — request a new one",
-    code_locked:"Too many attempts. Request a new code in a minute",
-    code_cooldown:"Wait {s}s before a new request",
-    code_limit:"Hourly code limit reached. Try later",
-    code_timeout:"The bot did not respond. Make sure it is running and try again",
-    code_bad_auth:"Session expired — close and reopen the app",
-    code_blocked:"Unblock the bot to receive a code",
-    code_too_new:"Account is too new for AstroX",
-    code_ok:"Sign-in confirmed", code_open_chat:"Open bot chat",
-    lang_title:"Language", lang_sub:"Choose the interface language. You can change it in your profile.",
-    plan_title:"Plan", plan_sub:"Start with Free — GO unlocks when it is ready.",
+    code_checking:"Checking…", code_wrong:"Wrong code. Left: {n}",
+    code_expired:"Code expired", code_locked:"Too many attempts",
+    code_cooldown:"Wait {s}s", code_limit:"Code limit reached",
+    code_timeout:"Bot not responding", code_bad_auth:"Session expired",
+    code_blocked:"Unblock the bot", code_too_new:"Account too new",
+    code_ok:"Sign-in confirmed", code_open_chat:"Open bot",
+    lang_title:"Language", lang_sub:"Choose interface language.",
+    plan_title:"Plan", plan_sub:"Start with Free — GO coming soon.",
     plan_free_price:"$0", plan_go_price:"soon",
-    plan_free_desc:"Basic access to every AstroX feature.",
-    plan_go_desc:"Extended features and priority.",
-    plan_dev:"In development", plan_choose:"Choose", plan_soon:"GO is still in development — coming soon",
-    plan_free_f1:"Personal dashboard", plan_free_f2:"Secure sign-in", plan_free_f3:"Profile and avatar",
-    plan_go_f1:"Everything in Free", plan_go_f2:"Priority support", plan_go_f3:"Early access to new features",
-    biz_title:"Activation", biz_sub:"Connect the bot via Telegram Business — this unlocks access.",
-    biz_wait:"Waiting for connection…", biz_ok:"Business connected",
-    biz_step1:"Open Settings → Telegram Business",
-    biz_step2:"Go to “Chatbots”",
-    biz_step3:"Choose @{bot} and confirm access",
-    biz_note:"Telegram Premium is required. The bot will message you as soon as the connection goes through.",
-    biz_check:"I connected — check", biz_not_yet:"No connection yet",
-    biz_done:"Business connected — access granted",
+    plan_free_desc:"100 requests/day · 700/week · 3000/month",
+    plan_go_desc:"Extended limits — coming soon",
+    plan_dev:"In development", plan_choose:"Choose", plan_soon:"GO is in development",
+    plan_free_f1:"Dashboard and profile", plan_free_f2:"!help handbook", plan_free_f3:"Secure sign-in",
+    plan_go_f1:"Everything in Free", plan_go_f2:"More requests", plan_go_f3:"Early access",
+    biz_title:"Activation", biz_sub:"Connect Telegram Business.",
+    biz_wait:"Waiting for connection…", biz_step1:"Open Settings → Telegram Business",
+    biz_step2:"Go to “Chatbots”", biz_step3:"Choose @{bot} and confirm access",
+    biz_note:"Telegram Premium required.", biz_check:"I connected — check",
+    biz_not_yet:"No connection yet", biz_done:"Business connected",
     home_hello:"Hi, {name}", home_sub:"Your AstroX dashboard is ready",
     home_member:"Member since", home_security:"Protection", home_security_v:"Active",
     st_verified:"Verified", st_biz_on:"Business ✓", st_biz_off:"Business —",
     tile_profile:"Profile", tile_profile_s:"Name, bio, avatar",
-    tile_lang:"Language", tile_plan:"Plan", tile_support:"Support", tile_support_s:"Bot chat",
+    tile_limits:"Limits", tile_limits_s:"Day · Week · Month",
+    tile_help:"Handbook", tile_help_s:"Bot commands",
+    tile_support:"Support", tile_support_s:"Bot chat",
     prof_name:"Name", prof_bio:"About", prof_bio_ph:"A few words about you…",
     prof_lang:"Language", prof_plan:"Plan", prof_since:"Member since",
     prof_save:"Save", prof_saved:"Saved",
-    prof_reset_avatar:"Use Telegram avatar", prof_ava_big:"File is too large (max 8 MB)",
+    prof_reset_avatar:"Use Telegram avatar", prof_ava_big:"File too large (max 8 MB)",
     plan_free:"Free", plan_go:"GO", yes:"Yes", no:"No",
-    demo_code:"Demo: enter code 123456",
-    saving:"Saving…", error:"Something went wrong. Try again",
+    demo_code:"Demo: enter 123456", saving:"Saving…", error:"Something went wrong",
+    limits_eyebrow:"Statistics", limits_title:"Request limits", limits_sub:"Your plan limits",
+    limits_plan:"Plan", limits_day:"📅 Today", limits_week:"🗓 This week", limits_month:"📆 This month",
+    limits_cmds_title:"Commands that consume requests",
+    limits_cmd_help:"<b>Handbook</b> — shows AstroX features. Costs <b>1 request</b>.",
+    help_eyebrow:"Reference", help_title:"Commands", help_sub:"What each command does",
+    help_cmd_start:"Main menu and launch button",
+    help_cmd_profile:"Profile and account statistics",
+    help_cmd_lang:"Change interface language",
+    help_cmd_status:"Access status: verification and Business",
+    help_cmd_limits:"Day, week and month limits",
+    help_cmd_bang:"<b>Handbook</b> — shows help. Costs <b>1 request</b>.",
   }
 };
 
-/* ============================================================ SETUP */
 const $ = (s,r=document)=>r.querySelector(s);
 const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
 const tg = window.Telegram?.WebApp;
@@ -915,7 +832,8 @@ const LS_KEY = "astrox:" + uid;
 let lang = (me.language_code||"").startsWith("ru") ? "ru" : "en";
 let rec = null, meta = {}, current = "splash", booted = false, pending = null;
 let captchaCode = "", captchaFails = 0, captchaLockUntil = 0, resendTimer = null;
-let selectedLang = lang, db = null;
+let selectedLang = lang, selectedPlan = null, db = null;
+let limitsCache = null;
 
 if (tg) {
   try {
@@ -952,15 +870,19 @@ function toast(msg){
 
 function applyI18n(){
   document.documentElement.lang = lang;
-  $$("[data-i18n]").forEach(el => { el.textContent = t(el.dataset.i18n); });
+  $$("[data-i18n]").forEach(el => {
+    const key = el.dataset.i18n;
+    const html = t(key);
+    if (html.includes("<b>") || html.includes("<i>")) el.innerHTML = html;
+    else el.textContent = html;
+  });
   $("#pfBio").placeholder = t("prof_bio_ph");
   $("#bizStep3").textContent = t("biz_step3", { bot: meta.username || "bot" });
   $("#codeResend").textContent = t("code_resend_now");
   renderSteps();
-  if (["home","profile"].includes(current)) renderUser();
+  if (["home","profile","limits"].includes(current)) { renderUser(); if (current==="limits") renderLimits(limitsCache); }
 }
 
-/* ============================================================ SCREENS */
 const STEP_ORDER = ["captcha","code","lang","plan","business"];
 function renderSteps(){
   const idx = STEP_ORDER.indexOf(current);
@@ -974,22 +896,28 @@ const enter = {
   code(){ $("#codeIdle").hidden=false; $("#codeEntry").hidden=true; $("#codeDone").hidden=true; },
   lang(){ selectedLang = rec?.lang || lang;
     $$("[data-lang].choice").forEach(b => b.classList.toggle("sel", b.dataset.lang===selectedLang)); },
-  plan(){},
+  plan(){
+    selectedPlan = rec?.plan || null;
+    $$("[data-plan]").forEach(b => b.classList.toggle("sel", b.dataset.plan===selectedPlan));
+    $("#planNext").disabled = !selectedPlan;
+  },
   business(){ $("#bizPill").classList.toggle("ok", !!rec?.business_connected); },
   home(){ renderUser(); },
+  limits(){ renderLimits(); loadLimits(); },
+  help(){},
   profile(){ renderUser(); fillProfile(); },
 };
 function showScreen(name){
   if (current===name && booted) return;
   current = name;
   $$(".screen").forEach(s => s.classList.toggle("active", s.dataset.screen===name));
-  const top = ["home","profile"].includes(name);
+  const top = ["home","profile","limits","help"].includes(name);
   $("#topbar").hidden = !top;
   document.body.classList.toggle("has-top", top);
   window.scrollTo(0,0);
   renderSteps();
   enter[name]?.();
-  try { name==="profile" ? tg?.BackButton?.show() : tg?.BackButton?.hide(); } catch {}
+  try { ["profile","limits","help"].includes(name) ? tg?.BackButton?.show() : tg?.BackButton?.hide(); } catch {}
 }
 try { tg?.BackButton?.onClick(() => showScreen("home")); } catch {}
 
@@ -1007,7 +935,6 @@ function resolveStep(r){
 }
 function route(){ showScreen(resolveStep(rec)); }
 
-/* ============================================================ DATA */
 function cacheRec(v){
   try {
     localStorage.setItem(LS_KEY, JSON.stringify({
@@ -1027,11 +954,8 @@ function handleRecord(v){
   if (prev && current==="business" && v.business_connected){
     haptic("success"); toast(t("biz_done")); route(); return;
   }
-  if (prev && current==="home" && meta.require_business!==false && !v.business_connected && prev.business_connected){
-    route(); return;
-  }
   if (!booted){ booted=true; route(); }
-  else if (["home","profile"].includes(current)) renderUser();
+  else if (["home","profile","limits"].includes(current)) renderUser();
 }
 async function saveUser(patch){
   if (DEMO){
@@ -1049,7 +973,6 @@ async function sendCommand(kind, extra={}){
   return nonce;
 }
 
-/* ============================================================ CAPTCHA */
 const CH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const rnd = (a,b) => a + Math.random()*(b-a);
 function drawCaptcha(){
@@ -1138,7 +1061,6 @@ function verifyCaptcha(){
   setTimeout(()=>showScreen("code"), 700);
 }
 
-/* ============================================================ CODE */
 const otpInputs = $$("#otp input");
 otpInputs.forEach((inp,i) => {
   inp.addEventListener("input", () => {
@@ -1254,7 +1176,6 @@ function onAuthResult(a, force=false){
   clearOtp(S==="wrong");
 }
 
-/* ============================================================ LANG & PLAN */
 $$("[data-lang].choice").forEach(b => b.addEventListener("click", () => {
   haptic("light");
   selectedLang = b.dataset.lang;
@@ -1270,20 +1191,23 @@ $("#langNext").addEventListener("click", async () => {
     else showScreen("plan");
   } catch(e){ console.error(e); toast(t("error")); }
 });
+
 $$("[data-plan]").forEach(b => b.addEventListener("click", () => {
   if (b.dataset.plan==="go"){ haptic("medium"); toast(t("plan_soon")); return; }
   haptic("light");
+  selectedPlan = b.dataset.plan;
   $$("[data-plan]").forEach(x => x.classList.toggle("sel", x===b));
+  $("#planNext").disabled = false;
 }));
 $("#planNext").addEventListener("click", async () => {
   haptic("medium");
+  if (!selectedPlan) return;
   try {
-    await saveUser({ plan:"free", plan_chosen_at:Date.now() });
+    await saveUser({ plan:selectedPlan, plan_chosen_at:Date.now() });
     if (!DEMO) route();
   } catch(e){ console.error(e); toast(t("error")); }
 });
 
-/* ============================================================ BUSINESS */
 $("#bizCheck").addEventListener("click", async () => {
   haptic("light");
   if (DEMO){ toast(t("biz_done")); await saveUser({ business_connected:true }); return; }
@@ -1297,7 +1221,47 @@ $("#bizCheck").addEventListener("click", async () => {
   } catch(e){ console.error(e); toast(t("error")); }
 });
 
-/* ============================================================ HOME & PROFILE */
+// LIMITS
+function periodKeys(){
+  const now = new Date();
+  const day = now.toISOString().slice(0,10);
+  const year = now.getUTCFullYear();
+  const start = new Date(Date.UTC(year,0,1));
+  const week = Math.floor((now - start)/604800000/1000);
+  const weekKey = `${year}-W${String(week).padStart(2,"0")}`;
+  const monthKey = now.toISOString().slice(0,7);
+  return { day, week: weekKey, month: monthKey };
+}
+async function loadLimits(){
+  if (!rec) return;
+  const plan = rec.plan || "free";
+  const lim = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
+  const keys = periodKeys();
+  let data = {};
+  if (!DEMO && db) {
+    try {
+      const snap = await get(ref(db, "limits/"+uid));
+      data = snap.val() || {};
+    } catch(e){ console.warn(e); }
+  }
+  const dayUsed = (data.day||{})[keys.day] || 0;
+  const weekUsed = (data.week||{})[keys.week] || 0;
+  const monthUsed = (data.month||{})[keys.month] || 0;
+  limitsCache = { plan, dayUsed, weekUsed, monthUsed, ...lim };
+  renderLimits(limitsCache);
+}
+function renderLimits(lim){
+  if (!lim) lim = { plan:rec?.plan||"free", dayUsed:0, weekUsed:0, monthUsed:0, ...(PLAN_LIMITS[rec?.plan||"free"]||PLAN_LIMITS.free) };
+  $("#limitsPlan").textContent = planName(lim.plan);
+  $("#dayUsed").textContent = lim.dayUsed; $("#dayLimit").textContent = lim.day;
+  $("#weekUsed").textContent = lim.weekUsed; $("#weekLimit").textContent = lim.week;
+  $("#monthUsed").textContent = lim.monthUsed; $("#monthLimit").textContent = lim.month;
+  $("#dayFill").style.width = Math.min(100, lim.dayUsed/lim.day*100) + "%";
+  $("#weekFill").style.width = Math.min(100, lim.weekUsed/lim.week*100) + "%";
+  $("#monthFill").style.width = Math.min(100, lim.monthUsed/lim.month*100) + "%";
+  $("#tileLimitsS").textContent = `${lim.dayUsed}/${lim.day}`;
+}
+
 function initials(){
   const n = (rec?.profile?.display_name || me.first_name || "A").trim();
   return n.slice(0,1).toUpperCase();
@@ -1321,8 +1285,6 @@ function renderUser(){
   hb.className = "badge " + (biz ? "ok" : "wait");
   $("#homeId").textContent = uid;
   $("#homeSince").textContent = fmtDate(rec?.created_at);
-  $("#tileLangS").textContent = lang==="ru" ? "Русский" : "English";
-  $("#tilePlanS").textContent = planName(rec?.plan);
   $("#pfUsername").textContent = (rec?.username || me.username) ? "@" + (rec?.username||me.username) : "—";
   $("#pfId").textContent = uid;
   $("#pfPlan").textContent = planName(rec?.plan);
@@ -1395,7 +1357,6 @@ function resizeImage(file, size){
   });
 }
 
-/* ============================================================ ACTIONS */
 document.addEventListener("click", (e) => {
   const el = e.target.closest("[data-action]");
   if (!el) return;
@@ -1408,15 +1369,14 @@ document.addEventListener("click", (e) => {
   }
   if (a==="profile") showScreen("profile");
   if (a==="home") showScreen("home");
-  if (a==="goto-lang") showScreen("profile");
-  if (a==="goto-plan") toast(planName(rec?.plan) + " · " + t("plan_soon"));
+  if (a==="goto-limits") showScreen("limits");
+  if (a==="goto-help") showScreen("help");
 });
 $("#topAvatar").addEventListener("click", () => {
   haptic("light");
   showScreen(current==="profile" ? "home" : "profile");
 });
 
-/* ============================================================ STARS */
 (() => {
   const c = $("#stars"), x = c.getContext("2d");
   let W,H,stars = [];
@@ -1447,7 +1407,6 @@ $("#topAvatar").addEventListener("click", () => {
   requestAnimationFrame(loop);
 })();
 
-/* ============================================================ BOOT */
 async function boot(){
   applyI18n();
   showScreen("splash");
@@ -1462,8 +1421,9 @@ async function boot(){
     booted = true;
     const want = new URLSearchParams(location.search).get("screen");
     if (want && enter[want]){
-      rec = { ...rec, verified:true, lang_chosen:true, plan:"free", business_connected: want==="home"||want==="profile" };
+      rec = { ...rec, verified:true, lang_chosen:true, plan:"free", business_connected: want==="home"||want==="profile"||want==="limits"||want==="help" };
       showScreen(want);
+      if (want==="limits") loadLimits();
       return;
     }
     route();
