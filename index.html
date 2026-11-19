@@ -1,1 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Отсчет 3-2-1</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg: var(--tg-theme-bg-color, #111111);
+            --card: var(--tg-theme-secondary-bg-color, #1c1c1e);
+            --text: var(--tg-theme-text-color, #ffffff);
+            --hint: var(--tg-theme-hint-color, #8e8e93);
+            --accent: var(--tg-theme-button-color, #2aabee);
+            --accent-text: var(--tg-theme-button-text-color, #ffffff);
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .widget {
+            width: 100%;
+            max-width: 320px;
+            background: var(--card);
+            border: 2px solid var(--accent);
+            padding: 32px 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .label {
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--hint);
+        }
+
+        .counter {
+            font-size: 96px;
+            font-weight: 800;
+            line-height: 1;
+            min-height: 96px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s ease, opacity 0.15s ease;
+        }
+
+        .counter.pop {
+            transform: scale(1.25);
+        }
+
+        .counter.done {
+            font-size: 48px;
+            color: var(--accent);
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: rgba(128, 128, 128, 0.25);
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 100%;
+            background: var(--accent);
+            transition: width 1s linear;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            background: var(--accent);
+            color: var(--accent-text);
+            transition: opacity 0.15s ease;
+        }
+
+        button:active {
+            opacity: 0.75;
+        }
+
+        button.secondary {
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--hint);
+        }
+    </style>
+</head>
+<body>
+    <div class="widget">
+        <div class="label" id="status">Приготовься</div>
+        <div class="counter" id="counter">3</div>
+        <div class="progress-track">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+        <div class="actions">
+            <button id="restartBtn" onclick="startCountdown()">Заново</button>
+            <button class="secondary" onclick="closeApp()">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
+
+        const counterEl = document.getElementById('counter');
+        const statusEl = document.getElementById('status');
+        const progressEl = document.getElementById('progress');
+
+        let timerId = null;
+
+        function haptic(type, style) {
+            if (!tg?.HapticFeedback) return;
+            if (type === 'impact') tg.HapticFeedback.impactOccurred(style);
+            if (type === 'notify') tg.HapticFeedback.notificationOccurred(style);
+        }
+
+        function animateTick() {
+            counterEl.classList.remove('pop');
+            void counterEl.offsetWidth; // перезапуск анимации
+            counterEl.classList.add('pop');
+            setTimeout(() => counterEl.classList.remove('pop'), 180);
+        }
+
+        function startCountdown() {
+            clearInterval(timerId);
+            let value = 3;
+
+            counterEl.classList.remove('done');
+            counterEl.textContent = value;
+            statusEl.textContent = 'Отсчет пошел...';
+
+            // Сброс полосы прогресса
+            progressEl.style.transition = 'none';
+            progressEl.style.width = '100%';
+            void progressEl.offsetWidth;
+            progressEl.style.transition = 'width 3s linear';
+            progressEl.style.width = '0%';
+
+            animateTick();
+            haptic('impact', 'medium');
+
+            timerId = setInterval(() => {
+                value -= 1;
+
+                if (value > 0) {
+                    counterEl.textContent = value;
+                    animateTick();
+                    haptic('impact', 'medium');
+                } else {
+                    clearInterval(timerId);
+                    counterEl.textContent = 'СТАРТ!';
+                    counterEl.classList.add('done');
+                    statusEl.textContent = 'Время вышло';
+                    animateTick();
+                    haptic('notify', 'success');
+                }
+            }, 1000);
+        }
+
+        function closeApp() {
+            if (tg) {
+                tg.close();
+            } else {
+                window.close();
+            }
+        }
+
+        // Автозапуск при открытии виджета
+        startCountdown();
+    </script>
+</body>
+</html>
